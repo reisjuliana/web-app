@@ -12,13 +12,13 @@
 -- Se desejar trocar o nome do schema, altere aqui:
 SET @SCHEMA_NAME := 'insumoplus';
 SET @DEFAULT_CHARSET := 'utf8mb4';
-SET @DEFAULT_COLLATION := 'utf8mb4_0900_ai_ci';
+SET @DEFAULT_COLLATION := 'utf8mb4_general_ci';
 
 -- Segurança: evita erros se o schema já existir
 DROP DATABASE IF EXISTS `insumoplus`;
 CREATE DATABASE IF NOT EXISTS `insumoplus`
   CHARACTER SET = utf8mb4
-  COLLATE = utf8mb4_0900_ai_ci;
+  COLLATE = utf8mb4_general_ci;
 USE `insumoplus`;
 
 -- -------------------------------------------------------------
@@ -28,7 +28,7 @@ CREATE TABLE perfil_acesso (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(30) NOT NULL UNIQUE,
   descricao VARCHAR(255) NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE usuarios (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -41,7 +41,7 @@ CREATE TABLE usuarios (
   created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
   last_login_at DATETIME NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE usuario_perfil (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -50,7 +50,7 @@ CREATE TABLE usuario_perfil (
   UNIQUE KEY uq_usuario_perfil (usuario_id, perfil_id),
   CONSTRAINT fk_up_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
   CONSTRAINT fk_up_perfil FOREIGN KEY (perfil_id) REFERENCES perfil_acesso(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE log_auditoria (
   id BIGINT AUTO_INCREMENT PRIMARY KEY,
@@ -61,7 +61,7 @@ CREATE TABLE log_auditoria (
   criado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   INDEX idx_log_entidade_acao (entidade, acao),
   CONSTRAINT fk_log_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- -------------------------------------------------------------
 -- Tabelas de Cadastros Básicos
@@ -75,7 +75,7 @@ CREATE TABLE fornecedores (
   email VARCHAR(120) NULL,
   endereco TEXT NULL,
   UNIQUE KEY uq_fornecedor_cnpj (cnpj)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE clientes (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -86,7 +86,7 @@ CREATE TABLE clientes (
   email VARCHAR(120) NULL,
   endereco TEXT NULL,
   UNIQUE KEY uq_cliente_cnpj (cnpj)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE produtos (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -95,7 +95,7 @@ CREATE TABLE produtos (
   preco_unitario DECIMAL(12,2) NULL,
   descricao TEXT NULL,
   ativo BOOLEAN NOT NULL DEFAULT TRUE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE insumos (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -108,7 +108,7 @@ CREATE TABLE insumos (
   fornecedor_id INT NULL,
   ativo BOOLEAN NOT NULL DEFAULT TRUE,
   CONSTRAINT fk_insumo_fornecedor FOREIGN KEY (fornecedor_id) REFERENCES fornecedores(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Mapeamento de composição (BOM) Insumo -> Produto (UC_502)
 CREATE TABLE insumo_produto (
@@ -120,7 +120,7 @@ CREATE TABLE insumo_produto (
   UNIQUE KEY uq_insumo_produto (insumo_id, produto_id),
   CONSTRAINT fk_ip_insumo FOREIGN KEY (insumo_id) REFERENCES insumos(id),
   CONSTRAINT fk_ip_produto FOREIGN KEY (produto_id) REFERENCES produtos(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- -------------------------------------------------------------
 -- Ordem de Compra / Pedido e Itens
@@ -141,7 +141,7 @@ CREATE TABLE pedidos (
   CONSTRAINT fk_ped_fornecedor FOREIGN KEY (fornecedor_id) REFERENCES fornecedores(id),
   CONSTRAINT fk_ped_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
   UNIQUE KEY uq_ped_chave_nfe (chave_nfe)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- Item do pedido pode referenciar um produto ou um insumo
 CREATE TABLE itens_pedido (
@@ -157,7 +157,7 @@ CREATE TABLE itens_pedido (
   CONSTRAINT fk_itped_insumo FOREIGN KEY (insumo_id) REFERENCES insumos(id),
   -- CHECK Mínimo: ao menos um dos dois (produto ou insumo)
   CONSTRAINT chk_itped_item CHECK ( (produto_id IS NOT NULL) OR (insumo_id IS NOT NULL) )
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- -------------------------------------------------------------
 -- Movimentação de Insumo e Transferências
@@ -182,7 +182,7 @@ CREATE TABLE movimentacoes (
   CONSTRAINT fk_mov_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id),
   CONSTRAINT fk_mov_pedido FOREIGN KEY (pedido_id) REFERENCES pedidos(id),
   CONSTRAINT fk_mov_item FOREIGN KEY (item_pedido_id) REFERENCES itens_pedido(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- View de saldo de estoque por insumo (evita inconsistência de triggers)
 CREATE OR REPLACE VIEW vw_saldo_insumo AS
@@ -208,7 +208,7 @@ CREATE TABLE regras_calculo (
   nome VARCHAR(120) NOT NULL,
   parametros JSON NULL, -- ex: {"tolerancia_perda": 0.03}
   ativo BOOLEAN NOT NULL DEFAULT TRUE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE balanco_massa (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -222,7 +222,7 @@ CREATE TABLE balanco_massa (
   criado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT fk_bal_regra FOREIGN KEY (regra_id) REFERENCES regras_calculo(id),
   CONSTRAINT fk_bal_usuario FOREIGN KEY (criado_por) REFERENCES usuarios(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE movimentacao_balanco (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -231,7 +231,7 @@ CREATE TABLE movimentacao_balanco (
   CONSTRAINT fk_mb_balanco FOREIGN KEY (balanco_id) REFERENCES balanco_massa(id) ON DELETE CASCADE,
   CONSTRAINT fk_mb_mov FOREIGN KEY (movimentacao_id) REFERENCES movimentacoes(id) ON DELETE CASCADE,
   UNIQUE KEY uq_mb (balanco_id, movimentacao_id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- -------------------------------------------------------------
 -- Documentos e Relatórios
@@ -252,7 +252,7 @@ CREATE TABLE documentos (
   INDEX idx_doc_tipo_data (tipo, data_upload),
   UNIQUE KEY uq_doc_hash (hash_sha256),
   CONSTRAINT fk_doc_usuario FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 CREATE TABLE relatorios (
   id INT AUTO_INCREMENT PRIMARY KEY,
@@ -264,7 +264,7 @@ CREATE TABLE relatorios (
   usuario_gerador INT NOT NULL,
   conteudo LONGBLOB NULL,
   CONSTRAINT fk_rel_usuario FOREIGN KEY (usuario_gerador) REFERENCES usuarios(id)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- -------------------------------------------------------------
 -- Triggers simples de auditoria (exemplo)
