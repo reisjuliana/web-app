@@ -1,0 +1,45 @@
+@use "@angular/material" as mat;
+mat-card {
+  max-width: 400px;
+  margin: 2em auto;
+  text-align: center;
+}
+mat-form-field {
+  display: block;
+}
+mat-card-header {
+  display: block;
+  margin: 0 auto;
+  font-weight: 600;
+}
+.login-title {
+  color: #4f974e;
+}
+// @include mat.core();
+// $my-theme: mat.define-theme(
+//   (
+//     color: (
+//       primary: mat.$red-palette,
+//     ),
+//   )
+// );
+// .test {
+//   @include mat.form-field-theme($my-theme, $color-variant: primary);
+// }
+// /* .mat-mdc-form-field .test .mat-mdc-text-field-wrapper .mdc-text-field--filled {
+//   background-color: red;
+//   display: block;
+// } */
+// mat-form-field {
+//   --mdc-filled-text-field-container-color: #bff2bf;
+//   display: block;
+// }
+
+// mat-card-content {
+//   --mdc-protected-button-container-color: #bff2bf;
+//   --mdc-protected-button-label-text-color: black;
+// }
+
+// .test {
+//   @include mat.button-color($theme);
+// }
