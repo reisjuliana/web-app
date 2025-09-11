@@ -8,13 +8,13 @@ Sistema de gestão de insumos e fornecedores, desenvolvido em **NestJS (backend)
 
 ## Como rodar o projeto
 
-# 1. Subir o backend
+### 1. Subir o backend
 
 cd web-app/backend
 npm install
 npm run start:dev
 
-# 2. Subir o frontend
+### 2. Subir o frontend
 
 cd ../frontend
 npm install
