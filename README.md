@@ -1,9 +1,5 @@
 # Insumo Plus – Web App
 
-Projeto fullstack desenvolvido com **NestJS** no backend e **Angular** no frontend, voltado para gestão de insumos.
-
-# Insumo Plus
-
 Sistema de gestão de insumos e fornecedores, desenvolvido em **NestJS (backend)** e **Angular (frontend)**, voltado para gestão de insumos.
 
 ## Como rodar o projeto
