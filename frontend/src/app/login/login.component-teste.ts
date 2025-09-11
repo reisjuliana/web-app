@@ -33,7 +33,7 @@ export class LoginComponent {
   loginValid: boolean = true;
 
   router = inject(Router);
-  constructor(private authService: AuthService) {}
+  // constructor(private authService: AuthService) {}
 
   login() {
     const loginDTO: LoginUserDTO = {

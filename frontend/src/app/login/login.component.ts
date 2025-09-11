@@ -7,7 +7,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { Router } from '@angular/router';
-
+import { AuthService } from '../services/auth.service';
+import { LoginUserDTO } from '../dtos/auth.dtos';
 @Component({
   selector: 'app-login',
   standalone: true,
@@ -21,36 +22,39 @@ import { Router } from '@angular/router';
     MatFormFieldModule,
   ],
   templateUrl: './login.component.html',
-  styleUrl: './login.component.scss',
+  styleUrls: ['./login.component.scss'], // CORRIGIDO
 })
 export class LoginComponent {
   user = {
     email: '',
     password: '',
   };
-  storedUser = {
-    email: 'test@gmail.com',
-    password: 'password123',
-  };
 
   loginValid: boolean = true;
-
+  loginSuccess: boolean = false;
   router = inject(Router);
-
-  validateLogin(email: string, password: string): boolean {
-    return (
-      email === this.storedUser.email && password === this.storedUser.password
-    );
-  }
+  // authService: any;
+  constructor(private authService: AuthService) {}
 
   login() {
-    if (this.validateLogin(this.user.email, this.user.password)) {
-      localStorage.setItem('loggedInUser', JSON.stringify(this.user.email));
-      this.loginValid = true;
-      this.router.navigate(['/dashboard']);
-    } else {
-      // alert('Incorrect email or password');
-      this.loginValid = false;
-    }
+    const loginDTO: LoginUserDTO = {
+      email: this.user.email, // pode manter assim
+      password: this.user.password,
+    };
+
+    this.authService.login(loginDTO).subscribe({
+      next: (res: { accessToken: string }) => {
+        console.log('Login sucesso:', res);
+        this.loginValid = true;
+        this.loginSuccess = true;
+        localStorage.setItem('accessToken', res.accessToken);
+        this.router.navigate(['/dashboard']);
+      },
+      error: (err: any) => {
+        console.error('Erro no login:', err);
+        this.loginValid = false;
+        this.loginSuccess = false;
+      },
+    });
   }
 }

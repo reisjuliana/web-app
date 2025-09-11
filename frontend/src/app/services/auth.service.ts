@@ -1,5 +1,3 @@
-// src/app/services/auth.service.ts
-
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
@@ -10,15 +8,17 @@ import { LoginUserDTO, RegisterUserDTO } from '../dtos/auth.dtos';
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = `${environment.apiUrl}/auth`; // usa o environment
+  private apiUrl = `${environment.apiUrl}/auth`;
 
   constructor(private http: HttpClient) {}
 
-  register(user: RegisterUserDTO): Observable<any> {
-    return this.http.post(`${this.apiUrl}/register`, user);
+  // Rota de registro (POST /auth/register)
+  register(dto: RegisterUserDTO): Observable<any> {
+    return this.http.post(`${this.apiUrl}/register`, dto);
   }
 
-  login(user: LoginUserDTO): Observable<any> {
-    return this.http.post(`${this.apiUrl}/login`, user);
+  // Rota de login (POST /auth/login)
+  login(dto: LoginUserDTO): Observable<any> {
+    return this.http.post(`${this.apiUrl}/login`, dto);
   }
 }

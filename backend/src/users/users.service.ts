@@ -111,11 +111,16 @@ export class UsersService {
     const user = await this.usersRepository.findOne({ where: { email } });
 
     if (!user) {
+      console.log('Usuário não encontrado para email:', email); // ajuste
       throw new HttpException('User not found', HttpStatus.UNAUTHORIZED);
     }
 
+    console.log('Senha do usuário no DB (hash):', user.password); // ajuste
+    console.log('Senha fornecida pelo login:', password); // ajuste
+
     // compare passwords
     const areEqual = await comparePasswords(user.password, password);
+    console.log('Resultado da comparação de senhas:', areEqual); // ajuste
 
     if (!areEqual) {
       throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
