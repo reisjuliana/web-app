@@ -4,7 +4,13 @@ import { AppComponent } from './app.component';
 describe('AppComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [AppComponent],
+      declarations: [AppComponent],
+ //      imports: [
+ //       BrowserAnimationsModule, // necessário para Angular Material
+ //       MatCardModule,
+ //       MatIconModule,
+        // outros módulos Material que você usa no template
+  //    ],
     }).compileComponents();
   });
 

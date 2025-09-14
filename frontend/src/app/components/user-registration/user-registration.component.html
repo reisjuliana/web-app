@@ -1,0 +1,144 @@
+<div class="container">
+  <mat-card class="form-card">
+    <mat-card-header>
+      <mat-card-title>Cadastro de Usuários</mat-card-title>
+      <mat-card-subtitle>Registrar usuários do sistema</mat-card-subtitle>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Nome</mat-label>
+            <input matInput formControlName="nome" placeholder="Digite o nome completo">
+            <mat-error *ngIf="userForm.get('nome')?.hasError('required')">
+              Nome é obrigatório
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" formControlName="email" placeholder="usuario@exemplo.com">
+            <mat-error *ngIf="userForm.get('email')?.hasError('required')">
+              Email é obrigatório
+            </mat-error>
+            <mat-error *ngIf="userForm.get('email')?.hasError('email')">
+              Email deve ter um formato válido
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-form-field appearance="outline">
+            <mat-label>Senha</mat-label>
+            <input matInput type="password" formControlName="password" placeholder="Mínimo 6 caracteres">
+            <mat-error *ngIf="userForm.get('password')?.hasError('required')">
+              Senha é obrigatória
+            </mat-error>
+            <mat-error *ngIf="userForm.get('password')?.hasError('minlength')">
+              Senha deve ter no mínimo 6 caracteres
+            </mat-error>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>CPF</mat-label>
+            <input matInput formControlName="cpf" (input)="formatCpf($event)" 
+                   placeholder="000.000.000-00" maxlength="14">
+            <mat-error *ngIf="userForm.get('cpf')?.hasError('required')">
+              CPF é obrigatório
+            </mat-error>
+            <mat-error *ngIf="userForm.get('cpf')?.hasError('invalidCpf')">
+              CPF deve ter um formato válido
+            </mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <mat-checkbox formControlName="sn_ativo" color="primary">
+            Usuário Ativo
+          </mat-checkbox>
+        </div>
+
+        <div class="form-actions">
+          <button mat-raised-button color="primary" type="submit" [disabled]="!userForm.valid">
+            <mat-icon>save</mat-icon>
+            Salvar
+          </button>
+          <button mat-button type="button" (click)="onCancel()">
+            <mat-icon>cancel</mat-icon>
+            Cancelar
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="table-card">
+    <mat-card-header>
+      <mat-card-title>Usuários Cadastrados</mat-card-title>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Pesquisar</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Digite para filtrar...">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <div class="table-container">
+        <table mat-table [dataSource]="users" class="mat-elevation-z2">
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef>ID</th>
+            <td mat-cell *matCellDef="let user">{{user.id}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="nome">
+            <th mat-header-cell *matHeaderCellDef>Nome</th>
+            <td mat-cell *matCellDef="let user">{{user.nome}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="email">
+            <th mat-header-cell *matHeaderCellDef>Email</th>
+            <td mat-cell *matCellDef="let user">{{user.email}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="cpf">
+            <th mat-header-cell *matHeaderCellDef>CPF</th>
+            <td mat-cell *matCellDef="let user">{{user.cpf}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="sn_ativo">
+            <th mat-header-cell *matHeaderCellDef>Status</th>
+            <td mat-cell *matCellDef="let user">
+              <mat-chip [color]="getStatusColor(user.sn_ativo)" selected>
+                {{getStatusText(user.sn_ativo)}}
+              </mat-chip>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="created_at">
+            <th mat-header-cell *matHeaderCellDef>Data Cadastro</th>
+            <td mat-cell *matCellDef="let user">{{user.created_at | date:'dd/MM/yyyy HH:mm'}}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef>Ações</th>
+            <td mat-cell *matCellDef="let user">
+              <button mat-icon-button 
+                      [color]="user.sn_ativo ? 'warn' : 'primary'"
+                      (click)="toggleUserStatus(user)"
+                      [matTooltip]="user.sn_ativo ? 'Inativar usuário' : 'Ativar usuário'">
+                <mat-icon>{{user.sn_ativo ? 'person_off' : 'person'}}</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
