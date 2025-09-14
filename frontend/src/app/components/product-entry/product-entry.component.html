@@ -7,15 +7,19 @@
     
     <mat-card-content>
       <form [formGroup]="entryForm" (ngSubmit)="onSubmit()">
+
+        <!-- Linha 1: Produto -->
         <div class="form-row">
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>ID do Produto</mat-label>
-            <input matInput 
+            <input matInput
                    formControlName="productId"
                    [matAutocomplete]="productAuto"
-                   placeholder="Digite para buscar produto">
-            <mat-autocomplete #productAuto="matAutocomplete" 
-                              [displayWith]="displayProduct">
+                   placeholder="Digite ID ou nome" 
+                   (blur)="onProductIdBlur()">
+            <mat-autocomplete #productAuto="matAutocomplete"
+                              [displayWith]="displayProduct"
+                              (optionSelected)="onProductOptionSelected($event.option.value)">
               <mat-option *ngFor="let product of filteredProducts | async" [value]="product.id">
                 {{product.id}} - {{product.name}}
               </mat-option>
@@ -27,19 +31,22 @@
 
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Nome do Produto</mat-label>
-            <input matInput formControlName="productName" readonly>
+            <input matInput formControlName="productName" placeholder="Nome (pode digitar manualmente)">
           </mat-form-field>
         </div>
 
+        <!-- Linha 2: Fornecedor -->
         <div class="form-row">
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>ID do Fornecedor</mat-label>
-            <input matInput 
+            <input matInput
                    formControlName="supplierId"
                    [matAutocomplete]="supplierAuto"
-                   placeholder="Digite para buscar fornecedor">
-            <mat-autocomplete #supplierAuto="matAutocomplete" 
-                              [displayWith]="displaySupplier">
+                   placeholder="Digite ID ou nome"
+                   (blur)="onSupplierIdBlur()">
+            <mat-autocomplete #supplierAuto="matAutocomplete"
+                              [displayWith]="displaySupplier"
+                              (optionSelected)="onSupplierOptionSelected($event.option.value)">
               <mat-option *ngFor="let supplier of filteredSuppliers | async" [value]="supplier.id">
                 {{supplier.id}} - {{supplier.name}}
               </mat-option>
@@ -51,10 +58,11 @@
 
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Nome do Fornecedor</mat-label>
-            <input matInput formControlName="supplierName" readonly>
+            <input matInput formControlName="supplierName" placeholder="Nome do fornecedor (manual)">
           </mat-form-field>
         </div>
 
+        <!-- Linha 3: Datas e Quantidade -->
         <div class="form-row">
           <mat-form-field appearance="outline">
             <mat-label>Data da Entrada</mat-label>
@@ -78,6 +86,7 @@
           </mat-form-field>
         </div>
 
+        <!-- Linha 4: Valores -->
         <div class="form-row">
           <mat-form-field appearance="outline">
             <mat-label>Valor Unitário</mat-label>
@@ -98,6 +107,7 @@
           </mat-form-field>
         </div>
 
+        <!-- Linha 5: Nota Fiscal -->
         <div class="form-row">
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Número da Nota Fiscal</mat-label>
@@ -108,6 +118,7 @@
           </mat-form-field>
         </div>
 
+        <!-- Linha 6: Lote e Validade -->
         <div class="form-row">
           <mat-form-field appearance="outline">
             <mat-label>Lote</mat-label>
@@ -122,6 +133,7 @@
           </mat-form-field>
         </div>
 
+        <!-- Linha 7: Categoria -->
         <div class="form-row">
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Categoria</mat-label>
@@ -129,6 +141,7 @@
           </mat-form-field>
         </div>
 
+        <!-- Linha 8: Observações -->
         <div class="form-row">
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Observações</mat-label>
@@ -136,20 +149,23 @@
           </mat-form-field>
         </div>
 
+        <!-- Botões -->
         <div class="form-actions">
-          <button mat-raised-button color="primary" type="submit" [disabled]="!entryForm.valid">
+          <button mat-raised-button color="primary" type="submit">
             <mat-icon>save</mat-icon>
-            Salvar
+            <span>Salvar</span>
           </button>
           <button mat-button type="button" (click)="onCancel()">
             <mat-icon>cancel</mat-icon>
             Cancelar
           </button>
         </div>
+
       </form>
     </mat-card-content>
   </mat-card>
 
+  <!-- Tabela de entradas cadastradas -->
   <mat-card class="table-card">
     <mat-card-header>
       <mat-card-title>Entradas Cadastradas</mat-card-title>
