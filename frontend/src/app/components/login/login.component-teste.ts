@@ -7,8 +7,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { Router } from '@angular/router';
-import { AuthService } from '../services/auth.service';
-import { LoginUserDTO } from '../dtos/auth.dtos';
+import { AuthService } from '../../services/auth.service';
+import { LoginUserDTO } from '../../models/auth.model';
 @Component({
   selector: 'app-login',
   standalone: true,
