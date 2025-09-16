@@ -3,7 +3,14 @@ import { ProductEntryComponent } from './components/product-entry/product-entry.
 import { UserRegistrationComponent } from './components/user-registration/user-registration.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: 'product-entry', pathMatch: 'full' },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'product-entry', component: ProductEntryComponent },
   { path: 'user-registration', component: UserRegistrationComponent },
+  {
+    path: 'login',
+    loadComponent: () =>
+      import('./components/login/login.component').then(
+        (m) => m.LoginComponent
+      ),
+  },
 ];
