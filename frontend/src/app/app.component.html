@@ -3,12 +3,16 @@
     <mat-card-content>
       <nav class="navigation">
         <h1 class="app-title">InsumoPlus</h1>
-        <div class="nav-links">
+        <div class="nav-links" *ngIf="!hideNavLinks">
           <a mat-button routerLink="/product-entry" routerLinkActive="active">
             <mat-icon>inventory</mat-icon>
             Entrada de Produtos
           </a>
-          <a mat-button routerLink="/user-registration" routerLinkActive="active">
+          <a
+            mat-button
+            routerLink="/user-registration"
+            routerLinkActive="active"
+          >
             <mat-icon>people</mat-icon>
             Cadastro de Usuários
           </a>
@@ -16,5 +20,8 @@
       </nav>
     </mat-card-content>
   </mat-card>
-  <router-outlet></router-outlet>
+
+  <div class="content-wrapper">
+    <router-outlet></router-outlet>
+  </div>
 </div>
