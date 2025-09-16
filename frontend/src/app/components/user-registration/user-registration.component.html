@@ -1,16 +1,15 @@
 <div class="container">
   <mat-card class="form-card">
-    <mat-card-header>
-      <mat-card-title>Cadastro de Usuários</mat-card-title>
-      <mat-card-subtitle>Registrar usuários do sistema</mat-card-subtitle>
-    </mat-card-header>
-    
     <mat-card-content>
       <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
         <div class="form-row">
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Nome</mat-label>
-            <input matInput formControlName="nome" placeholder="Digite o nome completo">
+            <input
+              matInput
+              formControlName="nome"
+              placeholder="Digite o nome completo"
+            />
             <mat-error *ngIf="userForm.get('nome')?.hasError('required')">
               Nome é obrigatório
             </mat-error>
@@ -20,7 +19,12 @@
         <div class="form-row">
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Email</mat-label>
-            <input matInput type="email" formControlName="email" placeholder="usuario@exemplo.com">
+            <input
+              matInput
+              type="email"
+              formControlName="email"
+              placeholder="usuario@exemplo.com"
+            />
             <mat-error *ngIf="userForm.get('email')?.hasError('required')">
               Email é obrigatório
             </mat-error>
@@ -33,7 +37,12 @@
         <div class="form-row">
           <mat-form-field appearance="outline">
             <mat-label>Senha</mat-label>
-            <input matInput type="password" formControlName="password" placeholder="Mínimo 6 caracteres">
+            <input
+              matInput
+              type="password"
+              formControlName="password"
+              placeholder="Mínimo 6 caracteres"
+            />
             <mat-error *ngIf="userForm.get('password')?.hasError('required')">
               Senha é obrigatória
             </mat-error>
@@ -44,8 +53,13 @@
 
           <mat-form-field appearance="outline">
             <mat-label>CPF</mat-label>
-            <input matInput formControlName="cpf" (input)="formatCpf($event)" 
-                   placeholder="000.000.000-00" maxlength="14">
+            <input
+              matInput
+              formControlName="cpf"
+              (input)="formatCpf($event)"
+              placeholder="000.000.000-00"
+              maxlength="14"
+            />
             <mat-error *ngIf="userForm.get('cpf')?.hasError('required')">
               CPF é obrigatório
             </mat-error>
@@ -62,7 +76,12 @@
         </div>
 
         <div class="form-actions">
-          <button mat-raised-button color="primary" type="submit" [disabled]="!userForm.valid">
+          <button
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="!userForm.valid"
+          >
             <mat-icon>save</mat-icon>
             Salvar
           </button>
@@ -79,11 +98,15 @@
     <mat-card-header>
       <mat-card-title>Usuários Cadastrados</mat-card-title>
     </mat-card-header>
-    
+
     <mat-card-content>
       <mat-form-field appearance="outline" class="search-field">
         <mat-label>Pesquisar</mat-label>
-        <input matInput (keyup)="applyFilter($event)" placeholder="Digite para filtrar...">
+        <input
+          matInput
+          (keyup)="applyFilter($event)"
+          placeholder="Digite para filtrar..."
+        />
         <mat-icon matSuffix>search</mat-icon>
       </mat-form-field>
 
@@ -91,52 +114,60 @@
         <table mat-table [dataSource]="users" class="mat-elevation-z2">
           <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef>ID</th>
-            <td mat-cell *matCellDef="let user">{{user.id}}</td>
+            <td mat-cell *matCellDef="let user">{{ user.id }}</td>
           </ng-container>
 
           <ng-container matColumnDef="nome">
             <th mat-header-cell *matHeaderCellDef>Nome</th>
-            <td mat-cell *matCellDef="let user">{{user.nome}}</td>
+            <td mat-cell *matCellDef="let user">{{ user.nome }}</td>
           </ng-container>
 
           <ng-container matColumnDef="email">
             <th mat-header-cell *matHeaderCellDef>Email</th>
-            <td mat-cell *matCellDef="let user">{{user.email}}</td>
+            <td mat-cell *matCellDef="let user">{{ user.email }}</td>
           </ng-container>
 
           <ng-container matColumnDef="cpf">
             <th mat-header-cell *matHeaderCellDef>CPF</th>
-            <td mat-cell *matCellDef="let user">{{user.cpf}}</td>
+            <td mat-cell *matCellDef="let user">{{ user.cpf }}</td>
           </ng-container>
 
           <ng-container matColumnDef="sn_ativo">
             <th mat-header-cell *matHeaderCellDef>Status</th>
             <td mat-cell *matCellDef="let user">
               <mat-chip [color]="getStatusColor(user.sn_ativo)" selected>
-                {{getStatusText(user.sn_ativo)}}
+                {{ getStatusText(user.sn_ativo) }}
               </mat-chip>
             </td>
           </ng-container>
 
           <ng-container matColumnDef="created_at">
             <th mat-header-cell *matHeaderCellDef>Data Cadastro</th>
-            <td mat-cell *matCellDef="let user">{{user.created_at | date:'dd/MM/yyyy HH:mm'}}</td>
+            <td mat-cell *matCellDef="let user">
+              {{ user.created_at | date : "dd/MM/yyyy HH:mm" }}
+            </td>
           </ng-container>
 
           <ng-container matColumnDef="actions">
             <th mat-header-cell *matHeaderCellDef>Ações</th>
             <td mat-cell *matCellDef="let user">
-              <button mat-icon-button 
-                      [color]="user.sn_ativo ? 'warn' : 'primary'"
-                      (click)="toggleUserStatus(user)"
-                      [matTooltip]="user.sn_ativo ? 'Inativar usuário' : 'Ativar usuário'">
-                <mat-icon>{{user.sn_ativo ? 'person_off' : 'person'}}</mat-icon>
+              <button
+                mat-icon-button
+                [color]="user.sn_ativo ? 'warn' : 'primary'"
+                (click)="toggleUserStatus(user)"
+                [matTooltip]="
+                  user.sn_ativo ? 'Inativar usuário' : 'Ativar usuário'
+                "
+              >
+                <mat-icon>{{
+                  user.sn_ativo ? "person_off" : "person"
+                }}</mat-icon>
               </button>
             </td>
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
         </table>
       </div>
     </mat-card-content>
