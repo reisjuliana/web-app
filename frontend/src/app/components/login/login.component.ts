@@ -48,7 +48,7 @@ export class LoginComponent {
         this.loginSuccess = true;
         localStorage.setItem('accessToken', res.accessToken);
         console.log('chegou até aqui');
-        this.router.navigate(['/product-entry']);
+        this.router.navigate(['/dashboard']);
       },
       error: (err: any) => {
         console.error('Erro no login:', err);

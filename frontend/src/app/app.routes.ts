@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { ProductEntryComponent } from './components/product-entry/product-entry.component';
 import { UserRegistrationComponent } from './components/user-registration/user-registration.component';
 import { authGuard } from './guards/auth.guards';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -15,6 +16,10 @@ export const routes: Routes = [
     component: UserRegistrationComponent,
     canActivate: [authGuard],
   },
+  { path: 'dashboard', 
+    component: DashboardComponent,
+    canActivate: [authGuard],
+  },
   {
     path: 'login',
     loadComponent: () =>
@@ -22,5 +27,4 @@ export const routes: Routes = [
         (m) => m.LoginComponent
       ),
   },
-  { path: 'dashboard', loadComponent: () => import('./dashboard/dashboard.component').then(m => m.DashboardComponent) },
 ];
