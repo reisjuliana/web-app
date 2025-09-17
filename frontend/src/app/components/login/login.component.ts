@@ -22,7 +22,7 @@ import { LoginUserDTO } from '../../models/auth.model';
     MatFormFieldModule,
   ],
   templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss'], // CORRIGIDO
+  styleUrls: ['./login.component.scss'],
 })
 export class LoginComponent {
   user = {
@@ -33,12 +33,11 @@ export class LoginComponent {
   loginValid: boolean = true;
   loginSuccess: boolean = false;
   router = inject(Router);
-  // authService: any;
   constructor(private authService: AuthService) {}
 
   login() {
     const loginDTO: LoginUserDTO = {
-      email: this.user.email, // pode manter assim
+      email: this.user.email,
       password: this.user.password,
     };
 
@@ -48,7 +47,8 @@ export class LoginComponent {
         this.loginValid = true;
         this.loginSuccess = true;
         localStorage.setItem('accessToken', res.accessToken);
-        this.router.navigate(['/dashboard']);
+        console.log('chegou até aqui');
+        this.router.navigate(['/product-entry']);
       },
       error: (err: any) => {
         console.error('Erro no login:', err);

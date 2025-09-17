@@ -1,8 +1,11 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Router, NavigationEnd, RouterOutlet } from '@angular/router';
+import { RouterModule } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { CommonModule } from '@angular/common';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-root',
@@ -10,10 +13,23 @@ import { MatIconModule } from '@angular/material/icon';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   imports: [
-    RouterOutlet, // <router-outlet>
-    MatCardModule, MatButtonModule, MatIconModule // Material que usa no HTML
-  ], 
+    RouterOutlet,
+    MatCardModule,
+    MatButtonModule,
+    MatIconModule,
+    CommonModule,
+    RouterModule,
+  ],
 })
 export class AppComponent {
-  title = 'frontend';
+  hideNavLinks = false; // controla se os links aparecem
+
+  constructor(private router: Router) {
+    this.router.events
+      .pipe(filter((event) => event instanceof NavigationEnd))
+      .subscribe((event: NavigationEnd) => {
+        // esconder links apenas na rota /login
+        this.hideNavLinks = event.urlAfterRedirects === '/login';
+      });
+  }
 }

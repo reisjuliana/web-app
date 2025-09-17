@@ -1,27 +1,28 @@
 <div class="container">
   <mat-card class="form-card">
-    <mat-card-header>
-      <mat-card-title>Entrada de Produtos</mat-card-title>
-      <mat-card-subtitle>Registrar entradas de produtos no estoque</mat-card-subtitle>
-    </mat-card-header>
-    
     <mat-card-content>
       <form [formGroup]="entryForm" (ngSubmit)="onSubmit()">
-
         <!-- Linha 1: Produto -->
         <div class="form-row">
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>ID do Produto</mat-label>
-            <input matInput
-                   formControlName="productId"
-                   [matAutocomplete]="productAuto"
-                   placeholder="Digite ID ou nome" 
-                   (blur)="onProductIdBlur()">
-            <mat-autocomplete #productAuto="matAutocomplete"
-                              [displayWith]="displayProduct"
-                              (optionSelected)="onProductOptionSelected($event.option.value)">
-              <mat-option *ngFor="let product of filteredProducts | async" [value]="product.id">
-                {{product.id}} - {{product.name}}
+            <input
+              matInput
+              formControlName="productId"
+              [matAutocomplete]="productAuto"
+              placeholder="Digite ID ou nome"
+              (blur)="onProductIdBlur()"
+            />
+            <mat-autocomplete
+              #productAuto="matAutocomplete"
+              [displayWith]="displayProduct"
+              (optionSelected)="onProductOptionSelected($event.option.value)"
+            >
+              <mat-option
+                *ngFor="let product of filteredProducts | async"
+                [value]="product.id"
+              >
+                {{ product.id }} - {{ product.name }}
               </mat-option>
             </mat-autocomplete>
             <mat-error *ngIf="entryForm.get('productId')?.hasError('required')">
@@ -31,7 +32,11 @@
 
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Nome do Produto</mat-label>
-            <input matInput formControlName="productName" placeholder="Nome (pode digitar manualmente)">
+            <input
+              matInput
+              formControlName="productName"
+              placeholder="Nome (pode digitar manualmente)"
+            />
           </mat-form-field>
         </div>
 
@@ -39,26 +44,39 @@
         <div class="form-row">
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>ID do Fornecedor</mat-label>
-            <input matInput
-                   formControlName="supplierId"
-                   [matAutocomplete]="supplierAuto"
-                   placeholder="Digite ID ou nome"
-                   (blur)="onSupplierIdBlur()">
-            <mat-autocomplete #supplierAuto="matAutocomplete"
-                              [displayWith]="displaySupplier"
-                              (optionSelected)="onSupplierOptionSelected($event.option.value)">
-              <mat-option *ngFor="let supplier of filteredSuppliers | async" [value]="supplier.id">
-                {{supplier.id}} - {{supplier.name}}
+            <input
+              matInput
+              formControlName="supplierId"
+              [matAutocomplete]="supplierAuto"
+              placeholder="Digite ID ou nome"
+              (blur)="onSupplierIdBlur()"
+            />
+            <mat-autocomplete
+              #supplierAuto="matAutocomplete"
+              [displayWith]="displaySupplier"
+              (optionSelected)="onSupplierOptionSelected($event.option.value)"
+            >
+              <mat-option
+                *ngFor="let supplier of filteredSuppliers | async"
+                [value]="supplier.id"
+              >
+                {{ supplier.id }} - {{ supplier.name }}
               </mat-option>
             </mat-autocomplete>
-            <mat-error *ngIf="entryForm.get('supplierId')?.hasError('required')">
+            <mat-error
+              *ngIf="entryForm.get('supplierId')?.hasError('required')"
+            >
               ID do fornecedor é obrigatório
             </mat-error>
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Nome do Fornecedor</mat-label>
-            <input matInput formControlName="supplierName" placeholder="Nome do fornecedor (manual)">
+            <input
+              matInput
+              formControlName="supplierName"
+              placeholder="Nome do fornecedor (manual)"
+            />
           </mat-form-field>
         </div>
 
@@ -66,8 +84,15 @@
         <div class="form-row">
           <mat-form-field appearance="outline">
             <mat-label>Data da Entrada</mat-label>
-            <input matInput [matDatepicker]="picker" formControlName="entryDate">
-            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <input
+              matInput
+              [matDatepicker]="picker"
+              formControlName="entryDate"
+            />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="picker"
+            ></mat-datepicker-toggle>
             <mat-datepicker #picker></mat-datepicker>
             <mat-error *ngIf="entryForm.get('entryDate')?.hasError('required')">
               Data da entrada é obrigatória
@@ -76,7 +101,13 @@
 
           <mat-form-field appearance="outline">
             <mat-label>Quantidade</mat-label>
-            <input matInput type="number" formControlName="quantity" min="0.01" step="0.01">
+            <input
+              matInput
+              type="number"
+              formControlName="quantity"
+              min="0.01"
+              step="0.01"
+            />
             <mat-error *ngIf="entryForm.get('quantity')?.hasError('required')">
               Quantidade é obrigatória
             </mat-error>
@@ -90,7 +121,13 @@
         <div class="form-row">
           <mat-form-field appearance="outline">
             <mat-label>Valor Unitário</mat-label>
-            <input matInput type="number" formControlName="unitValue" min="0.01" step="0.01">
+            <input
+              matInput
+              type="number"
+              formControlName="unitValue"
+              min="0.01"
+              step="0.01"
+            />
             <span matPrefix>R$ </span>
             <mat-error *ngIf="entryForm.get('unitValue')?.hasError('required')">
               Valor unitário é obrigatório
@@ -102,7 +139,7 @@
 
           <mat-form-field appearance="outline">
             <mat-label>Valor Total</mat-label>
-            <input matInput formControlName="totalValue" readonly>
+            <input matInput formControlName="totalValue" readonly />
             <span matPrefix>R$ </span>
           </mat-form-field>
         </div>
@@ -111,8 +148,10 @@
         <div class="form-row">
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Número da Nota Fiscal</mat-label>
-            <input matInput formControlName="invoiceNumber">
-            <mat-error *ngIf="entryForm.get('invoiceNumber')?.hasError('required')">
+            <input matInput formControlName="invoiceNumber" />
+            <mat-error
+              *ngIf="entryForm.get('invoiceNumber')?.hasError('required')"
+            >
               Número da nota fiscal é obrigatório
             </mat-error>
           </mat-form-field>
@@ -122,13 +161,20 @@
         <div class="form-row">
           <mat-form-field appearance="outline">
             <mat-label>Lote</mat-label>
-            <input matInput formControlName="batch">
+            <input matInput formControlName="batch" />
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Data de Validade</mat-label>
-            <input matInput [matDatepicker]="expirationPicker" formControlName="expirationDate">
-            <mat-datepicker-toggle matSuffix [for]="expirationPicker"></mat-datepicker-toggle>
+            <input
+              matInput
+              [matDatepicker]="expirationPicker"
+              formControlName="expirationDate"
+            />
+            <mat-datepicker-toggle
+              matSuffix
+              [for]="expirationPicker"
+            ></mat-datepicker-toggle>
             <mat-datepicker #expirationPicker></mat-datepicker>
           </mat-form-field>
         </div>
@@ -137,7 +183,7 @@
         <div class="form-row">
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Categoria</mat-label>
-            <input matInput formControlName="category">
+            <input matInput formControlName="category" />
           </mat-form-field>
         </div>
 
@@ -145,7 +191,11 @@
         <div class="form-row">
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Observações</mat-label>
-            <textarea matInput formControlName="observations" rows="3"></textarea>
+            <textarea
+              matInput
+              formControlName="observations"
+              rows="3"
+            ></textarea>
           </mat-form-field>
         </div>
 
@@ -160,7 +210,6 @@
             Cancelar
           </button>
         </div>
-
       </form>
     </mat-card-content>
   </mat-card>
@@ -170,11 +219,15 @@
     <mat-card-header>
       <mat-card-title>Entradas Cadastradas</mat-card-title>
     </mat-card-header>
-    
+
     <mat-card-content>
       <mat-form-field appearance="outline" class="search-field">
         <mat-label>Pesquisar</mat-label>
-        <input matInput (keyup)="applyFilter($event)" placeholder="Digite para filtrar...">
+        <input
+          matInput
+          (keyup)="applyFilter($event)"
+          placeholder="Digite para filtrar..."
+        />
         <mat-icon matSuffix>search</mat-icon>
       </mat-form-field>
 
@@ -182,42 +235,48 @@
         <table mat-table [dataSource]="entries" class="mat-elevation-z2">
           <ng-container matColumnDef="id">
             <th mat-header-cell *matHeaderCellDef>ID</th>
-            <td mat-cell *matCellDef="let entry">{{entry.id}}</td>
+            <td mat-cell *matCellDef="let entry">{{ entry.id }}</td>
           </ng-container>
 
           <ng-container matColumnDef="productName">
             <th mat-header-cell *matHeaderCellDef>Produto</th>
-            <td mat-cell *matCellDef="let entry">{{entry.productName}}</td>
+            <td mat-cell *matCellDef="let entry">{{ entry.productName }}</td>
           </ng-container>
 
           <ng-container matColumnDef="supplierName">
             <th mat-header-cell *matHeaderCellDef>Fornecedor</th>
-            <td mat-cell *matCellDef="let entry">{{entry.supplierName}}</td>
+            <td mat-cell *matCellDef="let entry">{{ entry.supplierName }}</td>
           </ng-container>
 
           <ng-container matColumnDef="entryDate">
             <th mat-header-cell *matHeaderCellDef>Data</th>
-            <td mat-cell *matCellDef="let entry">{{entry.entryDate | date:'dd/MM/yyyy'}}</td>
+            <td mat-cell *matCellDef="let entry">
+              {{ entry.entryDate | date : "dd/MM/yyyy" }}
+            </td>
           </ng-container>
 
           <ng-container matColumnDef="quantity">
             <th mat-header-cell *matHeaderCellDef>Quantidade</th>
-            <td mat-cell *matCellDef="let entry">{{entry.quantity}}</td>
+            <td mat-cell *matCellDef="let entry">{{ entry.quantity }}</td>
           </ng-container>
 
           <ng-container matColumnDef="unitValue">
             <th mat-header-cell *matHeaderCellDef>Valor Unit.</th>
-            <td mat-cell *matCellDef="let entry">{{entry.unitValue | currency:'BRL'}}</td>
+            <td mat-cell *matCellDef="let entry">
+              {{ entry.unitValue | currency : "BRL" }}
+            </td>
           </ng-container>
 
           <ng-container matColumnDef="totalValue">
             <th mat-header-cell *matHeaderCellDef>Valor Total</th>
-            <td mat-cell *matCellDef="let entry">{{entry.totalValue | currency:'BRL'}}</td>
+            <td mat-cell *matCellDef="let entry">
+              {{ entry.totalValue | currency : "BRL" }}
+            </td>
           </ng-container>
 
           <ng-container matColumnDef="invoiceNumber">
             <th mat-header-cell *matHeaderCellDef>Nota Fiscal</th>
-            <td mat-cell *matCellDef="let entry">{{entry.invoiceNumber}}</td>
+            <td mat-cell *matCellDef="let entry">{{ entry.invoiceNumber }}</td>
           </ng-container>
 
           <ng-container matColumnDef="actions">
@@ -230,7 +289,7 @@
           </ng-container>
 
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
         </table>
       </div>
     </mat-card-content>

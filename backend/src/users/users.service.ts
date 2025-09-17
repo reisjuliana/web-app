@@ -37,8 +37,6 @@ export class UsersService {
     return toUserDTO(user);
   }
   async createUser(userDTO: UserCreateDTO): Promise<UserDTO> {
-    // console.log(userDTO);
-
     const { name, email, password } = userDTO;
 
     const userInDB = await this.usersRepository.findOne({
@@ -54,11 +52,7 @@ export class UsersService {
     user.email = email;
     user.password = password;
 
-    // MOCK
-    // this.users.push(user);
     user = await this.usersRepository.save(user);
-
-    // console.log(user);
 
     return toUserDTO(user);
   }
@@ -73,13 +67,6 @@ export class UsersService {
     user.email = email;
     user.password = password;
 
-    // MOCK
-    // for (let index = 0; index < users.length; index++) {
-    //     const element = users[index];
-    //     if (element.id === id) {
-    //         users[index] = user;
-    //     }
-    // }
     user = await this.usersRepository.save(user);
 
     return toUserDTO(user);
@@ -88,10 +75,10 @@ export class UsersService {
   async getAllUsers(): Promise<UserListDTO> {
     const list: UserListDTO = new UserListDTO();
 
-    // Busca todos os usuários do banco
+    // Busca os usuários do banco
     const result: UserEntity[] = await this.usersRepository.find();
 
-    // Converte cada UserEntity em UserDTO
+    // Converte UserEntity em UserDTO
     for (const user of result) {
       list.users.push(toUserDTO(user));
     }
@@ -111,16 +98,11 @@ export class UsersService {
     const user = await this.usersRepository.findOne({ where: { email } });
 
     if (!user) {
-      console.log('Usuário não encontrado para email:', email); // ajuste
+      // console.log('Usuário não encontrado para email:', email);
       throw new HttpException('User not found', HttpStatus.UNAUTHORIZED);
     }
 
-    console.log('Senha do usuário no DB (hash):', user.password); // ajuste
-    console.log('Senha fornecida pelo login:', password); // ajuste
-
-    // compare passwords
     const areEqual = await comparePasswords(user.password, password);
-    console.log('Resultado da comparação de senhas:', areEqual); // ajuste
 
     if (!areEqual) {
       throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
