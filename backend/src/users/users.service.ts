@@ -10,8 +10,6 @@ import { toUserDTO } from './mapper';
 import * as uuid from 'uuid';
 import { comparePasswords } from 'src/utils';
 
-// LIMPAR ARQUIVO DEPOIS
-
 @Injectable()
 export class UsersService {
   constructor(
@@ -24,7 +22,6 @@ export class UsersService {
   }
 
   async getUser(id: number): Promise<UserDTO> {
-    // Busca o usuário diretamente pelo id
     const user: UserEntity = await this.usersRepository.findOne({
       where: { id },
     });
@@ -33,15 +30,13 @@ export class UsersService {
       throw new HttpException(`User not found`, HttpStatus.BAD_REQUEST);
     }
 
-    // Converte para DTO
     return toUserDTO(user);
   }
+
   async createUser(userDTO: UserCreateDTO): Promise<UserDTO> {
     const { name, email, password, cpf } = userDTO;
 
-    const userInDB = await this.usersRepository.findOne({
-      where: { email },
-    });
+    const userInDB = await this.usersRepository.findOne({ where: { email } });
     if (userInDB) {
       throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
     }
@@ -51,7 +46,9 @@ export class UsersService {
     user.uid = uuid.v4();
     user.email = email;
     user.password = password;
-    user.cpf = cpf;
+
+    // PADRONIZA CPF: armazena apenas números
+    user.cpf = cpf.replace(/\D/g, '');
 
     user = await this.usersRepository.save(user);
 
@@ -64,10 +61,11 @@ export class UsersService {
     let user: UserEntity = new UserEntity();
     user.id = id;
     user.name = name;
-    // user.uid = uid;
     user.email = email;
     user.password = password;
-    user.cpf = cpf;
+
+    // PADRONIZA CPF
+    user.cpf = cpf.replace(/\D/g, '');
 
     user = await this.usersRepository.save(user);
 
@@ -76,11 +74,8 @@ export class UsersService {
 
   async getAllUsers(): Promise<UserListDTO> {
     const list: UserListDTO = new UserListDTO();
-
-    // Busca os usuários do banco
     const result: UserEntity[] = await this.usersRepository.find();
 
-    // Converte UserEntity em UserDTO
     for (const user of result) {
       list.users.push(toUserDTO(user));
     }
@@ -98,14 +93,11 @@ export class UsersService {
 
   async findByLogin({ email, password }: LoginUserDTO): Promise<UserDTO> {
     const user = await this.usersRepository.findOne({ where: { email } });
-
     if (!user) {
-      // console.log('Usuário não encontrado para email:', email);
       throw new HttpException('User not found', HttpStatus.UNAUTHORIZED);
     }
 
     const areEqual = await comparePasswords(user.password, password);
-
     if (!areEqual) {
       throw new HttpException('Invalid credentials', HttpStatus.UNAUTHORIZED);
     }
@@ -114,16 +106,10 @@ export class UsersService {
   }
 
   async findOne(options?: object): Promise<UserEntity> {
-    const user = await this.usersRepository.findOne(options);
-    // return toUserDto(user);
-    return user;
+    return await this.usersRepository.findOne(options);
   }
 
   async findByPayload({ uid }: any): Promise<UserDTO> {
-    return toUserDTO(
-      await this.findOne({
-        where: { uid },
-      }),
-    );
+    return toUserDTO(await this.findOne({ where: { uid } }));
   }
 }

@@ -5,89 +5,54 @@
         <div class="form-row">
           <mat-form-field appearance="outline" class="full-width">
             <mat-label>Nome</mat-label>
-            <input
-              matInput
-              formControlName="nome"
-              placeholder="Digite o nome completo"
-            />
-            <mat-error *ngIf="userForm.get('nome')?.hasError('required')">
-              Nome é obrigatório
-            </mat-error>
+            <input matInput formControlName="nome" />
+            <mat-error *ngIf="userForm.get('nome')?.hasError('required')"
+              >Nome é obrigatório</mat-error
+            >
+          </mat-form-field>
+
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Email</mat-label>
+            <input matInput formControlName="email" />
+            <mat-error *ngIf="userForm.get('email')?.hasError('required')"
+              >Email é obrigatório</mat-error
+            >
+            <mat-error *ngIf="userForm.get('email')?.hasError('email')"
+              >Email inválido</mat-error
+            >
           </mat-form-field>
         </div>
 
         <div class="form-row">
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Email</mat-label>
-            <input
-              matInput
-              type="email"
-              formControlName="email"
-              placeholder="usuario@exemplo.com"
-            />
-            <mat-error *ngIf="userForm.get('email')?.hasError('required')">
-              Email é obrigatório
-            </mat-error>
-            <mat-error *ngIf="userForm.get('email')?.hasError('email')">
-              Email deve ter um formato válido
-            </mat-error>
-          </mat-form-field>
-        </div>
-
-        <div class="form-row">
-          <mat-form-field appearance="outline">
             <mat-label>Senha</mat-label>
-            <input
-              matInput
-              type="password"
-              formControlName="password"
-              placeholder="Mínimo 6 caracteres"
-            />
-            <mat-error *ngIf="userForm.get('password')?.hasError('required')">
-              Senha é obrigatória
-            </mat-error>
-            <mat-error *ngIf="userForm.get('password')?.hasError('minlength')">
-              Senha deve ter no mínimo 6 caracteres
-            </mat-error>
+            <input matInput type="password" formControlName="password" />
+            <mat-error *ngIf="userForm.get('password')?.hasError('required')"
+              >Senha é obrigatória</mat-error
+            >
+            <mat-error *ngIf="userForm.get('password')?.hasError('minlength')"
+              >Mínimo 6 caracteres</mat-error
+            >
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" class="full-width">
             <mat-label>CPF</mat-label>
-            <input
-              matInput
-              formControlName="cpf"
-              (input)="formatCpf($event)"
-              placeholder="000.000.000-00"
-              maxlength="14"
-            />
-            <mat-error *ngIf="userForm.get('cpf')?.hasError('required')">
-              CPF é obrigatório
-            </mat-error>
-            <mat-error *ngIf="userForm.get('cpf')?.hasError('invalidCpf')">
-              CPF deve ter um formato válido
-            </mat-error>
+            <input matInput formControlName="cpf" (input)="formatCpf($event)" />
+            <mat-error *ngIf="userForm.get('cpf')?.hasError('required')"
+              >CPF é obrigatório</mat-error
+            >
+            <mat-error *ngIf="userForm.get('cpf')?.hasError('invalidCpf')"
+              >CPF inválido</mat-error
+            >
           </mat-form-field>
-        </div>
-
-        <div class="form-row">
-          <mat-checkbox formControlName="sn_ativo" color="primary">
-            Usuário Ativo
-          </mat-checkbox>
         </div>
 
         <div class="form-actions">
-          <button
-            mat-raised-button
-            color="primary"
-            type="submit"
-            [disabled]="!userForm.valid"
-          >
-            <mat-icon>save</mat-icon>
-            Salvar
+          <button mat-raised-button color="primary" type="submit">
+            <mat-icon>save</mat-icon> Salvar
           </button>
           <button mat-button type="button" (click)="onCancel()">
-            <mat-icon>cancel</mat-icon>
-            Cancelar
+            <mat-icon>cancel</mat-icon> Cancelar
           </button>
         </div>
       </form>
@@ -98,7 +63,6 @@
     <mat-card-header>
       <mat-card-title>Usuários Cadastrados</mat-card-title>
     </mat-card-header>
-
     <mat-card-content>
       <mat-form-field appearance="outline" class="search-field">
         <mat-label>Pesquisar</mat-label>
@@ -117,9 +81,9 @@
             <td mat-cell *matCellDef="let user">{{ user.id }}</td>
           </ng-container>
 
-          <ng-container matColumnDef="nome">
+          <ng-container matColumnDef="name">
             <th mat-header-cell *matHeaderCellDef>Nome</th>
-            <td mat-cell *matCellDef="let user">{{ user.nome }}</td>
+            <td mat-cell *matCellDef="let user">{{ user.name }}</td>
           </ng-container>
 
           <ng-container matColumnDef="email">

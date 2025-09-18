@@ -1,50 +1,33 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import type { Observable } from 'rxjs';
+import { Observable, map } from 'rxjs';
+import { environment } from '../environments/environment';
 import type { User } from '../models/user.model';
-import { map } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
-  private apiUrl = '/api';
+  private apiUrl = `${environment.apiUrl}/users`;
 
   constructor(private http: HttpClient) {}
 
+  // Retorna apenas o array de usuários
   getUsers(): Observable<User[]> {
     return this.http
-      .get<{ users: User[] }>(`${this.apiUrl}/users`)
+      .get<{ users: User[] }>(this.apiUrl)
       .pipe(map((response) => response.users));
   }
 
   createUser(user: User): Observable<User> {
-    return this.http.post<User>(`${this.apiUrl}/users`, user);
+    return this.http.post<User>(this.apiUrl, user);
   }
 
   updateUser(id: string, user: Partial<User>): Observable<User> {
-    return this.http.put<User>(`${this.apiUrl}/users/${id}`, user);
+    return this.http.put<User>(`${this.apiUrl}/${id}`, user);
   }
 
-  toggleUserStatus(id: string, active: boolean): Observable<User> {
-    return this.http.patch<User>(`${this.apiUrl}/users/${id}/status`, {
-      sn_ativo: active,
-    });
-  }
-
-  generateUserId(name: string): string {
-    const initials = name
-      .split(' ')
-      .map((word) => word.charAt(0))
-      .join('')
-      .toUpperCase();
-    const randomNum = Math.floor(Math.random() * 9999)
-      .toString()
-      .padStart(4, '0');
-    const combined = (initials + randomNum)
-      .split('')
-      .sort(() => Math.random() - 0.5)
-      .join('');
-    return combined.substring(0, 6);
+  deleteUser(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

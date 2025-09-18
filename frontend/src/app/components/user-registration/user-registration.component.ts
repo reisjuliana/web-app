@@ -41,16 +41,14 @@ import type { User } from '../../models/user.model';
 export class UserRegistrationComponent implements OnInit {
   userForm: FormGroup;
   users = new MatTableDataSource<User>();
-
-  displayedColumns: string[] = ['id', 'nome', 'email', 'cpf'];
+  displayedColumns: string[] = ['id', 'name', 'email', 'cpf'];
 
   constructor(private fb: FormBuilder, private userService: UserService) {
     this.userForm = this.fb.group({
-      nome: ['', Validators.required],
+      name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(6)]],
       cpf: ['', [Validators.required, this.cpfValidator]],
-      sn_ativo: [true],
     });
   }
 
@@ -59,51 +57,39 @@ export class UserRegistrationComponent implements OnInit {
   }
 
   private loadUsers() {
-    this.userService.getUsers().subscribe((users) => {
-      this.users.data = users;
+    this.userService.getUsers().subscribe({
+      next: (users) => (this.users.data = users),
+      error: (err) => console.error('Erro ao carregar usuários:', err),
     });
   }
 
   cpfValidator(control: any) {
     const cpf = control.value?.replace(/\D/g, '');
-    if (!cpf || cpf.length !== 11) {
+    if (!cpf || cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) {
       return { invalidCpf: true };
     }
-
-    // Basic CPF validation
-    if (/^(\d)\1{10}$/.test(cpf)) {
-      return { invalidCpf: true };
-    }
-
     return null;
   }
 
   formatCpf(event: any) {
     let value = event.target.value.replace(/\D/g, '');
-    value = value.replace(/(\d{3})(\d)/, '$1.$2');
-    value = value.replace(/(\d{3})(\d)/, '$1.$2');
-    value = value.replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    value = value
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
     event.target.value = value;
     this.userForm.patchValue({ cpf: value });
   }
 
   onSubmit() {
     if (this.userForm.valid) {
-      const formValue = this.userForm.value;
-      const user: User = {
-        ...formValue,
-        id: this.userService.generateUserId(formValue.nome),
-        activationDate: formValue.sn_ativo ? new Date() : undefined,
-      };
-
+      const user: User = this.userForm.value;
       this.userService.createUser(user).subscribe({
         next: () => {
           this.loadUsers();
           this.resetForm();
         },
-        error: (error) => {
-          console.error('Error creating user:', error);
-        },
+        error: (err) => console.error('Erro ao criar usuário:', err),
       });
     }
   }
@@ -114,19 +100,10 @@ export class UserRegistrationComponent implements OnInit {
 
   private resetForm() {
     this.userForm.reset();
-    this.userForm.patchValue({ sn_ativo: true });
   }
 
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.users.filter = filterValue.trim().toLowerCase();
-  }
-
-  getStatusText(active: boolean): string {
-    return active ? 'Ativo' : 'Inativo';
-  }
-
-  getStatusColor(active: boolean): string {
-    return active ? 'primary' : 'warn';
   }
 }

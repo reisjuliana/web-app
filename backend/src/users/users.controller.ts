@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { UserCreateDTO } from './dto/user-create.dto';
 import { UserDTO } from './dto/user.dto';
@@ -21,10 +21,10 @@ export class UsersController {
     return await this.userService.getOneUser(id);
   }
 
-  // @Post()
-  // async create(@Body() userCreateDTO: UserCreateDTO): Promise<UserDTO> {
-  //     return await this.userService.createUser(userCreateDTO);
-  // }
+  @Post()
+  async create(@Body() userCreateDTO: UserCreateDTO): Promise<UserDTO> {
+    return await this.userService.createUser(userCreateDTO);
+  }
 
   @Put(':id')
   // @UseGuards(AuthGuard())

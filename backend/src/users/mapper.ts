@@ -7,5 +7,10 @@ export function toUserDTO(entity: UserEntity): UserDTO {
   dto.uid = entity.uid;
   dto.name = entity.name;
   dto.email = entity.email;
+
+  // PADRONIZA CPF para enviar ao frontend: 12345678900 → 123.456.789-00
+  const cpf = entity.cpf.replace(/\D/g, '');
+  dto.cpf = cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, '$1.$2.$3-$4');
+
   return dto;
 }
