@@ -37,7 +37,7 @@ export class UsersService {
     return toUserDTO(user);
   }
   async createUser(userDTO: UserCreateDTO): Promise<UserDTO> {
-    const { name, email, password } = userDTO;
+    const { name, email, password, cpf } = userDTO;
 
     const userInDB = await this.usersRepository.findOne({
       where: { email },
@@ -51,6 +51,7 @@ export class UsersService {
     user.uid = uuid.v4();
     user.email = email;
     user.password = password;
+    user.cpf = cpf;
 
     user = await this.usersRepository.save(user);
 
@@ -58,7 +59,7 @@ export class UsersService {
   }
 
   async updateUser(id: number, userDTO: UserCreateDTO): Promise<UserDTO> {
-    const { name, email, password } = userDTO;
+    const { name, email, password, cpf } = userDTO;
 
     let user: UserEntity = new UserEntity();
     user.id = id;
@@ -66,6 +67,7 @@ export class UsersService {
     // user.uid = uid;
     user.email = email;
     user.password = password;
+    user.cpf = cpf;
 
     user = await this.usersRepository.save(user);
 

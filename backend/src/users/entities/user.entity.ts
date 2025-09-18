@@ -16,6 +16,9 @@ export class UserEntity {
   email: string;
 
   @Column()
+  cpf: string;
+
+  @Column()
   password: string;
 
   @BeforeInsert() async hashPassword() {
