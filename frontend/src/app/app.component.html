@@ -4,6 +4,10 @@
       <nav class="navigation">
         <h1 class="app-title">InsumoPlus</h1>
         <div class="nav-links" *ngIf="!hideNavLinks">
+          <a mat-button routerLink="/dashboard" routerLinkActive="active">
+            <mat-icon>inventory</mat-icon>
+            Dashboard
+          </a>
           <a mat-button routerLink="/product-entry" routerLinkActive="active">
             <mat-icon>inventory</mat-icon>
             Entrada de Produtos
