@@ -106,4 +106,12 @@ export class UserRegistrationComponent implements OnInit {
     const filterValue = (event.target as HTMLInputElement).value;
     this.users.filter = filterValue.trim().toLowerCase();
   }
+
+  formatCpfValue(cpf: string): string {
+    return cpf
+      .replace(/\D/g, '')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d)/, '$1.$2')
+      .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+  }
 }
