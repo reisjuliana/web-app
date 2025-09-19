@@ -1,4 +1,8 @@
 import { Component, AfterViewInit, ElementRef, ViewChild } from '@angular/core';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
+import { MatCardModule } from '@angular/material/card';
 import Chart from 'chart.js/auto';
 
 
@@ -6,6 +10,10 @@ import Chart from 'chart.js/auto';
   selector: 'app-dashboard',
   standalone: true,
   imports: [
+    MatToolbarModule,
+    MatSidenavModule,
+    MatListModule,
+    MatCardModule,
     // outros módulos necessários
   ],
   templateUrl: './dashboard.component.html',
