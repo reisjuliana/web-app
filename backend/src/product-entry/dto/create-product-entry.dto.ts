@@ -1,24 +1,14 @@
-import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsDateString } from 'class-validator';
 
 export class CreateProductEntryDto {
-  @IsString()
   @IsNotEmpty()
-  productId: string;
-
-  @IsString()
-  @IsNotEmpty()
-  productName: string;
-
-  @IsString()
-  @IsNotEmpty()
-  supplierId: string;
-
-  @IsString()
-  @IsNotEmpty()
-  supplierName: string;
+  productId: number;
 
   @IsNotEmpty()
-  entryDate: Date;
+  supplierId: number;
+
+  @IsDateString()
+  entryDate: string;
 
   @IsNumber()
   quantity: number;
@@ -29,7 +19,6 @@ export class CreateProductEntryDto {
   @IsNumber()
   totalValue: number;
 
-  @IsString()
   @IsNotEmpty()
   invoiceNumber: string;
 
@@ -37,7 +26,8 @@ export class CreateProductEntryDto {
   batch?: string;
 
   @IsOptional()
-  expirationDate?: Date;
+  @IsDateString()
+  expirationDate?: string;
 
   @IsOptional()
   category?: string;

@@ -4,43 +4,49 @@ import { ProductEntryService } from './product-entry.service';
 import { CreateProductEntryDto } from './dto/create-product-entry.dto';
 import { UpdateProductEntryDto } from './dto/update-product-entry.dto';
 
-@Controller('api')
+@Controller('product-entry')
 export class ProductEntryController {
   constructor(private readonly service: ProductEntryService) {}
 
-  @Get('entries')
+  // Entradas
+  @Get()
   findAll() {
-    return this.service.findAll();
+    const entries = this.service.findAll();
+    return { entries }; // agora retorna { entries: [...] }
   }
 
-  @Get('entries/:id')
+  @Get(':id')
   findOne(@Param('id') id: string) {
     return this.service.findOne(+id);
   }
 
-  @Post('entries')
+  @Post()
   create(@Body() dto: CreateProductEntryDto) {
-    return this.service.create(dto);
+    const entry = this.service.create(dto);
+    return entry;
   }
 
-  @Put('entries/:id')
+  @Put(':id')
   update(@Param('id') id: string, @Body() dto: UpdateProductEntryDto) {
     return this.service.update(+id, dto);
   }
 
-  @Delete('entries/:id')
+  @Delete(':id')
   remove(@Param('id') id: string) {
     return this.service.remove(+id);
   }
 
-  // Endpoints para frontend Angular
+  // Produtos
   @Get('products')
   findAllProducts() {
-    return this.service.findAllProducts();
+    const products = this.service.findAllProducts();
+    return { products }; // retorna { products: [...] }
   }
 
+  // Fornecedores
   @Get('suppliers')
   findAllSuppliers() {
-    return this.service.findAllSuppliers();
+    const suppliers = this.service.findAllSuppliers();
+    return { suppliers }; // retorna { suppliers: [...] }
   }
 }
