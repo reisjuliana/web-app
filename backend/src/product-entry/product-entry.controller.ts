@@ -1,28 +1,46 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+// src/product-entry/product-entry.controller.ts
+import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
 import { ProductEntryService } from './product-entry.service';
 import { CreateProductEntryDto } from './dto/create-product-entry.dto';
+import { UpdateProductEntryDto } from './dto/update-product-entry.dto';
 
-@Controller('product-entry')
+@Controller('api')
 export class ProductEntryController {
-  constructor(private readonly productEntryService: ProductEntryService) {}
+  constructor(private readonly service: ProductEntryService) {}
 
-  @Post()
-  create(@Body() createProductEntryDto: CreateProductEntryDto) {
-    return this.productEntryService.create(createProductEntryDto);
-  }
-
-  @Get()
+  @Get('entries')
   findAll() {
-    return this.productEntryService.findAll();
+    return this.service.findAll();
   }
 
-  @Get(':id')
+  @Get('entries/:id')
   findOne(@Param('id') id: string) {
-    return this.productEntryService.findOne(+id);
+    return this.service.findOne(+id);
   }
 
-  @Delete(':id')
+  @Post('entries')
+  create(@Body() dto: CreateProductEntryDto) {
+    return this.service.create(dto);
+  }
+
+  @Put('entries/:id')
+  update(@Param('id') id: string, @Body() dto: UpdateProductEntryDto) {
+    return this.service.update(+id, dto);
+  }
+
+  @Delete('entries/:id')
   remove(@Param('id') id: string) {
-    return this.productEntryService.remove(+id);
+    return this.service.remove(+id);
+  }
+
+  // Endpoints para frontend Angular
+  @Get('products')
+  findAllProducts() {
+    return this.service.findAllProducts();
+  }
+
+  @Get('suppliers')
+  findAllSuppliers() {
+    return this.service.findAllSuppliers();
   }
 }
