@@ -282,8 +282,16 @@ export class ProductEntryComponent implements OnInit {
 
   this.productEntryService.createEntry(payload).subscribe({
     next: (savedEntry) => {
-      console.log("Entrada salva com sucesso:", savedEntry);
-      this.loadEntries(); // atualiza tabela
+      // preenche os nomes para exibir na tabela
+      const entryWithNames = {
+        ...savedEntry,
+        productName: this.products.find(p => p.id === savedEntry.productId)?.name || savedEntry.productName,
+        supplierName: this.suppliers.find(s => s.id === savedEntry.supplierId)?.name || savedEntry.supplierName,
+      };
+
+      // adiciona no topo da tabela
+      this.entries.data = [entryWithNames, ...this.entries.data];
+
       this.resetForm();
     },
     error: (err) => {
