@@ -8,7 +8,10 @@ export class DashboardService {
   private apiUrl = `${environment.apiUrl}/dashboard`;
   constructor(private http: HttpClient) {}
   
-  getMetrics(): Observable<any> {
-    return this.http.get('/api/dashboard/metrics');
-  }
+  // private apiUrl = environment.apiUrl;
+
+getMetrics(): Observable<any> {
+  return this.http.get(`${this.apiUrl}/metrics`);
+}
+
 }
