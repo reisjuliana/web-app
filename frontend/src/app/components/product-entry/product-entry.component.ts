@@ -248,46 +248,51 @@ export class ProductEntryComponent implements OnInit {
   }
 
   onSubmit() {
-    console.log("onSubmit called - form valid:", this.entryForm.valid);
-    if (!this.entryForm.valid) {
-      console.warn("Form inválido. Erros por controle:");
-      Object.keys(this.entryForm.controls).forEach((key) => {
-        const c = this.entryForm.get(key);
-        if (c && c.invalid) {
-          console.warn(key, c.errors);
-        }
-      });
-      return;
-    }
+  console.log("onSubmit chamado - form válido:", this.entryForm.valid);
 
-    const formValue = this.entryForm.getRawValue();
-
-    // tenta resolver nomes a partir do banco, senão usa o que o usuário escreveu, senão fallback
-    const productFromDb = this.products.find((p) => p.id === formValue.productId);
-    const supplierFromDb = this.suppliers.find((s) => s.id === formValue.supplierId);
-
-    const entry: ProductEntry = {
-      ...formValue,
-      productName: formValue.productName || productFromDb?.name || "Produto (manual)",
-      supplierName: formValue.supplierName || supplierFromDb?.name || "Fornecedor (manual)",
-      id: this.productEntryService.generateEntryId(
-        formValue.productId || formValue.productName || "SEM-CODIGO",
-      ),
-    };
-
-    console.log("Criando entry:", entry);
-
-    this.productEntryService.createEntry(entry).subscribe({
-      next: (res) => {
-        console.log("createEntry success:", res);
-        this.loadEntries();
-        this.resetForm();
-      },
-      error: (error) => {
-        console.error("Error creating entry:", error);
-      },
+  if (!this.entryForm.valid) {
+    console.warn("Form inválido. Erros:");
+    Object.keys(this.entryForm.controls).forEach((key) => {
+      const c = this.entryForm.get(key);
+      if (c && c.invalid) {
+        console.warn(key, c.errors);
+      }
     });
+    return;
   }
+
+  const formValue = this.entryForm.getRawValue();
+
+  // monta payload conforme o DTO do backend
+  const payload = {
+    productId: formValue.productId,
+    supplierId: formValue.supplierId,
+    entryDate: formValue.entryDate,
+    quantity: formValue.quantity,
+    unitValue: formValue.unitValue,
+    totalValue: formValue.totalValue,
+    invoiceNumber: formValue.invoiceNumber,
+    batch: formValue.batch || undefined,
+    expirationDate: formValue.expirationDate || undefined,
+    category: formValue.category || undefined,
+    observations: formValue.observations || undefined,
+  };
+
+  console.log("Payload enviado ao backend:", payload);
+
+  this.productEntryService.createEntry(payload).subscribe({
+    next: (savedEntry) => {
+      console.log("Entrada salva com sucesso:", savedEntry);
+      this.loadEntries(); // atualiza tabela
+      this.resetForm();
+    },
+    error: (err) => {
+      console.error("Erro ao salvar entrada:", err);
+      alert("Erro ao salvar: " + (err.error?.message || "Verifique os dados"));
+    },
+  });
+}
+
 
   onCancel() {
     this.resetForm();

@@ -21,7 +21,7 @@ export class ProductEntryController {
   }
 
   @Post()
-  create(@Body() dto: CreateProductEntryDto) {
+  async create(@Body() dto: CreateProductEntryDto) {
     const entry = this.service.create(dto);
     return entry;
   }
@@ -37,16 +37,16 @@ export class ProductEntryController {
   }
 
   // Produtos
-  @Get('products')
-  findAllProducts() {
-    const products = this.service.findAllProducts();
-    return { products }; // retorna { products: [...] }
-  }
+ @Get('products')
+  async findAllProducts() {
+  const products = await this.service.findAllProducts();
+  return { products };
+}
 
   // Fornecedores
   @Get('suppliers')
-  findAllSuppliers() {
-    const suppliers = this.service.findAllSuppliers();
-    return { suppliers }; // retorna { suppliers: [...] }
-  }
+  async findAllSuppliers() {
+  const suppliers = await this.service.findAllSuppliers();
+  return { suppliers };
+}
 }
