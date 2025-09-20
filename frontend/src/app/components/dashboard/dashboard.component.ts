@@ -75,35 +75,35 @@ export class DashboardComponent implements AfterViewInit {
       }
     });
 
-    this.updateSub = interval(5000).subscribe(() => {
-      const novosDadosBar = Array.from({ length: 4 }, () => Math.floor(Math.random() * 100));
-      const novosDadosLine = Array.from({ length: 4 }, () => Math.floor(Math.random() * 100));
-      this.chart.data.datasets[0].data = novosDadosBar;
-      this.chart.update();
-      this.lineChart.data.datasets[0].data = novosDadosLine;
-      this.lineChart.update();
-    });
-
-    // // Atualiza os gráficos a cada 10 segundos (10000 ms)
-    // this.updateSub = interval(10000).subscribe(() => {
-    //   this.dashboardService.getMetrics().subscribe(data => {
-    //     // Atualiza os dados do gráfico de barras
-    //     this.chart.data.labels = data.labels;
-    //     this.chart.data.datasets[0].data = data.bar;
-    //     this.chart.update();
-
-
-    //     // Atualiza os dados do gráfico de linha
-    //     this.lineChart.data.labels = data.labels;
-    //     this.lineChart.data.datasets[0].data = data.line;
-    //     this.lineChart.update();
-    //   });
+    // this.updateSub = interval(5000).subscribe(() => {
+    //   const novosDadosBar = Array.from({ length: 4 }, () => Math.floor(Math.random() * 100));
+    //   const novosDadosLine = Array.from({ length: 4 }, () => Math.floor(Math.random() * 100));
+    //   this.chart.data.datasets[0].data = novosDadosBar;
+    //   this.chart.update();
+    //   this.lineChart.data.datasets[0].data = novosDadosLine;
+    //   this.lineChart.update();
     // });
 
-    // ngOnDestroy() {
-    // // Cancela a assinatura ao destruir o componente
-    //   this.updateSub?.unsubscribe();
-    // }
+    // Atualiza os gráficos a cada 10 segundos (10000 ms)
+    this.updateSub = interval(10000).subscribe(() => {
+      this.dashboardService.getMetrics().subscribe(data => {
+        // Atualiza os dados do gráfico de barras
+        this.chart.data.labels = data.labels;
+        this.chart.data.datasets[0].data = data.bar;
+        this.chart.update();
+
+
+        // Atualiza os dados do gráfico de linha
+        this.lineChart.data.labels = data.labels;
+        this.lineChart.data.datasets[0].data = data.line;
+        this.lineChart.update();
+      });
+    });
+
+    ngOnDestroy() {
+    // Cancela a assinatura ao destruir o componente
+      this.updateSub?.unsubscribe();
+    }
 
 
   }
