@@ -4,7 +4,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatCardModule } from '@angular/material/card';
 import Chart from 'chart.js/auto';
-
+import { Subscription, interval } from 'rxjs';
 
 @Component({
   selector: 'app-dashboard',
@@ -24,6 +24,7 @@ export class DashboardComponent implements AfterViewInit {
   @ViewChild('lineCanvas') lineCanvas!: ElementRef<HTMLCanvasElement>;
   chart: any;
   lineChart: any;
+  private updateSub?: Subscription;
 
   ngAfterViewInit() {
     this.chart = new Chart(this.barCanvas.nativeElement, {
@@ -73,6 +74,37 @@ export class DashboardComponent implements AfterViewInit {
         }
       }
     });
+
+    this.updateSub = interval(5000).subscribe(() => {
+      const novosDadosBar = Array.from({ length: 4 }, () => Math.floor(Math.random() * 100));
+      const novosDadosLine = Array.from({ length: 4 }, () => Math.floor(Math.random() * 100));
+      this.chart.data.datasets[0].data = novosDadosBar;
+      this.chart.update();
+      this.lineChart.data.datasets[0].data = novosDadosLine;
+      this.lineChart.update();
+    });
+
+    // // Atualiza os gráficos a cada 10 segundos (10000 ms)
+    // this.updateSub = interval(10000).subscribe(() => {
+    //   this.dashboardService.getMetrics().subscribe(data => {
+    //     // Atualiza os dados do gráfico de barras
+    //     this.chart.data.labels = data.labels;
+    //     this.chart.data.datasets[0].data = data.bar;
+    //     this.chart.update();
+
+
+    //     // Atualiza os dados do gráfico de linha
+    //     this.lineChart.data.labels = data.labels;
+    //     this.lineChart.data.datasets[0].data = data.line;
+    //     this.lineChart.update();
+    //   });
+    // });
+
+    // ngOnDestroy() {
+    // // Cancela a assinatura ao destruir o componente
+    //   this.updateSub?.unsubscribe();
+    // }
+
 
   }
 }
