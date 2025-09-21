@@ -1,5 +1,5 @@
 // src/product-entry/product-entry.controller.ts
-import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, ParseIntPipe } from '@nestjs/common';
 import { ProductEntryService } from './product-entry.service';
 import { CreateProductEntryDto } from './dto/create-product-entry.dto';
 import { UpdateProductEntryDto } from './dto/update-product-entry.dto';
@@ -16,9 +16,9 @@ export class ProductEntryController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.service.findOne(+id);
-  }
+  findOne(@Param('id', ParseIntPipe) id: number) {
+  return this.service.findOne(id);
+}
 
   @Post()
   async create(@Body() dto: CreateProductEntryDto) {

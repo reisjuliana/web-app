@@ -164,18 +164,18 @@ export class ProductEntryComponent implements OnInit {
   }
 
   onProductIdBlur() {
-  const productIdStr = this.entryForm.get("productId")?.value;
-  const productId = Number(productIdStr);
-  
-  if (!productId) return; // não digitou nada
-  const numericId = Number(productId);
-  if (isNaN(numericId)) {
+  const value = this.entryForm.get("productId")?.value;
+  const productIdNum = Number(value);
+
+  if (!value || isNaN(productIdNum) || productIdNum <= 0) {
     alert("ID do produto inválido");
     this.entryForm.patchValue({ productId: "", productName: "" });
     return;
   }
- // Verifica no backend
-  this.productEntryService.getProductByCode(productId).subscribe({
+
+  console.log("Buscando produto com id:", productIdNum);
+
+  this.productEntryService.getProductById(productIdNum).subscribe({
     next: (product: Product | null) => {
       if (product) {
         this.entryForm.patchValue({ productName: product.name });
@@ -184,7 +184,7 @@ export class ProductEntryComponent implements OnInit {
         alert("Produto não encontrado. Cadastre antes de dar entrada.");
       }
     },
-    error: (err) => {
+    error: (err: unknown) => {
       console.error("Erro ao buscar produto:", err);
       alert("Erro ao buscar produto. Tente novamente.");
     },
