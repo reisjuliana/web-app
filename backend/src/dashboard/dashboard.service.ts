@@ -2,13 +2,20 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Product } from '../products/entities/product.entity';
-
+import { Supplier } from '../suppliers/entities/supplier.entity';
+import { ProductEntry } from '../product-entry/entities/product-entry.entity';
 
 @Injectable()
 export class DashboardService {
   constructor(
+    @InjectRepository(ProductEntry)
+    private readonly productEntryRepository: Repository<ProductEntry>,
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
+    @InjectRepository(Supplier)
+    private readonly supplierRepository: Repository<Supplier>,
+
+    
   ) {}
 
   async getMetrics() {
@@ -42,4 +49,31 @@ export class DashboardService {
       daysToEnd
     };
   }
+
+   async getLastEntries() {
+    // Busca as 5 últimas entradas, incluindo produto e fornecedor
+    const entries = await this.productEntryRepository.find({
+      order: { entryDate: 'DESC' },
+      take: 5,
+      relations: ['product', 'supplier'],
+    });
+
+    // Mapeia para o formato desejado
+    return entries.map(e => ({
+      // entryDate: e.entryDate,
+      product: e.product?.name,
+      supplier: e.supplier?.name,
+      quantity: e.quantity,
+    }));
+  }
+
+   async getProductQuantities() {
+    const products = await this.productRepository.find();
+    return {
+      labels: products.map(p => p.name),
+      quantities: products.map(p => Number(p.stock_quantity) || 0)
+    };
+  }
+
+
 }

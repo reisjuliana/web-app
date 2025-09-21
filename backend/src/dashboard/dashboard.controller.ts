@@ -9,4 +9,15 @@ export class DashboardController {
   async getMetrics() {
     return await this.dashboardService.getMetrics();
   }
+
+  @Get('last-entries')
+  async getLastEntries() {
+    return await this.dashboardService.getLastEntries();
+  }
+
+  @Get('product-quantities')
+  async getProductQuantities() {
+    return await this.dashboardService.getProductQuantities();
+  }
+
 }

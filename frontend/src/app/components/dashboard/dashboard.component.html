@@ -14,19 +14,22 @@
           </mat-card-content>
         </mat-card>
         <mat-card class="metric-card">
-          <mat-card-title class="metric-title">Perdas de Material</mat-card-title>
+          <mat-card-title class="metric-title">Distribuição de Materiais</mat-card-title>
           <mat-card-content>
-            <h2>5%</h2>
-            <p>Últimos 30 dias</p>
-            <canvas #lineCanvas></canvas>
+            <canvas #pieCanvas></canvas>
           </mat-card-content>
         </mat-card>
         <mat-card class="metric-card">
-          <mat-card-title class="metric-title">Tempo Médio de Ciclo</mat-card-title>
+          <mat-card-title class="metric-title">Últimos Recebimentos</mat-card-title>
           <mat-card-content>
-            <h2>2.5 horas</h2>
-            <p>Últimos 30 dias</p>
-            <span style="color: #e83808;">-0.5 horas</span>
+            <ul>
+              <li *ngFor="let entry of lastEntries">
+                <!-- <strong>Data:</strong> {{ entry.entry_date | date:'shortDate' }}<br> -->
+                <strong>Fornecedor:</strong> {{ entry.supplier }}<br>
+                <strong>Produto:</strong> {{ entry.product }}<br>
+                <strong>Quantidade:</strong> {{ entry.quantity }}
+              </li>
+            </ul>
           </mat-card-content>
         </mat-card>
       </div>

@@ -23,17 +23,37 @@ import { DashboardService } from '../../services/dashboard.service';
 export class DashboardComponent implements AfterViewInit {
   constructor(private dashboardService: DashboardService) {}
   @ViewChild('barCanvas') barCanvas!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('lineCanvas') lineCanvas!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('pieCanvas') pieCanvas!: ElementRef<HTMLCanvasElement>;
+  pieChart: any;
   chart: any;
-  lineChart: any;
+  lastEntries: any[] = [];
+  timeRefresh: number = 5000;
   private updateSub?: Subscription;
 
   ngAfterViewInit() {
+    this.initBarChart();
+    this.initPieChart();
+
+    // Atualiza os gráficos a cada 10 segundos (10000 ms)
+    this.updateSub = interval(this.timeRefresh).subscribe(() => {
+      this.updateBarCharts();
+      this.updatePieChart();
+
+      this.dashboardService.getLastEntries().subscribe(entries => {
+        this.lastEntries = entries;
+      });
+
+
+    });
+  }
+
+  initBarChart() {
     this.chart = new Chart(this.barCanvas.nativeElement, {
       type: 'bar',
       data: {
         labels: [],
-        datasets: [ {
+        datasets: [
+          {
             label: 'Consumo Médio',
             data: [],
             backgroundColor: '#2b891f'
@@ -43,67 +63,54 @@ export class DashboardComponent implements AfterViewInit {
             data: [],
             backgroundColor: '#4f7096'
           }
-]
+        ]
       },
       options: {
         responsive: true,
         plugins: {
-          legend: {
-            display: true
-          }
+          legend: { display: true }
         },
         backgroundColor: '#f7ffee'
       }
     });
+  }
 
-    this.lineChart = new Chart(this.lineCanvas.nativeElement, {
-      type: 'line',
+  initPieChart() {
+    this.pieChart = new Chart(this.pieCanvas.nativeElement, {
+      type: 'pie',
       data: {
         labels: [],
         datasets: [{
-          label: 'Produção',
           data: [],
-          borderColor: '#2b891f',
-          backgroundColor: 'rgba(43,137,31,0.1)',
-          fill: true,
-          tension: 0.4 // suaviza a linha
+          backgroundColor: [
+            '#2b891f', '#4f7096', '#e83808', '#f7ffee', '#1976d2', '#ffb300', '#8e24aa'
+          ]
         }]
       },
       options: {
         responsive: true,
         plugins: {
-          legend: {
-            display: false // Esconde a legenda, se desejar
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: true
-          }
+          legend: { display: true }
         }
       }
     });
+  }
 
-    // Atualiza os gráficos a cada 10 segundos (10000 ms)
-    this.updateSub = interval(5000).subscribe(() => {
-      this.dashboardService.getMetrics().subscribe(data => {
-        // Atualiza os dados do gráfico de barras
-        this.chart.data.labels = data.labels;
-        this.chart.data.datasets[0].data = data.averageConsumption;
-        this.chart.data.datasets[1].data = data.stockQuantity;
-        this.chart.update();
-
-
-        // Atualiza os dados do gráfico de linha
-        this.lineChart.data.labels = data.labels;
-        this.lineChart.data.datasets[0].data = data.line;
-        this.lineChart.update();
-      });
+  updateBarCharts() {
+    this.dashboardService.getMetrics().subscribe(data => {
+      // Atualiza gráfico de barras
+      this.chart.data.labels = data.labels;
+      this.chart.data.datasets[0].data = data.averageConsumption;
+      this.chart.data.datasets[1].data = data.stockQuantity;
+      this.chart.update();
     });
+  }
 
-    // ngOnDestroy() {
-    // // Cancela a assinatura ao destruir o componente
-    //   this.updateSub?.unsubscribe();
-    // }
+  updatePieChart() {
+    this.dashboardService.getProductQuantities().subscribe(data => {
+      this.pieChart.data.labels = data.labels;
+      this.pieChart.data.datasets[0].data = data.quantities;
+      this.pieChart.update();
+    });
   }
 }
