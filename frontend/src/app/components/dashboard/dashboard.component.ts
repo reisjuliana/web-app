@@ -32,17 +32,24 @@ export class DashboardComponent implements AfterViewInit {
     this.chart = new Chart(this.barCanvas.nativeElement, {
       type: 'bar',
       data: {
-        labels: ['sem1', 'sem2', 'sem3', 'sem4'],
-        datasets: [{
-          data: [],
-          backgroundColor: '#2b891f'
-        }]
+        labels: [],
+        datasets: [ {
+            label: 'Consumo Médio',
+            data: [],
+            backgroundColor: '#2b891f'
+          },
+          {
+            label: 'Quantidade em Estoque',
+            data: [],
+            backgroundColor: '#4f7096'
+          }
+]
       },
       options: {
         responsive: true,
         plugins: {
           legend: {
-            display: false
+            display: true
           }
         },
         backgroundColor: '#f7ffee'
@@ -52,7 +59,7 @@ export class DashboardComponent implements AfterViewInit {
     this.lineChart = new Chart(this.lineCanvas.nativeElement, {
       type: 'line',
       data: {
-        labels: ['sem1', 'sem2', 'sem3', 'sem4'],
+        labels: [],
         datasets: [{
           label: 'Produção',
           data: [],
@@ -77,21 +84,13 @@ export class DashboardComponent implements AfterViewInit {
       }
     });
 
-    // this.updateSub = interval(5000).subscribe(() => {
-    //   const novosDadosBar = Array.from({ length: 4 }, () => Math.floor(Math.random() * 100));
-    //   const novosDadosLine = Array.from({ length: 4 }, () => Math.floor(Math.random() * 100));
-    //   this.chart.data.datasets[0].data = novosDadosBar;
-    //   this.chart.update();
-    //   this.lineChart.data.datasets[0].data = novosDadosLine;
-    //   this.lineChart.update();
-    // });
-
     // Atualiza os gráficos a cada 10 segundos (10000 ms)
     this.updateSub = interval(5000).subscribe(() => {
       this.dashboardService.getMetrics().subscribe(data => {
         // Atualiza os dados do gráfico de barras
         this.chart.data.labels = data.labels;
-        this.chart.data.datasets[0].data = data.bar;
+        this.chart.data.datasets[0].data = data.averageConsumption;
+        this.chart.data.datasets[1].data = data.stockQuantity;
         this.chart.update();
 
 
@@ -106,7 +105,5 @@ export class DashboardComponent implements AfterViewInit {
     // // Cancela a assinatura ao destruir o componente
     //   this.updateSub?.unsubscribe();
     // }
-
-
   }
 }

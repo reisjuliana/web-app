@@ -1,14 +1,23 @@
-// src/product-entry/entities/supplier.entity.ts
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, Unique, OneToMany } from 'typeorm';
 import { ProductEntry } from '../../product-entry/entities/product-entry.entity';
 
-@Entity('suppliers')
+@Entity({ name: 'suppliers' })
+@Unique(['cnpj'])
 export class Supplier {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ length: 120 })
   name: string;
+
+  @Column({ type: 'char', length: 14, nullable: true })
+  cnpj?: string;
+
+  @Column({ length: 30, nullable: true })
+  phone?: string;
+
+  @Column({ length: 120, nullable: true })
+  email?: string;
 
   @OneToMany(() => ProductEntry, (entry) => entry.supplier)
   entries: ProductEntry[];

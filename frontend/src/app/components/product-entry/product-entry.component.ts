@@ -193,21 +193,20 @@ export class ProductEntryComponent implements OnInit {
 
   onSupplierIdBlur() {
   const supplierId = this.entryForm.get("supplierId")?.value;
-
-  if (!supplierId) return;
   const numericId = Number(supplierId);
-  if (isNaN(numericId)) {
+
+  if (!supplierId || isNaN(numericId) || numericId <= 0) {
     alert("ID do fornecedor inválido");
     this.entryForm.patchValue({ supplierId: "", supplierName: "" });
     return;
   }
 
-  this.productEntryService.getSupplierById(supplierId).subscribe({
+  this.productEntryService.getSupplierById(numericId).subscribe({
     next: (supplier) => {
       if (supplier) {
         this.entryForm.patchValue({ supplierName: supplier.name });
       } else {
-        this.entryForm.patchValue({ supplierName: "", supplierId: "" });
+        this.entryForm.patchValue({ supplierId: "", supplierName: "" });
         alert("Fornecedor não encontrado.");
       }
     },
