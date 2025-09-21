@@ -15,21 +15,31 @@ export class DashboardService {
     // Busca todos os produtos
     const products = await this.productRepository.find();
 
-    // Extrai os valores desejados
-    const labels = products.map(p => p.name);
-    const averageConsumption = products.map(p => Number(p.average_consumption) || 0);
-    const stockQuantity = products.map(p => Number(p.stock_quantity) || 0);
+    // Calcula dias para acabar para cada produto
+    const productsWithDays = products
+      .map(p => ({
+        ...p,
+        daysToEnd: (p.average_consumption && p.average_consumption > 0)
+          ? Number(p.stock_quantity) / Number(p.average_consumption)
+          : Infinity // evita divisão por zero
+      }))
+      .filter(p => p.daysToEnd !== Infinity); // remove produtos sem consumo médio
 
-    // const bar = products.map(p => Number(p.average_consumption) || 0);
-    // const line = products.map(p => Number(p.stock_quantity) || 0);
-    // const labels = products.map(p => p.name);
+    // Ordena pelo menor tempo para acabar e pega os 4 primeiros
+    const soonestToEnd = productsWithDays
+      .sort((a, b) => a.daysToEnd - b.daysToEnd)
+      .slice(0, 4);
+
+    const labels = soonestToEnd.map(p => p.name);
+    const averageConsumption = soonestToEnd.map(p => Number(p.average_consumption) || 0);
+    const stockQuantity = soonestToEnd.map(p => Number(p.stock_quantity) || 0);
+    const daysToEnd = soonestToEnd.map(p => Number(p.daysToEnd.toFixed(2)));
 
     return {
       labels,
       averageConsumption,
-      stockQuantity
+      stockQuantity,
+      daysToEnd
     };
-
   }
-
 }
