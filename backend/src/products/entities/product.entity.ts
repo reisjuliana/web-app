@@ -22,6 +22,6 @@ export class Product {
   stock_quantity?: number;
 
   // Relação inversa com entradas
-  @OneToMany(() => ProductEntry, entry => entry.product)
+  @OneToMany(() => ProductEntry, (entry) => entry.product)
   entries: ProductEntry[];
 }
