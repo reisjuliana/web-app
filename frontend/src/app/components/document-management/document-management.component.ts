@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { DocumentService } from '../../services/document.service';
-import { Document } from '../../models/document.model';
-import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { CommonModule } from '@angular/common';
+import { ReactiveFormsModule, FormControl } from '@angular/forms';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+
+// Angular Material
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -10,14 +12,13 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
-import { MatTableModule } from '@angular/material/table';
-import { CommonModule, DatePipe } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
+
+// Service
+import { DocumentService } from '../../services/document.service';
 
 @Component({
   selector: 'app-document-management',
-  templateUrl: './document-management.component.html',
-  styleUrls: ['./document-management.component.scss'],
   standalone: true,
   imports: [
     CommonModule,
@@ -30,56 +31,59 @@ import { MatButtonModule } from '@angular/material/button';
     MatDatepickerModule,
     MatNativeDateModule,
     MatIconModule,
-    MatTableModule,
     MatButtonModule,
   ],
-  providers: [DatePipe],
+  templateUrl: './document-management.component.html',
+  styleUrls: ['./document-management.component.scss'],
 })
 export class DocumentManagementComponent implements OnInit {
-  documents: Document[] = [];
-  filteredDocuments: Document[] = [];
+  documents: any[] = [];
 
-  productIdFilter = new FormControl('');
-  productNameFilter = new FormControl('');
-  filenameFilter = new FormControl('');
   filetypeFilter = new FormControl('');
+  productIdFilter = new FormControl('');
   uploadDateFilter = new FormControl('');
-
-  productNames = ['Produto A', 'Produto B', 'Produto C']; // Exemplo, pode vir da API
-  filetypes = ['PDF', 'XML']; // Exemplo
 
   constructor(private documentService: DocumentService) {}
 
   ngOnInit(): void {
+    // carrega a lista inicial
     this.loadDocuments();
+
+    // escuta mudanças em todos os filtros
+    this.filetypeFilter.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe(() => this.loadDocuments());
+
+    this.productIdFilter.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe(() => this.loadDocuments());
+
+    this.uploadDateFilter.valueChanges
+      .pipe(debounceTime(300), distinctUntilChanged())
+      .subscribe(() => this.loadDocuments());
   }
 
   loadDocuments(): void {
     const filters: any = {};
 
-    if (this.productIdFilter.value)
-      filters.productId = this.productIdFilter.value;
-    if (this.productNameFilter.value)
-      filters.productName = this.productNameFilter.value;
-    if (this.filenameFilter.value) filters.filename = this.filenameFilter.value;
-    if (this.filetypeFilter.value) filters.filetype = this.filetypeFilter.value;
-    if (this.uploadDateFilter.value) {
-      const date = new Date(this.uploadDateFilter.value);
-      filters.uploadDate = date.toISOString().split('T')[0];
+    if (this.filetypeFilter.value) {
+      filters.file_type = this.filetypeFilter.value.trim().toLowerCase();
     }
 
-    this.documentService.getDocuments(filters).subscribe({
-      next: (docs) => {
-        this.documents = docs;
-        this.filteredDocuments = docs;
-      },
-      error: (err) => {
-        console.error('Erro ao buscar documentos:', err);
-      },
-    });
-  }
+    if (this.productIdFilter.value) {
+      filters.product_id = this.productIdFilter.value;
+    }
 
-  download(doc: Document): void {
-    this.documentService.downloadDocument(doc.id, doc.filename);
+    // uploadDate ainda não está implementado no backend
+    // mas já deixamos preparado para quando for suportado
+    // if (this.uploadDateFilter.value) {
+    //   filters.upload_date = this.uploadDateFilter.value
+    //     .toISOString()
+    //     .split('T')[0];
+    // }
+
+    this.documentService.getDocuments(filters).subscribe((data) => {
+      this.documents = data;
+    });
   }
 }

@@ -8,7 +8,7 @@ import { ProductsModule } from './products/products.module';
 import { ProductEntryModule } from './product-entry/product-entry.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { SupplierModule } from './suppliers/supplier.module';
-import { Supplier } from './suppliers/entities/supplier.entity';
+import { DocumentsModule } from './documents/documents.module';
 
 @Module({
   imports: [
@@ -28,6 +28,7 @@ import { Supplier } from './suppliers/entities/supplier.entity';
     ProductEntryModule,
     DashboardModule,
     SupplierModule,
+    DocumentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
