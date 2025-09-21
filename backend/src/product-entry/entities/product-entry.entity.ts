@@ -7,11 +7,11 @@ export class ProductEntry {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Product, product => product.entries, { eager: true })
+  @ManyToOne(() => Product, (product) => product.entries, { eager: true })
   @JoinColumn({ name: 'product_id' })
   product: Product;
 
-  @ManyToOne(() => Supplier, supplier => supplier.entries, { eager: true })
+  @ManyToOne(() => Supplier, (supplier) => supplier.entries, { eager: true })
   @JoinColumn({ name: 'supplier_id' })
   supplier: Supplier;
 

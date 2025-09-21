@@ -10,6 +10,6 @@ export class Supplier {
   @Column()
   name: string;
 
-  @OneToMany(() => ProductEntry, entry => entry.supplier)
+  @OneToMany(() => ProductEntry, (entry) => entry.supplier)
   entries: ProductEntry[];
 }
