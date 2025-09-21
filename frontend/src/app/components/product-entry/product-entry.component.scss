@@ -4,7 +4,8 @@
   margin: 0 auto;
 }
 
-.form-card, .table-card {
+.form-card,
+.table-card {
   margin-bottom: 24px;
 }
 
@@ -12,7 +13,7 @@
   display: flex;
   gap: 16px;
   margin-bottom: 16px;
-  
+
   @media (max-width: 768px) {
     flex-direction: column;
     gap: 8px;
@@ -32,10 +33,21 @@ mat-form-field {
   gap: 12px;
   justify-content: flex-end;
   margin-top: 24px;
-  
+
   @media (max-width: 768px) {
     justify-content: center;
   }
+}
+button {
+  // background-color: #1f801f !important;
+  &hover {
+    background-color: #51c84f !important;
+  }
+  color: rgb(205, 243, 202) !important;
+}
+mat-card-title {
+  color: #026e00;
+  font-weight: 500;
 }
 
 .search-field {
@@ -71,7 +83,7 @@ mat-card-subtitle {
 
   &:hover {
     background-color: #39a437; // verde mais claro
-    color: #fff;               // mantém contraste
+    color: #fff; // mantém contraste
   }
 
   &:disabled {
@@ -89,11 +101,11 @@ mat-card-subtitle {
   .container {
     padding: 12px;
   }
-  
+
   .form-row {
     flex-direction: column;
   }
-  
+
   .table-container {
     font-size: 14px;
   }
