@@ -47,11 +47,7 @@
 
 .metric-card {
   flex: 1 1 auto;
-  // margin: 0 0.5rem;
   background: var(--md-sys-color-surface-container-high, #fff);
-  // border-radius: 8px;
-  // box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  // text-align: center;
 
   min-width: 300px;
   min-height: 450px;
@@ -62,18 +58,6 @@
   height: 100%;
   width: 100%;
   padding: 0;
-
-
-  h2 {
-    margin: 0.5rem 0;
-    font-size: 2rem;
-    color: var(--md-sys-color-primary, #2b891f);
-  }
-
-  p {
-    margin: 0.25rem 0;
-    color: var(--md-sys-color-on-surface-variant, #4f7096);
-  }
 
   canvas {
     background: var(--md-sys-color-surface, #fff);
@@ -86,6 +70,21 @@
     margin: 0;
     display: block;
   }
+}
+
+.metric-list {
+  flex: 1 1 auto;
+  background: var(--md-sys-color-surface-container-high, #fff);
+
+  min-width: 300px;
+  max-height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: center;
+  height: 200px;
+  width: 100%;
+  padding: 0;
 }
 
 ::ng-deep .metric-title {

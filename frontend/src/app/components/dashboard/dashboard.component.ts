@@ -6,6 +6,7 @@ import { MatCardModule } from '@angular/material/card';
 import Chart from 'chart.js/auto';
 import { Subscription, interval } from 'rxjs';
 import { DashboardService } from '../../services/dashboard.service';
+import { NgFor } from '@angular/common';
 
 @Component({
   selector: 'app-dashboard',
@@ -15,6 +16,7 @@ import { DashboardService } from '../../services/dashboard.service';
     MatSidenavModule,
     MatListModule,
     MatCardModule,
+    NgFor,
     // outros módulos necessários
   ],
   templateUrl: './dashboard.component.html',
@@ -95,7 +97,7 @@ export class DashboardComponent implements AfterViewInit {
         datasets: [{
           data: [],
           backgroundColor: [
-            '#2b891f', '#4f7096', '#e83808', '#f7ffee', '#1976d2', '#ffb300', '#8e24aa'
+            '#2b891f', '#4f7096', '#e83808', '#b700ffff', '#1976d2', '#ffb300', '#8e24aa'
           ]
         }]
       },
