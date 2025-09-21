@@ -67,9 +67,9 @@ export class ProductEntryComponent implements OnInit {
   constructor(private fb: FormBuilder, private productEntryService: ProductEntryService) {
     this.entryForm = this.fb.group({
       productId: ["", Validators.required],
-      productName: [""], // não obrigatório (permite inserir manualmente)
+      productName: [""],
       supplierId: ["", Validators.required],
-      supplierName: [""], // não obrigatório
+      supplierName: [""],
       entryDate: [new Date(), Validators.required],
       quantity: [null, [Validators.required, Validators.min(0.01)]],
       unitValue: [null, [Validators.required, Validators.min(0.01)]],
@@ -81,7 +81,6 @@ export class ProductEntryComponent implements OnInit {
       category: [""],
     });
 
-    // observables de filtro (trata inputs string e objetos com segurança)
     this.filteredProducts = this.entryForm.get("productId")!.valueChanges.pipe(
       startWith(""),
       map((value) => this._filterProducts(value)),
@@ -96,32 +95,36 @@ export class ProductEntryComponent implements OnInit {
   ngOnInit() {
     this.loadData();
     this.setupFormSubscriptions();
+
+    // define filterPredicate para pesquisar em múltiplos campos
+    this.entries.filterPredicate = (data: ProductEntry, filter: string) => {
+      const search = filter.trim().toLowerCase();
+      return (
+        (data.productName || "").toLowerCase().includes(search) ||
+        (data.supplierName || "").toLowerCase().includes(search) ||
+        (data.invoiceNumber || "").toLowerCase().includes(search)
+      );
+    };
   }
 
   private loadData() {
-    this.productEntryService.getProducts().subscribe({
-      next: (products) => {
-        this.products = products || [];
-      },
-      error: (e) => {
-        console.error("Erro ao carregar produtos:", e);
-        this.products = [];
-      },
-    });
+  this.productEntryService.getEntries().subscribe({
+    next: (entries) => {
+      this.entries.data = entries || [];
+      console.log("Entradas carregadas:", this.entries.data); // debug
+    },
+    error: (e) => {
+      console.error("Erro ao carregar entradas", e);
+      this.entries.data = [];
+    },
+  });
 
-    this.productEntryService.getSuppliers().subscribe({
-      next: (suppliers) => {
-        this.suppliers = suppliers || [];
-      },
-      error: (e) => {
-        console.error("Erro ao carregar fornecedores:", e);
-        this.suppliers = [];
-      },
-    });
-
-    this.loadEntries();
-  }
-
+  // continua carregando produtos
+  this.productEntryService.getProducts().subscribe({
+    next: (products) => (this.products = products || []),
+    error: (e) => (this.products = []),
+  });
+}
   private loadEntries() {
     this.productEntryService.getEntries().subscribe({
       next: (entries) => (this.entries.data = entries || []),
@@ -130,111 +133,126 @@ export class ProductEntryComponent implements OnInit {
   }
 
   private setupFormSubscriptions() {
-    // recalcula total quando quantidade ou unitValue mudam
     this.entryForm.get("quantity")?.valueChanges.subscribe(() => this.calculateTotal());
     this.entryForm.get("unitValue")?.valueChanges.subscribe(() => this.calculateTotal());
 
-    // sempre que productId mudar tentamos preencher o nome (se achar no "banco")
-    this.entryForm.get("productId")?.valueChanges.subscribe((productId) => {
+    // Produto
+     this.entryForm.get("productId")?.valueChanges.subscribe((productId) => {
+    if (!productId) {
+      this.entryForm.patchValue({ productName: "" }, { emitEvent: false });
+      return;
+    }  
+      
       const product = this.products.find((p) => p.id === productId);
-      if (product) {
-        // só sobrescreve se for diferente (evita apagar edição manual)
-        if (this.entryForm.get("productName")?.value !== product.name) {
-          this.entryForm.patchValue({ productName: product.name }, { emitEvent: false });
-        }
-      } else {
-        // não sobrescrever caso o usuário já tenha digitado um nome manual
-      }
-    });
 
-    // supplier
+      if (product) {
+      // Produto encontrado localmente
+      this.entryForm.patchValue({ productName: product.name }, { emitEvent: false });
+    } else {
+      // Produto não encontrado na lista local, limpa o campo (a verificação final será no blur)
+      this.entryForm.patchValue({ productName: "" }, { emitEvent: false });
+    }
+  });
+
+  // Fornecedor
     this.entryForm.get("supplierId")?.valueChanges.subscribe((supplierId) => {
       const supplier = this.suppliers.find((s) => s.id === supplierId);
-      if (supplier) {
-        if (this.entryForm.get("supplierName")?.value !== supplier.name) {
-          this.entryForm.patchValue({ supplierName: supplier.name }, { emitEvent: false });
-        }
-      } else {
-        // manter nome manual caso já tenha sido digitado
+      if (supplier && this.entryForm.get("supplierName")?.value !== supplier.name) {
+        this.entryForm.patchValue({ supplierName: supplier.name }, { emitEvent: false });
       }
     });
   }
 
-  // tentativa de preencher ao perder o foco (útil quando usuário digita código e sai do campo)
   onProductIdBlur() {
-    const productId = this.entryForm.get("productId")?.value;
-    const product = this.products.find((p) => p.id === productId);
-    if (product) {
-      this.entryForm.patchValue({ productName: product.name }, { emitEvent: false });
-    }
+  const productIdStr = this.entryForm.get("productId")?.value;
+  const productId = Number(productIdStr);
+  
+  if (!productId) return; // não digitou nada
+  const numericId = Number(productId);
+  if (isNaN(numericId)) {
+    alert("ID do produto inválido");
+    this.entryForm.patchValue({ productId: "", productName: "" });
+    return;
   }
+ // Verifica no backend
+  this.productEntryService.getProductByCode(productId).subscribe({
+    next: (product: Product | null) => {
+      if (product) {
+        this.entryForm.patchValue({ productName: product.name });
+      } else {
+        this.entryForm.patchValue({ productName: "", productId: "" });
+        alert("Produto não encontrado. Cadastre antes de dar entrada.");
+      }
+    },
+    error: (err) => {
+      console.error("Erro ao buscar produto:", err);
+      alert("Erro ao buscar produto. Tente novamente.");
+    },
+  });
+}
 
   onSupplierIdBlur() {
-    const supplierId = this.entryForm.get("supplierId")?.value;
-    const supplier = this.suppliers.find((s) => s.id === supplierId);
-    if (supplier) {
-      this.entryForm.patchValue({ supplierName: supplier.name }, { emitEvent: false });
-    }
+  const supplierId = this.entryForm.get("supplierId")?.value;
+
+  if (!supplierId) return;
+  const numericId = Number(supplierId);
+  if (isNaN(numericId)) {
+    alert("ID do fornecedor inválido");
+    this.entryForm.patchValue({ supplierId: "", supplierName: "" });
+    return;
   }
 
-  // quando opção é selecionada pelo autocomplete (função ligada ao (optionSelected) no template)
+  this.productEntryService.getSupplierById(supplierId).subscribe({
+    next: (supplier) => {
+      if (supplier) {
+        this.entryForm.patchValue({ supplierName: supplier.name });
+      } else {
+        this.entryForm.patchValue({ supplierName: "", supplierId: "" });
+        alert("Fornecedor não encontrado.");
+      }
+    },
+    error: (err) => {
+      console.error("Erro ao buscar fornecedor:", err);
+      alert("Erro ao buscar fornecedor. Tente novamente.");
+    },
+  });
+}
+
   onProductOptionSelected(selectedValue: string) {
     const product = this.products.find((p) => p.id === selectedValue);
-    if (product) {
-      this.entryForm.patchValue({ productId: product.id, productName: product.name }, { emitEvent: false });
-    }
+    if (product) this.entryForm.patchValue({ productId: product.id, productName: product.name }, { emitEvent: false });
   }
 
   onSupplierOptionSelected(selectedValue: string) {
     const supplier = this.suppliers.find((s) => s.id === selectedValue);
-    if (supplier) {
-      this.entryForm.patchValue({ supplierId: supplier.id, supplierName: supplier.name }, { emitEvent: false });
-    }
+    if (supplier) this.entryForm.patchValue({ supplierId: supplier.id, supplierName: supplier.name }, { emitEvent: false });
   }
 
   private calculateTotal() {
     const q = parseFloat(this.entryForm.get("quantity")?.value) || 0;
     const v = parseFloat(this.entryForm.get("unitValue")?.value) || 0;
-    const total = q * v;
-    // atualiza control (mesmo desabilitado, patchValue funciona)
-    this.entryForm.patchValue({ totalValue: total.toFixed(2) }, { emitEvent: false });
+    this.entryForm.patchValue({ totalValue: (q * v).toFixed(2) }, { emitEvent: false });
   }
 
   private _filterProducts(value: string | Product | null): Product[] {
     const raw = value ?? "";
-    const filterValue =
-      typeof raw === "string"
-        ? raw.toLowerCase()
-        : (raw?.name || raw?.id || "").toLowerCase();
-    return this.products.filter(
-      (p) =>
-        (p.name || "").toLowerCase().includes(filterValue) ||
-        (p.id || "").toLowerCase().includes(filterValue),
-    );
+    const filterValue = typeof raw === "string" ? raw.toLowerCase() : (raw?.name || raw?.id || "").toLowerCase();
+    return this.products.filter(p => (p.name || "").toLowerCase().includes(filterValue) || (p.id || "").toLowerCase().includes(filterValue));
   }
 
   private _filterSuppliers(value: string | Supplier | null): Supplier[] {
     const raw = value ?? "";
-    const filterValue =
-      typeof raw === "string"
-        ? raw.toLowerCase()
-        : (raw?.name || raw?.id || "").toLowerCase();
-    return this.suppliers.filter(
-      (s) =>
-        (s.name || "").toLowerCase().includes(filterValue) ||
-        (s.id || "").toLowerCase().includes(filterValue),
-    );
+    const filterValue = typeof raw === "string" ? raw.toLowerCase() : (raw?.name || raw?.id || "").toLowerCase();
+    return this.suppliers.filter(s => (s.name || "").toLowerCase().includes(filterValue) || (s.id || "").toLowerCase().includes(filterValue));
   }
 
-  // displayWith resiliente: aceita string (id) ou objeto
   displayProduct(value: Product | string | null): string {
     if (!value) return "";
     if (typeof value === "string") {
       const p = this.products.find((x) => x.id === value);
       return p ? `${p.id} - ${p.name}` : value;
-    } else {
-      return `${value.id} - ${value.name}`;
     }
+    return `${value.id} - ${value.name}`;
   }
 
   displaySupplier(value: Supplier | string | null): string {
@@ -242,65 +260,41 @@ export class ProductEntryComponent implements OnInit {
     if (typeof value === "string") {
       const s = this.suppliers.find((x) => x.id === value);
       return s ? `${s.id} - ${s.name}` : value;
-    } else {
-      return `${value.id} - ${value.name}`;
     }
+    return `${value.id} - ${value.name}`;
   }
 
   onSubmit() {
-  console.log("onSubmit chamado - form válido:", this.entryForm.valid);
+    if (!this.entryForm.valid) return;
 
-  if (!this.entryForm.valid) {
-    console.warn("Form inválido. Erros:");
-    Object.keys(this.entryForm.controls).forEach((key) => {
-      const c = this.entryForm.get(key);
-      if (c && c.invalid) {
-        console.warn(key, c.errors);
-      }
+    const formValue = this.entryForm.getRawValue();
+    const payload = {
+      productId: formValue.productId,
+      supplierId: formValue.supplierId,
+      entryDate: formValue.entryDate,
+      quantity: formValue.quantity,
+      unitValue: formValue.unitValue,
+      totalValue: formValue.totalValue,
+      invoiceNumber: formValue.invoiceNumber,
+      batch: formValue.batch || undefined,
+      expirationDate: formValue.expirationDate || undefined,
+      category: formValue.category || undefined,
+      observations: formValue.observations || undefined,
+    };
+
+    this.productEntryService.createEntry(payload).subscribe({
+      next: (savedEntry) => {
+        const entryWithNames = {
+          ...savedEntry,
+          productName: this.products.find(p => p.id === savedEntry.productId)?.name || savedEntry.productName,
+          supplierName: this.suppliers.find(s => s.id === savedEntry.supplierId)?.name || savedEntry.supplierName,
+        };
+        this.entries.data = [entryWithNames, ...this.entries.data];
+        this.resetForm();
+      },
+      error: (err) => alert("Erro ao salvar: " + (err.error?.message || "Verifique os dados")),
     });
-    return;
   }
-
-  const formValue = this.entryForm.getRawValue();
-
-  // monta payload conforme o DTO do backend
-  const payload = {
-    productId: formValue.productId,
-    supplierId: formValue.supplierId,
-    entryDate: formValue.entryDate,
-    quantity: formValue.quantity,
-    unitValue: formValue.unitValue,
-    totalValue: formValue.totalValue,
-    invoiceNumber: formValue.invoiceNumber,
-    batch: formValue.batch || undefined,
-    expirationDate: formValue.expirationDate || undefined,
-    category: formValue.category || undefined,
-    observations: formValue.observations || undefined,
-  };
-
-  console.log("Payload enviado ao backend:", payload);
-
-  this.productEntryService.createEntry(payload).subscribe({
-    next: (savedEntry) => {
-      // preenche os nomes para exibir na tabela
-      const entryWithNames = {
-        ...savedEntry,
-        productName: this.products.find(p => p.id === savedEntry.productId)?.name || savedEntry.productName,
-        supplierName: this.suppliers.find(s => s.id === savedEntry.supplierId)?.name || savedEntry.supplierName,
-      };
-
-      // adiciona no topo da tabela
-      this.entries.data = [entryWithNames, ...this.entries.data];
-
-      this.resetForm();
-    },
-    error: (err) => {
-      console.error("Erro ao salvar entrada:", err);
-      alert("Erro ao salvar: " + (err.error?.message || "Verifique os dados"));
-    },
-  });
-}
-
 
   onCancel() {
     this.resetForm();
@@ -314,12 +308,8 @@ export class ProductEntryComponent implements OnInit {
   deleteEntry(entry: ProductEntry) {
     if (entry.id && confirm("Tem certeza que deseja deletar esta entrada?")) {
       this.productEntryService.deleteEntry(entry.id).subscribe({
-        next: () => {
-          this.loadEntries();
-        },
-        error: (error) => {
-          console.error("Error deleting entry:", error);
-        },
+        next: () => this.loadEntries(),
+        error: (error) => console.error("Error deleting entry:", error),
       });
     }
   }
@@ -327,11 +317,9 @@ export class ProductEntryComponent implements OnInit {
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.entries.filter = filterValue.trim().toLowerCase();
-  }
-
-  // utilitário para debug (pode remover depois)
-  debugForm() {
-    console.log("Form valid:", this.entryForm.valid);
-    console.log(this.entryForm);
-  }
+}
+    applyFilterByInput(value: string) {
+  this.entries.filter = value.trim().toLowerCase();
+  
+}
 }

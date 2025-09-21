@@ -8,6 +8,7 @@
             <mat-label>ID do Produto</mat-label>
             <input
               matInput
+              type="number"
               formControlName="productId"
               [matAutocomplete]="productAuto"
               placeholder="Digite ID ou nome"
@@ -46,6 +47,7 @@
             <mat-label>ID do Fornecedor</mat-label>
             <input
               matInput
+              type="number"
               formControlName="supplierId"
               [matAutocomplete]="supplierAuto"
               placeholder="Digite ID ou nome"
@@ -220,16 +222,21 @@
       <mat-card-title>Entradas Cadastradas</mat-card-title>
     </mat-card-header>
 
-    <mat-card-content>
-      <mat-form-field appearance="outline" class="search-field">
-        <mat-label>Pesquisar</mat-label>
-        <input
-          matInput
-          (keyup)="applyFilter($event)"
+  <mat-card-content>
+    <mat-form-field appearance="outline" class="search-field">
+    <mat-label>Pesquisar</mat-label>
+      <input
+         matInput
+         #filterInput
+         (keyup)="applyFilter($event)"
+         (keyup.enter)="applyFilterByInput(filterInput.value)"
           placeholder="Digite para filtrar..."
-        />
-        <mat-icon matSuffix>search</mat-icon>
-      </mat-form-field>
+       />
+      <button mat-icon-button matSuffix (click)="applyFilterByInput(filterInput.value)">
+      <mat-icon>search</mat-icon>
+      </button>
+   </mat-form-field>
+
 
       <div class="table-container">
         <table mat-table [dataSource]="entries" class="mat-elevation-z2">

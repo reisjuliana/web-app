@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
+import { ProductsModule } from './products/products.module';
 import { ProductEntryModule } from './product-entry/product-entry.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 
@@ -21,6 +22,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
     }),
     UsersModule,
     AuthModule,
+    ProductsModule,
     ProductEntryModule,
     DashboardModule
   ],

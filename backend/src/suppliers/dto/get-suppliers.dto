@@ -1,0 +1,6 @@
+import { IsInt } from 'class-validator';
+
+export class GetSupplierByCodeDto {
+  @IsInt()
+  code: number;
+}

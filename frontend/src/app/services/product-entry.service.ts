@@ -2,6 +2,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
+import { catchError } from 'rxjs/operators';
+import { of } from 'rxjs';
 import { environment } from '../environments/environment';
 import type { ProductEntry, Product, Supplier } from '../models/product-entry.model';
 
@@ -28,21 +30,33 @@ export class ProductEntryService {
     return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 
-  // Produtos
-  getProducts(): Observable<Product[]> {
-    return this.http
-      .get<{ products: Product[] }>(`${this.apiUrl}/products`)
-      .pipe(map(response => response.products));
-  }
+  /// Produtos
+getProducts(): Observable<Product[]> {
+  return this.http.get<Product[]>(`${this.apiUrl}/products`);
+}
 
-  // Fornecedores
-  getSuppliers(): Observable<Supplier[]> {
-    return this.http
-      .get<{ suppliers: Supplier[] }>(`${this.apiUrl}/suppliers`)
-      .pipe(map(response => response.suppliers));
+// Buscar produto direto pelo ID no backend
+getProductByCode(id: number): Observable<Product | null> {
+  const numericId = Number(id);
+  if (isNaN(numericId)) {
+    return of(null); // evita chamar backend com NaN
   }
+  return this.http.get<Product>(`${this.apiUrl}/products/${id}`).pipe(
+    catchError(() => of(null)) // retorna null se não encontrado ou erro
+  );
+}
 
-  // Geração de ID aleatório
+// Fornecedores
+getSupplierById(id: string | number): Observable<Supplier | null> {
+  const numericId = Number(id);
+  if (isNaN(numericId)) return of(null);
+
+  return this.http.get<Supplier>(`${this.apiUrl}/suppliers/${numericId}`).pipe(
+    catchError(() => of(null))
+  );
+}
+
+    // Geração de ID aleatório
   generateEntryId(productName: string): string {
     const initials = productName
       .split(' ')

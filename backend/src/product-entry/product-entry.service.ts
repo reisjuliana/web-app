@@ -3,8 +3,8 @@ import { Injectable, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProductEntry } from './entities/product-entry.entity';
-import { Product } from './entities/product.entity';
-import { Supplier } from './entities/supplier.entity';
+import { Product } from '../products/entities/product.entity';
+import { Supplier } from '../suppliers/entities/supplier.entity';
 import { CreateProductEntryDto } from './dto/create-product-entry.dto';
 import { UpdateProductEntryDto } from './dto/update-product-entry.dto';
 

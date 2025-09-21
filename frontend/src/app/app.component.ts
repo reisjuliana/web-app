@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
 import { CommonModule } from '@angular/common';
 import { filter } from 'rxjs/operators';
 
@@ -17,6 +18,7 @@ import { filter } from 'rxjs/operators';
     MatCardModule,
     MatButtonModule,
     MatIconModule,
+    MatInputModule,
     CommonModule,
     RouterModule,
   ],
