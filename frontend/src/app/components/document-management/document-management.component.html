@@ -1,50 +1,78 @@
-<div class="filters">
-  <!-- Filtro por tipo de arquivo -->
-  <mat-form-field appearance="fill">
-    <mat-label>Tipo de Arquivo</mat-label>
-    <mat-select
-      [formControl]="filetypeFilter"
-      (selectionChange)="loadDocuments()"
-    >
-      <mat-option value="">Todos</mat-option>
-      <mat-option value="pdf">PDF</mat-option>
-      <mat-option value="xml">XML</mat-option>
-    </mat-select>
-  </mat-form-field>
-
-  <!-- Filtro por ID do Produto -->
-  <mat-form-field appearance="fill">
-    <mat-label>ID do Produto</mat-label>
-    <input
-      matInput
-      type="text"
-      [formControl]="productIdFilter"
-      (keyup.enter)="loadDocuments()"
-    />
-  </mat-form-field>
-
-  <!-- Filtro por Data de Upload (ainda não suportado no backend) -->
-  <mat-form-field appearance="fill">
-    <mat-label>Data de Upload</mat-label>
-    <input
-      matInput
-      [matDatepicker]="picker"
-      [formControl]="uploadDateFilter"
-      (dateChange)="loadDocuments()"
-    />
-    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-    <mat-datepicker #picker></mat-datepicker>
-  </mat-form-field>
-</div>
-
-<!-- Lista de documentos -->
+<!-- Lista de documentos em tabela -->
 <div class="documents">
-  <mat-card *ngFor="let doc of documents" class="document-card">
-    <mat-card-title>{{ doc.file_name }}</mat-card-title>
+  <mat-card class="table-card">
+    <mat-card-header>
+      <mat-card-title>Documentos Cadastrados</mat-card-title>
+    </mat-card-header>
+    <div class="filters">
+      <!-- Filtro por tipo de arquivo -->
+      <mat-form-field appearance="fill">
+        <mat-label>Tipo de Arquivo</mat-label>
+        <mat-select
+          [formControl]="filetypeFilter"
+          (selectionChange)="loadDocuments()"
+        >
+          <mat-option value="">Todos</mat-option>
+          <mat-option value="pdf">PDF</mat-option>
+          <mat-option value="xml">XML</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <!-- Filtro por ID do Produto -->
+      <mat-form-field appearance="fill">
+        <mat-label>ID do Produto</mat-label>
+        <input
+          matInput
+          type="text"
+          [formControl]="productIdFilter"
+          (keyup.enter)="loadDocuments()"
+        />
+      </mat-form-field>
+
+      <!-- Filtro por Data de Upload (ainda não suportado no backend) -->
+      <mat-form-field appearance="fill">
+        <mat-label>Data de Upload</mat-label>
+        <input
+          matInput
+          [matDatepicker]="picker"
+          [formControl]="uploadDateFilter"
+          (dateChange)="loadDocuments()"
+        />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
     <mat-card-content>
-      <p><strong>Tipo:</strong> {{ doc.file_type }}</p>
-      <p><strong>Produto:</strong> {{ doc.product_id }}</p>
-      <p><strong>Upload:</strong> {{ doc.upload_date | date }}</p>
+      <div class="table-container">
+        <table mat-table [dataSource]="documents" class="mat-elevation-z2">
+          <!-- Nome do arquivo -->
+          <ng-container matColumnDef="filename">
+            <th mat-header-cell *matHeaderCellDef>Nome do Arquivo</th>
+            <td mat-cell *matCellDef="let doc">{{ doc.filename }}</td>
+          </ng-container>
+
+          <!-- Produto -->
+          <ng-container matColumnDef="product_id">
+            <th mat-header-cell *matHeaderCellDef>Produto</th>
+            <td mat-cell *matCellDef="let doc">{{ doc.product_id }}</td>
+          </ng-container>
+
+          <!-- Tipo de arquivo -->
+          <ng-container matColumnDef="file_type">
+            <th mat-header-cell *matHeaderCellDef>Tipo de Arquivo</th>
+            <td mat-cell *matCellDef="let doc">{{ doc.file_type }}</td>
+          </ng-container>
+
+          <!-- Upload -->
+          <ng-container matColumnDef="upload_date">
+            <th mat-header-cell *matHeaderCellDef>Upload</th>
+            <td mat-cell *matCellDef="let doc">{{ doc.upload_date | date }}</td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </div>
     </mat-card-content>
   </mat-card>
 </div>

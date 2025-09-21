@@ -13,6 +13,7 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
+import { MatTableModule } from '@angular/material/table';
 
 // Service
 import { DocumentService } from '../../services/document.service';
@@ -32,6 +33,7 @@ import { DocumentService } from '../../services/document.service';
     MatNativeDateModule,
     MatIconModule,
     MatButtonModule,
+    MatTableModule,
   ],
   templateUrl: './document-management.component.html',
   styleUrls: ['./document-management.component.scss'],
@@ -43,13 +45,19 @@ export class DocumentManagementComponent implements OnInit {
   productIdFilter = new FormControl('');
   uploadDateFilter = new FormControl('');
 
+  // Ordem das colunas ajustada: Nome do arquivo, Produto, Tipo de arquivo, Upload
+  displayedColumns: string[] = [
+    'filename',
+    'product_id',
+    'file_type',
+    'upload_date',
+  ];
+
   constructor(private documentService: DocumentService) {}
 
   ngOnInit(): void {
-    // carrega a lista inicial
     this.loadDocuments();
 
-    // escuta mudanças em todos os filtros
     this.filetypeFilter.valueChanges
       .pipe(debounceTime(300), distinctUntilChanged())
       .subscribe(() => this.loadDocuments());
@@ -74,8 +82,7 @@ export class DocumentManagementComponent implements OnInit {
       filters.product_id = this.productIdFilter.value;
     }
 
-    // uploadDate ainda não está implementado no backend
-    // mas já deixamos preparado para quando for suportado
+    // uploadDate ainda não implementado no backend
     // if (this.uploadDateFilter.value) {
     //   filters.upload_date = this.uploadDateFilter.value
     //     .toISOString()
@@ -85,5 +92,10 @@ export class DocumentManagementComponent implements OnInit {
     this.documentService.getDocuments(filters).subscribe((data) => {
       this.documents = data;
     });
+  }
+
+  formatDate(dateStr: string): string {
+    const date = new Date(dateStr);
+    return date.toLocaleDateString();
   }
 }

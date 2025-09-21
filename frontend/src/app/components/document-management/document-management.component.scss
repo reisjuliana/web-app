@@ -2,10 +2,11 @@
   display: flex;
   flex-wrap: wrap;
   gap: 16px;
-  margin-bottom: 16px;
+  margin: 16px;
 
   mat-form-field {
-    flex: 1 1 200px; // cada filtro ocupa no mínimo 200px e expande
+    flex: 1 1 auto;
+    min-width: 150px;
   }
 }
 
@@ -26,8 +27,13 @@ table {
   }
 }
 
+// Ajustes para telas menores
 @media (max-width: 768px) {
   .filters {
     flex-direction: column;
+
+    mat-form-field {
+      max-width: 100%;
+    }
   }
 }
