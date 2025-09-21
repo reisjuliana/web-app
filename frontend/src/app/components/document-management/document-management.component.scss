@@ -1,0 +1,33 @@
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 16px;
+
+  mat-form-field {
+    flex: 1 1 200px; // cada filtro ocupa no mínimo 200px e expande
+  }
+}
+
+table {
+  width: 100%;
+
+  th.mat-header-cell {
+    font-weight: 600;
+  }
+
+  td.mat-cell {
+    vertical-align: middle;
+  }
+
+  mat-icon {
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+}
+
+@media (max-width: 768px) {
+  .filters {
+    flex-direction: column;
+  }
+}

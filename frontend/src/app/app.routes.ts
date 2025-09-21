@@ -3,6 +3,7 @@ import { ProductEntryComponent } from './components/product-entry/product-entry.
 import { UserRegistrationComponent } from './components/user-registration/user-registration.component';
 import { authGuard } from './guards/auth.guards';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { DocumentManagementComponent } from './components/document-management/document-management.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -19,6 +20,11 @@ export const routes: Routes = [
   {
     path: 'dashboard',
     component: DashboardComponent,
+    canActivate: [authGuard],
+  },
+  {
+    path: 'documents',
+    component: DocumentManagementComponent,
     canActivate: [authGuard],
   },
   {
