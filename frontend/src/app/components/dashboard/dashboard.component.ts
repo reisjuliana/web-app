@@ -42,8 +42,6 @@ export class DashboardComponent implements AfterViewInit {
       this.dashboardService.getLastEntries().subscribe(entries => {
         this.lastEntries = entries;
       });
-
-
     });
   }
 
@@ -65,13 +63,33 @@ export class DashboardComponent implements AfterViewInit {
           }
         ]
       },
+      // options: {
+      //   responsive: true,
+      //   plugins: {
+      //     legend: { display: true }
+      //   },
+      //   backgroundColor: '#f7ffee'
+      // }
       options: {
         responsive: true,
         plugins: {
           legend: { display: true }
         },
-        backgroundColor: '#f7ffee'
+        backgroundColor: '#f7ffee',
+        scales: {
+          x: {
+            ticks: {
+              font: {
+                size: 10 // tamanho menor para os labels do eixo X
+              }
+            }
+          },
+          y: {
+            beginAtZero: true
+          }
+        }
       }
+
     });
   }
 
