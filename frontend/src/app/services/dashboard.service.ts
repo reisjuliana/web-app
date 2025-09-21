@@ -8,8 +8,6 @@ export class DashboardService {
   private apiUrl = `${environment.apiUrl}/dashboard`;
   constructor(private http: HttpClient) {}
   
-  // private apiUrl = environment.apiUrl;
-
 getMetrics(): Observable<any> {
   return this.http.get(`${this.apiUrl}/metrics`);
 }

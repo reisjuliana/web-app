@@ -1,12 +1,35 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { Product } from '../products/entities/product.entity';
+
 
 @Injectable()
 export class DashboardService {
-  getMetrics() {
+  constructor(
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>,
+  ) {}
+
+  async getMetrics() {
+    // Busca todos os produtos
+    const products = await this.productRepository.find();
+
+    // Extrai os valores desejados
+    const labels = products.map(p => p.name);
+    const averageConsumption = products.map(p => Number(p.average_consumption) || 0);
+    const stockQuantity = products.map(p => Number(p.stock_quantity) || 0);
+
+    // const bar = products.map(p => Number(p.average_consumption) || 0);
+    // const line = products.map(p => Number(p.stock_quantity) || 0);
+    // const labels = products.map(p => p.name);
+
     return {
-      bar: Array.from({ length: 4 }, () => Math.floor(Math.random() * 100)),
-      line: Array.from({ length: 4 }, () => Math.floor(Math.random() * 100)),
-      labels: ['sem1', 'sem2', 'sem3', 'sem4']
+      labels,
+      averageConsumption,
+      stockQuantity
     };
+
   }
+
 }
