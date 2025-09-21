@@ -18,7 +18,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
       password: '1234',
       database: 'insumoplus',
       entities: [__dirname + '/**/*.entity{.js,.ts}'],
-      synchronize: true,
+      synchronize: false,
     }),
     UsersModule,
     AuthModule,
