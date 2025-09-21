@@ -46,7 +46,7 @@ export class DocumentManagementComponent implements OnInit {
   uploadDateFilter = new FormControl('');
 
   productNames = ['Produto A', 'Produto B', 'Produto C']; // Exemplo, pode vir da API
-  filetypes = ['PDF', 'DOCX', 'XLSX']; // Exemplo
+  filetypes = ['PDF', 'XML']; // Exemplo
 
   constructor(private documentService: DocumentService) {}
 

@@ -20,7 +20,7 @@ import { Supplier } from './suppliers/entities/supplier.entity';
       password: '1234',
       database: 'insumoplus',
       entities: [__dirname + '/**/*.entity{.js,.ts}'],
-      synchronize: true,
+      synchronize: false,
     }),
     UsersModule,
     AuthModule,

@@ -1,7 +1,7 @@
-import { Entity, Column, PrimaryGeneratedColumn, Unique, OneToMany} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, Unique, OneToMany } from 'typeorm';
 import { ProductEntry } from '../../product-entry/entities/product-entry.entity';
 
-@Entity({ name: 'supplier' })
+@Entity({ name: 'suppliers' })
 @Unique(['cnpj'])
 export class Supplier {
   @PrimaryGeneratedColumn()
