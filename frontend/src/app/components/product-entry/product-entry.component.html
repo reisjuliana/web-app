@@ -222,21 +222,24 @@
       <mat-card-title>Entradas Cadastradas</mat-card-title>
     </mat-card-header>
 
-  <mat-card-content>
-    <mat-form-field appearance="outline" class="search-field">
-    <mat-label>Pesquisar</mat-label>
-      <input
-         matInput
-         #filterInput
-         (keyup)="applyFilter($event)"
-         (keyup.enter)="applyFilterByInput(filterInput.value)"
+    <mat-card-content>
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Pesquisar</mat-label>
+        <input
+          matInput
+          #filterInput
+          (keyup)="applyFilter($event)"
+          (keyup.enter)="applyFilterByInput(filterInput.value)"
           placeholder="Digite para filtrar..."
-       />
-      <button mat-icon-button matSuffix (click)="applyFilterByInput(filterInput.value)">
-      <mat-icon>search</mat-icon>
-      </button>
-   </mat-form-field>
-
+        />
+        <button
+          mat-icon-button
+          matSuffix
+          (click)="applyFilterByInput(filterInput.value)"
+        >
+          <mat-icon>search</mat-icon>
+        </button>
+      </mat-form-field>
 
       <div class="table-container">
         <table mat-table [dataSource]="entries" class="mat-elevation-z2">
