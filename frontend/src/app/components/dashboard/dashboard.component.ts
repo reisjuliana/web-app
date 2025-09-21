@@ -63,15 +63,9 @@ export class DashboardComponent implements AfterViewInit {
           }
         ]
       },
-      // options: {
-      //   responsive: true,
-      //   plugins: {
-      //     legend: { display: true }
-      //   },
-      //   backgroundColor: '#f7ffee'
-      // }
       options: {
         responsive: true,
+        maintainAspectRatio: false,
         plugins: {
           legend: { display: true }
         },

@@ -67,13 +67,6 @@ export class DashboardService {
     }));
   }
 
-  //  async getProductQuantities() {
-  //   const products = await this.productRepository.find();
-  //   return {
-  //     labels: products.map(p => p.name),
-  //     quantities: products.map(p => Number(p.stock_quantity) || 0)
-  //   };
-  // }
   async getProductQuantities() {
     const products = await this.productRepository.find();
 

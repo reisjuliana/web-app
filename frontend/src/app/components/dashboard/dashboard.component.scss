@@ -28,14 +28,14 @@
 
 .metric-card {
   flex: 1 1 300px;
-  margin: 0 0.5rem;
+  // margin: 0 0.5rem;
   background: var(--md-sys-color-surface-container-high, #fff);
-  border-radius: 8px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  text-align: center;
+  // border-radius: 8px;
+  // box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  // text-align: center;
 
   min-width: 300px;
-  min-height: 350px;
+  min-height: 450px;
   display: flex;
   flex-direction: column;
   align-items: center;
