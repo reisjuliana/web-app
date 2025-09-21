@@ -67,11 +67,34 @@ export class DashboardService {
     }));
   }
 
-   async getProductQuantities() {
+  //  async getProductQuantities() {
+  //   const products = await this.productRepository.find();
+  //   return {
+  //     labels: products.map(p => p.name),
+  //     quantities: products.map(p => Number(p.stock_quantity) || 0)
+  //   };
+  // }
+  async getProductQuantities() {
     const products = await this.productRepository.find();
+
+    // Ordena do maior para o menor estoque
+    const sorted = products.sort((a, b) => Number(b.stock_quantity) - Number(a.stock_quantity));
+
+    // Se houver mais de 5 produtos, agrupa os demais como "Outros"
+    const top5 = sorted.slice(0, 5);
+    const others = sorted.slice(5);
+
+    const labels = top5.map(p => p.name);
+    const quantities = top5.map(p => Number(p.stock_quantity) || 0);
+
+    if (others.length > 0) {
+      labels.push('Outros');
+      quantities.push(others.reduce((sum, p) => sum + (Number(p.stock_quantity) || 0), 0));
+    }
+
     return {
-      labels: products.map(p => p.name),
-      quantities: products.map(p => Number(p.stock_quantity) || 0)
+      labels,
+      quantities
     };
   }
 
