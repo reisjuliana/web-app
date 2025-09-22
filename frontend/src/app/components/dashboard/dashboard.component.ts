@@ -17,7 +17,6 @@ import { NgFor } from '@angular/common';
     MatListModule,
     MatCardModule,
     NgFor,
-    // outros módulos necessários
   ],
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.scss']
@@ -36,7 +35,12 @@ export class DashboardComponent implements AfterViewInit {
     this.initBarChart();
     this.initPieChart();
 
-    // Atualiza os gráficos a cada 10 segundos (10000 ms)
+    this.updateBarCharts();
+    this.updatePieChart();
+    this.dashboardService.getLastEntries().subscribe(entries => {
+      this.lastEntries = entries;
+    });
+
     this.updateSub = interval(this.timeRefresh).subscribe(() => {
       this.updateBarCharts();
       this.updatePieChart();
@@ -76,7 +80,7 @@ export class DashboardComponent implements AfterViewInit {
           x: {
             ticks: {
               font: {
-                size: 10 // tamanho menor para os labels do eixo X
+                size: 10 
               }
             }
           },
@@ -112,7 +116,6 @@ export class DashboardComponent implements AfterViewInit {
 
   updateBarCharts() {
     this.dashboardService.getMetrics().subscribe(data => {
-      // Atualiza gráfico de barras
       this.chart.data.labels = data.labels;
       this.chart.data.datasets[0].data = data.averageConsumption;
       this.chart.data.datasets[1].data = data.stockQuantity;

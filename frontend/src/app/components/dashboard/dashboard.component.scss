@@ -10,11 +10,11 @@
 }
 
 .dashboard-card {
-  //  background: var(--md-sys-color-surface-container, #380152);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   padding: 1.5rem;
   margin: 24px;
+  min-width: 1000px;
 }
 
 .dashboard-metrics {
@@ -22,34 +22,14 @@
   justify-content: center; 
   align-items: center;
   gap: 2rem;
-  // flex-wrap: wrap;
   margin-top: 2rem 0;
   margin-bottom: 2rem;
 }
 
-// .metric-list {
-//   flex: 1 1 auto;
-//   // margin: 0 0.5rem;
-//   background: var(--md-sys-color-surface-container-high, #fff);
-//   // border-radius: 8px;
-//   // box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-//   // text-align: center;
-
-//   min-width: 300px;
-//   min-height: 100px;
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
-//   justify-content: stretch;
-//   height: 100%;
-//   width: 100%;
-//   padding: 0;
-// }
-
 .metric-card {
   flex: 1 1 auto;
   background: var(--md-sys-color-surface-container-high, #fff);
-  min-width: 300px;
+  min-width: 450px;
   min-height: 450px;
   display: flex;
   flex-direction: column;
@@ -76,17 +56,26 @@
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  justify-content: center; // centraliza o gráfico verticalmente dentro do conteúdo
-  padding: 0 16px; // ajuste se necessário
+  justify-content: center; 
+  padding: 0 16px; 
 }
 
 .chart-wrapper {
-  flex: 1 1 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  max-width: 450px;
+  max-height: 450px;
   width: 100%;
   height: 100%;
+  margin: 0 auto;
+  display: block;
+}
+
+.metric-card .pie-canvas {
+  max-width: 325px;
+  max-height: 325px;
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  display: block;
 }
 
 .metric-list {
@@ -113,36 +102,6 @@
   align-self: flex-start;
 }
 
-.metric-card .pie-canvas {
-  max-width: 220px;
-  max-height: 220px;
-  width: 100%;
-  height: 100%;
-  margin: 0 auto;
-  display: block;
-}
-
-// .metric-list ul {
-//   width: 100%;
-//   padding: 0;
-//   margin: 0;
-//   list-style: none;
-// }
-
-// .metric-list li {
-//   display: flex;
-//   flex-direction: row;
-//   justify-content: flex-start;
-//   align-items: center;
-//   gap: 2rem; /* Espaço entre os campos, ajuste se quiser */
-//   padding: 8px 0;
-//   border-bottom: 1px solid #eee; /* Opcional: linha separadora */
-// }
-
-// .metric-list .entry-field {
-//   white-space: nowrap; /* Evita quebra de linha em cada campo */
-// }
-
 .metric-list-header {
   width: 100%;
   padding: 0;
@@ -157,8 +116,8 @@
   align-items: center;
   gap: 2rem;
   padding: 8px 0 4px 0;
-  border-bottom: 2px solid #bbb; /* Linha mais forte para o cabeçalho */
-  background: #f7f7f7;           /* Opcional: fundo diferente */
+  border-bottom: 2px solid #bbb; 
+  background: #f7f7f7;          
 }
 
 .metric-list ul {
@@ -193,6 +152,6 @@
 .metric-list-header .entry-field,
 .metric-list .entry-field {
   flex: 1 1 0;
-  min-width: 120px; /* ajuste conforme necessário */
+  min-width: 120px;
   text-align: left;
 }

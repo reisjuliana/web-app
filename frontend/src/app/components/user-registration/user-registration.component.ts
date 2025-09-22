@@ -99,7 +99,21 @@ export class UserRegistrationComponent implements OnInit {
   }
 
   private resetForm() {
-    this.userForm.reset();
+    this.userForm.reset({
+      name: '',
+      email: '',
+      password: '',
+      cpf: '',
+    });
+
+    // Marca o formulário como limpo e intocado
+    this.userForm.markAsPristine();
+    this.userForm.markAsUntouched();
+
+    // Limpa erros existentes para que mensagens desapareçam
+    Object.keys(this.userForm.controls).forEach((key) => {
+      this.userForm.get(key)?.setErrors(null);
+    });
   }
 
   applyFilter(event: Event) {
