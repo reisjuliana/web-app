@@ -36,6 +36,12 @@ export class DashboardComponent implements AfterViewInit {
     this.initBarChart();
     this.initPieChart();
 
+    this.updateBarCharts();
+    this.updatePieChart();
+    this.dashboardService.getLastEntries().subscribe(entries => {
+      this.lastEntries = entries;
+    });
+
     // Atualiza os gráficos a cada 10 segundos (10000 ms)
     this.updateSub = interval(this.timeRefresh).subscribe(() => {
       this.updateBarCharts();
