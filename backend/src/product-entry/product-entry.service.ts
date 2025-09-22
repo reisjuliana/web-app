@@ -68,7 +68,9 @@ export class ProductEntryService {
       query.andWhere('LOWER(entry.batch) LIKE :batch', { batch: `%${dto.batch.toLowerCase()}%` });
     }
 
-    const entries = await query.getMany();
+   const entries = await query
+  .orderBy('entry.id', 'DESC') // do mais recente para o mais antigo
+  .getMany();
 
     // Transformar para DTO de resposta, incluindo nomes
     return entries.map(entry => ({
