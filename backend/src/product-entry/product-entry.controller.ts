@@ -1,18 +1,19 @@
 // src/product-entry/product-entry.controller.ts
-import { Controller, Get, Post, Body, Param, Delete, Put, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, ParseIntPipe, Query } from '@nestjs/common';
 import { ProductEntryService } from './product-entry.service';
 import { CreateProductEntryDto } from './dto/create-product-entry.dto';
 import { UpdateProductEntryDto } from './dto/update-product-entry.dto';
+import { SearchProductEntryDto } from './dto/search-product-entry.dto';
 
 @Controller('product-entry')
 export class ProductEntryController {
   constructor(private readonly service: ProductEntryService) {}
 
   // Entradas
-  @Get()
-  findAll() {
-    const entries = this.service.findAll();
-    return { entries }; // agora retorna { entries: [...] }
+ @Get()
+  async findAll(@Query() searchDto: SearchProductEntryDto) {
+    const entries = await this.service.findAll(searchDto);
+    return { entries };
   }
 
   @Get(':id')

@@ -7,6 +7,7 @@ import { Product } from '../products/entities/product.entity';
 import { Supplier } from '../suppliers/entities/supplier.entity';
 import { CreateProductEntryDto } from './dto/create-product-entry.dto';
 import { UpdateProductEntryDto } from './dto/update-product-entry.dto';
+import { SearchProductEntryDto } from './dto/search-product-entry.dto';
 
 @Injectable()
 export class ProductEntryService {
@@ -22,8 +23,22 @@ export class ProductEntryService {
   ) {}
 
   // Retorna todas as entradas
-  findAll(): Promise<ProductEntry[]> {
-    return this.repo.find({ relations: ['product', 'supplier'] });
+  // Retorna todas as entradas ou filtradas
+  async findAll(searchDto?: SearchProductEntryDto): Promise<ProductEntry[]> {
+    const { search } = searchDto || {};
+    
+    if (!search) {
+      return this.repo.find({ relations: ['product', 'supplier'] });
+    }
+
+    return this.repo
+      .createQueryBuilder('entry')
+      .leftJoinAndSelect('entry.product', 'product')
+      .leftJoinAndSelect('entry.supplier', 'supplier')
+      .where('LOWER(product.name) LIKE :search', { search: `%${search.toLowerCase()}%` })
+      .orWhere('LOWER(supplier.name) LIKE :search', { search: `%${search.toLowerCase()}%` })
+      .orWhere('LOWER(entry.invoiceNumber) LIKE :search', { search: `%${search.toLowerCase()}%` })
+      .getMany();
   }
 
   // Retorna uma entrada pelo id
