@@ -62,12 +62,30 @@
 }
 
 .chart-wrapper {
-  flex: 1 1 auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  // flex: 1 1 auto;
+  // display: flex;
+  // align-items: column;
+  // justify-content: center;
+  // width: 100%;
+  // height: 100%;
+  // max-width: 325px;
+  // max-height: 325px;
+
+  max-width: 450px;
+  max-height: 450px;
   width: 100%;
   height: 100%;
+  margin: 0 auto;
+  display: block;
+}
+
+.metric-card .pie-canvas {
+  max-width: 325px;
+  max-height: 325px;
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  display: block;
 }
 
 .metric-list {
@@ -92,15 +110,6 @@
   display: flex;
   text-align: center;
   align-self: flex-start;
-}
-
-.metric-card .pie-canvas {
-  max-width: 325px;
-  max-height: 325px;
-  width: 100%;
-  height: 100%;
-  margin: 0 auto;
-  display: block;
 }
 
 .metric-list-header {
