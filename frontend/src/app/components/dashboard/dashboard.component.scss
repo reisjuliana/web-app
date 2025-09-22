@@ -15,6 +15,7 @@
   box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   padding: 1.5rem;
   margin: 24px;
+  min-width: 1000px;
 }
 
 .dashboard-metrics {
@@ -30,7 +31,7 @@
 .metric-card {
   flex: 1 1 auto;
   background: var(--md-sys-color-surface-container-high, #fff);
-  min-width: 300px;
+  min-width: 450px;
   min-height: 450px;
   display: flex;
   flex-direction: column;
