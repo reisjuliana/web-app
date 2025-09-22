@@ -58,7 +58,6 @@ export class DashboardService {
       relations: ['product', 'supplier'],
     });
 
-    // Mapeia para o formato desejado
     return entries.map(e => ({
       entryDate: e.entryDate,
       product: e.product?.name,

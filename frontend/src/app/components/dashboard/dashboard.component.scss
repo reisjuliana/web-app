@@ -10,7 +10,6 @@
 }
 
 .dashboard-card {
-  //  background: var(--md-sys-color-surface-container, #380152);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.06);
   padding: 1.5rem;
@@ -23,7 +22,6 @@
   justify-content: center; 
   align-items: center;
   gap: 2rem;
-  // flex-wrap: wrap;
   margin-top: 2rem 0;
   margin-bottom: 2rem;
 }
@@ -58,20 +56,11 @@
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  justify-content: center; // centraliza o gráfico verticalmente dentro do conteúdo
-  padding: 0 16px; // ajuste se necessário
+  justify-content: center; 
+  padding: 0 16px; 
 }
 
 .chart-wrapper {
-  // flex: 1 1 auto;
-  // display: flex;
-  // align-items: column;
-  // justify-content: center;
-  // width: 100%;
-  // height: 100%;
-  // max-width: 325px;
-  // max-height: 325px;
-
   max-width: 450px;
   max-height: 450px;
   width: 100%;
@@ -127,8 +116,8 @@
   align-items: center;
   gap: 2rem;
   padding: 8px 0 4px 0;
-  border-bottom: 2px solid #bbb; /* Linha mais forte para o cabeçalho */
-  background: #f7f7f7;           /* Opcional: fundo diferente */
+  border-bottom: 2px solid #bbb; 
+  background: #f7f7f7;          
 }
 
 .metric-list ul {
@@ -163,6 +152,6 @@
 .metric-list-header .entry-field,
 .metric-list .entry-field {
   flex: 1 1 0;
-  min-width: 120px; /* ajuste conforme necessário */
+  min-width: 120px;
   text-align: left;
 }
