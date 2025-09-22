@@ -1,6 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
 import { Product } from '../../products/entities/product.entity';
 import { Supplier } from '../../suppliers/entities/supplier.entity';
+import { UserEntity } from '../../users/entities/user.entity';
 
 @Entity('product_entries')
 export class ProductEntry {
@@ -41,4 +42,11 @@ export class ProductEntry {
 
   @Column({ nullable: true })
   observations?: string;
+
+  @ManyToOne(() => UserEntity, { nullable: true })
+  @JoinColumn({ name: 'user_id' })
+  user: UserEntity;
+
+  @Column({ type: 'bigint', name: 'document_id', nullable: true })
+  documentId: number;
 }

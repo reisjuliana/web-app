@@ -260,6 +260,7 @@ onSupplierOptionSelected(selectedValue: number) {
 
   displaySupplier(value: Supplier | string | null): string {
     if (!value) return "";
+    
     if (typeof value === "string") {
       const s = this.suppliers.find((x) => x.id === value);
       return s ? `${s.id} - ${s.name}` : value;

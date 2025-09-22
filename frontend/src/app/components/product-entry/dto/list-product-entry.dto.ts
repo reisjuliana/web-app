@@ -9,4 +9,5 @@ export interface ProductEntryListDto {
   invoiceNumber: string;
   batch?: string;
   category?: string;
+  
 }

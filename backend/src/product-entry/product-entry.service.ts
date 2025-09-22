@@ -9,6 +9,8 @@ import { CreateProductEntryDto } from './dto/create-product-entry.dto';
 import { UpdateProductEntryDto } from './dto/update-product-entry.dto';
 import { SearchProductEntryDto } from './dto/search-product-entry.dto';
 import { ProductEntryListDto } from './dto/list-product-entry.dto';
+import { DocumentEntity } from '../documents/entities/document.entity';
+import { UserEntity } from '../users/entities/user.entity';
 
 // DTO interno de retorno para frontend
 interface ProductEntryResponseDto {
@@ -115,6 +117,53 @@ export class ProductEntryService {
       observations: entry.observations,
     };
   }
+async createWithDocument(
+  dto: CreateProductEntryDto,
+  file: Express.Multer.File,
+  user: UserEntity
+): Promise<ProductEntryListDto> {
+  // Buscar produto e fornecedor
+  const product = await this.productRepo.findOneBy({ id: dto.productId });
+  const supplier = await this.supplierRepo.findOneBy({ id: dto.supplierId });
+
+  if (!product) throw new BadRequestException(`Produto com ID ${dto.productId} não encontrado`);
+  if (!supplier) throw new BadRequestException(`Fornecedor com ID ${dto.supplierId} não encontrado`);
+
+  // Criar documento (se houver)
+  let document: DocumentEntity | null = null;
+  if (file) {
+    document = this.repo.manager.create(DocumentEntity, {
+      filename: file.originalname,
+      file_content: file.buffer,
+      file_type: 'pdf', // ou dto.fileType se quiser parametrizar
+      product: product,
+      user: user,
+    });
+    await this.repo.manager.save(document);
+  }
+
+  // Criar a entrada de produto
+  const entry = this.repo.create({
+    product: product,
+    supplier: supplier,
+    entryDate: new Date(dto.entryDate),
+    quantity: dto.quantity,
+    unitValue: dto.unitValue,
+    totalValue: dto.totalValue,
+    invoiceNumber: dto.invoiceNumber,
+    batch: dto.batch,
+    expirationDate: dto.expirationDate ? new Date(dto.expirationDate) : null,
+    category: dto.category,
+    observations: dto.observations,
+    documentId: document?.id || null,
+    user: user,
+  });
+
+  const saved = await this.repo.save(entry);
+
+  // Retornar entrada completa com DTO
+  return this.findOne(saved.id);
+}
 
   // Cria uma entrada, vinculando produto e fornecedor
   async create(dto: CreateProductEntryDto): Promise<ProductEntryListDto> {

@@ -1,5 +1,7 @@
 import * as bcrypt from 'bcrypt';
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
+import { ProductEntry } from '../../product-entry/entities/product-entry.entity';
+import { DocumentEntity } from '../../documents/entities/document.entity';
 
 @Entity('users')
 export class UserEntity {
@@ -24,4 +26,12 @@ export class UserEntity {
   @BeforeInsert() async hashPassword() {
     this.password = await bcrypt.hash(this.password, 10);
   }
+
+   // Relacionamento com ProductEntry
+  @OneToMany(() => ProductEntry, (entry) => entry.user)
+  entries: ProductEntry[];
+
+  // Relacionamento com DocumentEntity
+  @OneToMany(() => DocumentEntity, (document) => document.user)
+  documents: DocumentEntity[];
 }
