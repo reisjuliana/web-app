@@ -52,6 +52,7 @@ export class ProductEntryComponent implements OnInit {
   suppliers: Supplier[] = [];
   filteredProducts!: Observable<Product[]>;
   filteredSuppliers!: Observable<Supplier[]>;
+  uploadFile: {name:string; base64: string} | null = null;
 
   displayedColumns: string[] = [
     "id",
@@ -359,5 +360,23 @@ onSupplierOptionSelected(selectedValue: number) {
     applyFilterByInput(value: string) {
   this.entries.filter = value.trim().toLowerCase();
   
+}
+
+public onFileSelected(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  if (!input.files?.length) return;
+
+  const file = input.files[0];
+  if (file.type !== 'application/pdf') {
+    alert('Apenas arquivos PDF são permitidos!');
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    const base64 = (reader.result as string).split(',')[1];
+    this.uploadFile = { name: file.name, base64 };
+  };
+  reader.readAsDataURL(file);
 }
 }

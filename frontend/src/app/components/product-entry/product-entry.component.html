@@ -202,13 +202,32 @@
           </mat-form-field>
         </div>
 
-        <!-- Botões -->
-        <div class="form-actions">
-          <button mat-raised-button color="primary" type="submit">
+        <!-- Botão Upload PDF -->
+        <div class="form-actions" 
+        fxLayout="row" 
+        fxLayoutAlign="space-between center">
+         <button mat-raised-button color="primary" type="button"
+         (click)="fileInput.click()">
+
+           <mat-icon>upload_file</mat-icon>
+            Upload PDF
+            </button>
+            <input
+          #fileInput
+          type="file"
+          accept="application/pdf"
+          style="display: none"
+          (change)="onFileSelected($event)"
+  />
+        <!-- Botão Salvar -->
+            <button mat-raised-button color="primary" type="submit">
             <mat-icon>save</mat-icon>
             <span>Salvar</span>
           </button>
-          <button mat-button type="button" (click)="onCancel()">
+
+
+         <!-- Botão Cancelar -->
+         <button mat-flat-button color = "warn" type="button" (click)="onCancel()">
             <mat-icon>cancel</mat-icon>
             Cancelar
           </button>
@@ -216,6 +235,8 @@
       </form>
     </mat-card-content>
   </mat-card>
+
+  
 
   <!-- Tabela de entradas cadastradas -->
   <mat-card class="table-card">
