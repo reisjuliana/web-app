@@ -200,6 +200,7 @@ export class ProductEntryComponent implements OnInit {
     this.entryForm.patchValue({ supplierId: null, supplierName: "" });
     return;
   }
+  console.log("Buscando fornecedor com id:", supplierIdNum);
 
   this.productEntryService.getSupplierById(supplierIdNum).subscribe({
     next: (supplier) => {
@@ -289,26 +290,29 @@ onSupplierOptionSelected(selectedValue: number) {
  this.productEntryService.createEntry(payload).subscribe({
   next: (savedEntryRaw) => {
     const savedEntry: ProductEntryListDto = {
-      id: savedEntryRaw.id!,  // garantir que não é undefined
-      productName: this.products.find(p => Number(p.id) === savedEntryRaw.productId)?.name ?? '',
-      supplierName: this.suppliers.find(s => Number(s.id) === savedEntryRaw.supplierId)?.name ?? '',
+      id: savedEntryRaw.id!, // garantir que não é undefined
+      productName: savedEntryRaw.productName || '',
+      supplierName: savedEntryRaw.supplierName ||'',
       entryDate: new Date(savedEntryRaw.entryDate),
-      quantity: savedEntryRaw.quantity ?? 0,
-      unitValue: savedEntryRaw.unitValue ?? 0,
-      totalValue: savedEntryRaw.totalValue ?? 0,
-      invoiceNumber: savedEntryRaw.invoiceNumber ?? '',
-      batch: savedEntryRaw.batch ?? '',
-      category: savedEntryRaw.category ?? '',
+      quantity: savedEntryRaw.quantity || 0,
+      unitValue: savedEntryRaw.unitValue || 0,
+      totalValue: savedEntryRaw.totalValue || 0,
+      invoiceNumber: savedEntryRaw.invoiceNumber ||'',
+      batch: savedEntryRaw.batch || '',
+      category: savedEntryRaw.category || '',
+      
     };
 
+    // Adiciona no início da lista
     this.entries.data = [savedEntry, ...this.entries.data];
+
+    // Reseta formulário
     this.resetForm();
   },
   error: (err) =>
-    alert("Erro ao salvar: " + (err.error?.message || "Verifique os dados")),
+    alert('Erro ao salvar: ' + (err.error?.message || 'Verifique os dados')),
 });
   }
-
   onCancel() {
     this.resetForm();
   }

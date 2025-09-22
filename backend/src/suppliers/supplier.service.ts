@@ -34,4 +34,12 @@ export class SupplierService {
   async remove(id: number): Promise<void> {
     await this.repo.delete(id);
   }
+  // Buscar produto por código/id
+    async findByCode(code: number): Promise<Supplier> {
+      const supplier = await this.repo.findOne({ where: { id: code } });
+      if (!supplier) {
+        throw new NotFoundException(`Fornecedor com código ${code} não encontrado.`);
+      }
+      return supplier;
+    }
 }

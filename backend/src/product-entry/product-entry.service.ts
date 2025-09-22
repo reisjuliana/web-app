@@ -91,7 +91,9 @@ export class ProductEntryService {
 
   // Retorna uma entrada pelo id
   async findOne(id: number): Promise<ProductEntryListDto> {
-    const entry = await this.repo.findOne({ where: { id }, relations: ['product', 'supplier'] });
+    const entry = await this.repo.findOne({ 
+      where: { id }, 
+      relations: ['product', 'supplier'] });
     if (!entry) return null;
 
     return {
@@ -136,6 +138,14 @@ export class ProductEntryService {
 
     const saved = await this.repo.save(entry);
 
+    // Faz um reload da entrada com relations para garantir que supplier e product estejam completos
+  const fullEntry = await this.repo.findOne({
+    where: { id: saved.id },
+    relations: ['product', 'supplier'],
+  });
+
+  if (!fullEntry) throw new BadRequestException('Erro ao buscar a entrada salva');
+  
     return {
       id: saved.id,
       productId: product.id,
