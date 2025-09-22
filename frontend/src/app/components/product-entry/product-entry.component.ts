@@ -57,7 +57,7 @@ export class ProductEntryComponent implements OnInit {
   filteredProducts!: Observable<Product[]>;
   filteredSuppliers!: Observable<Supplier[]>;
   uploadFile: { name: string; base64: string } | null = null;
-
+  selectedDocumentId: number | null = null;
   displayedColumns: string[] = [
     'id',
     'productName',
@@ -244,17 +244,24 @@ export class ProductEntryComponent implements OnInit {
     });
   }
 
-  onProductOptionSelected(selectedValue: string) {
-    const product = this.products.find((p) => p.id === selectedValue);
-    if (product)
-      this.entryForm.patchValue(
-        { productId: product.id, productName: product.name },
-        { emitEvent: false }
-      );
+ onProductOptionSelected(selectedValue: string) {
+  if (!selectedValue) return;
+
+  // Converte string para number antes da comparação
+  const productId = Number(selectedValue);
+  if (isNaN(productId)) return;
+
+  const product = this.products.find((p) => p.id);
+  if (product) {
+    this.entryForm.patchValue(
+      { productId: product.id, productName: product.name },
+      { emitEvent: false }
+    );
   }
+}
 
   onSupplierOptionSelected(selectedValue: number) {
-    const supplier = this.suppliers.find((s) => Number(s.id) === selectedValue);
+    const supplier = this.suppliers.find((s) => Number(s.id) === Number(selectedValue));
     if (supplier) {
       this.entryForm.patchValue(
         { supplierId: supplier.id, supplierName: supplier.name },
@@ -277,7 +284,7 @@ export class ProductEntryComponent implements OnInit {
     const filterValue =
       typeof raw === 'string'
         ? raw.toLowerCase()
-        : (raw?.name || raw?.id || '').toLowerCase();
+    : (raw?.name || raw?.id?.toString() || '').toLowerCase();
     return this.products.filter(
       (p) =>
         (p.name || '').toLowerCase().includes(filterValue) ||
@@ -290,7 +297,7 @@ export class ProductEntryComponent implements OnInit {
     const filterValue =
       typeof raw === 'string'
         ? raw.toLowerCase()
-        : (raw?.name || raw?.id || '').toLowerCase();
+        : (raw?.name || raw?.id?.toString() || '').toLowerCase();
     return this.suppliers.filter(
       (s) =>
         (s.name || '').toLowerCase().includes(filterValue) ||
@@ -323,9 +330,10 @@ export class ProductEntryComponent implements OnInit {
     }
 
     const formValue = this.entryForm.getRawValue();
+    
     const payload = {
-      productId: formValue.productId,
-      supplierId: formValue.supplierId,
+      productId: Number(formValue.productId),
+      supplierId: Number(formValue.supplierId),
       entryDate: formValue.entryDate,
       quantity: formValue.quantity,
       unitValue: formValue.unitValue,
@@ -335,6 +343,7 @@ export class ProductEntryComponent implements OnInit {
       expirationDate: formValue.expirationDate || undefined,
       category: formValue.category || undefined,
       observations: formValue.observations || undefined,
+      documentId: Number(this.selectedDocumentId)
     };
 
     this.productEntryService.createEntry(payload).subscribe({
@@ -412,21 +421,24 @@ export class ProductEntryComponent implements OnInit {
     this.entries.filter = value.trim().toLowerCase();
   }
 
-  public onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (!input.files?.length) return;
+public onFileSelected(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  if (!input.files?.length) return;
 
-    const file = input.files[0];
-    if (file.type !== 'application/pdf') {
-      alert('Apenas arquivos PDF são permitidos!');
-      return;
-    }
-
-    const reader = new FileReader();
-    reader.onload = () => {
-      const base64 = (reader.result as string).split(',')[1];
-      this.uploadFile = { name: file.name, base64 };
-    };
-    reader.readAsDataURL(file);
+  const file = input.files[0];
+  if (file.type !== 'application/pdf') {
+    alert('Apenas arquivos PDF são permitidos!');
+    return;
   }
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    const base64 = (reader.result as string).split(',')[1];
+    this.uploadFile = { name: file.name, base64 };
+  };
+  reader.readAsDataURL(file);
+}
+removeFile() {
+  this.uploadFile = null;
+}
 }
