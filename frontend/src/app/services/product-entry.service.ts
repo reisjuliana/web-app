@@ -3,8 +3,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { environment } from '../environments/environment';
+import { environment } from '../../environments/environment';
 import type { ProductEntry, Product, Supplier } from '../models/product-entry.model';
+import { ProductEntryListDto } from '../components/product-entry/dto/list-product-entry.dto';
+
 
 @Injectable({
   providedIn: 'root',
@@ -13,14 +15,13 @@ export class ProductEntryService {
   private entryApiUrl = `${environment.apiUrl}/product-entry`;
   private productApiUrl = `${environment.apiUrl}/products`;
   private supplierApiUrl = `${environment.apiUrl}/suppliers`;
+  
 
   constructor(private http: HttpClient) {}
 
   // ================= ENTRADAS =================
-  getEntries(): Observable<ProductEntry[]> {
-    return this.http
-      .get<{ entries: ProductEntry[] }>(this.entryApiUrl)
-      .pipe(map(response => response.entries));
+  getEntries(): Observable<ProductEntryListDto[]> {
+    return this.http.get<ProductEntryListDto[]>(`${environment.apiUrl}/product-entry`);
   }
 
   createEntry(entry: ProductEntry): Observable<ProductEntry> {

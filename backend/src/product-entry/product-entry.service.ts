@@ -8,6 +8,7 @@ import { Supplier } from '../suppliers/entities/supplier.entity';
 import { CreateProductEntryDto } from './dto/create-product-entry.dto';
 import { UpdateProductEntryDto } from './dto/update-product-entry.dto';
 import { SearchProductEntryDto } from './dto/search-product-entry.dto';
+import { ProductEntryListDto } from './dto/list-product-entry.dto';
 
 // DTO interno de retorno para frontend
 interface ProductEntryResponseDto {
@@ -41,7 +42,7 @@ export class ProductEntryService {
   ) {}
 
   // Retorna todas as entradas ou filtradas (com nomes já incluídos)
-  async findAllFiltered(dto: SearchProductEntryDto): Promise<ProductEntryResponseDto[]> {
+  async findAllFiltered(dto: SearchProductEntryDto): Promise<ProductEntryListDto[]> {
     const query = this.repo
       .createQueryBuilder('entry')
       .leftJoinAndSelect('entry.product', 'product')
@@ -89,7 +90,7 @@ export class ProductEntryService {
   }
 
   // Retorna uma entrada pelo id
-  async findOne(id: number): Promise<ProductEntryResponseDto> {
+  async findOne(id: number): Promise<ProductEntryListDto> {
     const entry = await this.repo.findOne({ where: { id }, relations: ['product', 'supplier'] });
     if (!entry) return null;
 
@@ -112,7 +113,7 @@ export class ProductEntryService {
   }
 
   // Cria uma entrada, vinculando produto e fornecedor
-  async create(dto: CreateProductEntryDto): Promise<ProductEntryResponseDto> {
+  async create(dto: CreateProductEntryDto): Promise<ProductEntryListDto> {
     const product = await this.productRepo.findOneBy({ id: dto.productId });
     const supplier = await this.supplierRepo.findOneBy({ id: dto.supplierId });
 
@@ -154,7 +155,7 @@ export class ProductEntryService {
   }
 
   // Atualiza uma entrada
-  async update(id: number, dto: UpdateProductEntryDto): Promise<ProductEntryResponseDto> {
+  async update(id: number, dto: UpdateProductEntryDto): Promise<ProductEntryListDto> {
     await this.repo.update(id, dto);
     return this.findOne(id);
   }

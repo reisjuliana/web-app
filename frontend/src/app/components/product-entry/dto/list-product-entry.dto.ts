@@ -1,8 +1,6 @@
-export class ProductEntryListDto {
+export interface ProductEntryListDto {
   id: number;
-  productId: number;
   productName: string;
-  supplierId: number;
   supplierName: string;
   entryDate: Date;
   quantity: number;
@@ -10,7 +8,5 @@ export class ProductEntryListDto {
   totalValue: number;
   invoiceNumber: string;
   batch?: string;
-  expirationDate?: Date;
   category?: string;
-  observations?: string;
 }

@@ -7,16 +7,16 @@ import { SearchProductEntryDto } from './dto/search-product-entry.dto';
 import { ProductEntryResponseDto } from './dto/product-entry-response.dto';
 import { ProductEntryListDto } from './dto/list-product-entry.dto';
 
+
 @Controller('product-entry')
 export class ProductEntryController {
   constructor(private readonly service: ProductEntryService) {}
 
   // Entradas
-@Get()
-async findAll(@Query() dto: SearchProductEntryDto): Promise<{ entries: ProductEntryResponseDto[] }> {
-  const entries = await this.service.findAllFiltered(dto);
-  return { entries };
-}
+  @Get()
+  findAll(@Query() dto: SearchProductEntryDto): Promise<ProductEntryListDto[]> {
+    return this.service.findAllFiltered(dto);
+  }
 
 @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number): Promise<ProductEntryListDto> {

@@ -36,6 +36,7 @@
               matInput
               formControlName="productName"
               placeholder="Nome (pode digitar manualmente)"
+              readonly
             />
           </mat-form-field>
         </div>
@@ -50,6 +51,7 @@
               formControlName="supplierId"
               [matAutocomplete]="supplierAuto"
               placeholder="Digite ID ou nome"
+              (blur)="onSupplierIdBlur()"
             />
             <mat-autocomplete
               #supplierAuto="matAutocomplete"
@@ -75,7 +77,8 @@
             <input
               matInput
               formControlName="supplierName"
-              placeholder="Nome do fornecedor (manual)"
+              placeholder="Nome do fornecedor"
+              readonly
             />
           </mat-form-field>
         </div>

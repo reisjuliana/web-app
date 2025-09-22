@@ -21,6 +21,7 @@ import { MatTooltipModule } from "@angular/material/tooltip";
 import { ProductEntryService } from "../../services/product-entry.service";
 import type { ProductEntry, Product, Supplier } from "../../models/product-entry.model";
 import { type Observable, startWith, map } from "rxjs";
+import { ProductEntryListDto } from './dto/list-product-entry.dto';
 
 @Component({
   selector: "app-product-entry",
@@ -46,7 +47,7 @@ import { type Observable, startWith, map } from "rxjs";
 })
 export class ProductEntryComponent implements OnInit {
   entryForm: FormGroup;
-  entries = new MatTableDataSource<ProductEntry>([]);
+  entries = new MatTableDataSource<ProductEntryListDto>([]);
   products: Product[] = [];
   suppliers: Supplier[] = [];
   filteredProducts!: Observable<Product[]>;
@@ -63,6 +64,7 @@ export class ProductEntryComponent implements OnInit {
     "invoiceNumber",
     "actions",
   ];
+  dataSource = new MatTableDataSource<ProductEntryListDto>();
 
   constructor(private fb: FormBuilder, private productEntryService: ProductEntryService) {
     this.entryForm = this.fb.group({
@@ -97,7 +99,7 @@ export class ProductEntryComponent implements OnInit {
     this.setupFormSubscriptions();
 
     // define filterPredicate para pesquisar em múltiplos campos
-    this.entries.filterPredicate = (data: ProductEntry, filter: string) => {
+    this.entries.filterPredicate = (data: ProductEntryListDto, filter: string) => {
       const search = filter.trim().toLowerCase();
       return (
         (data.productName || "").toLowerCase().includes(search) ||
@@ -220,10 +222,12 @@ export class ProductEntryComponent implements OnInit {
     if (product) this.entryForm.patchValue({ productId: product.id, productName: product.name }, { emitEvent: false });
   }
 
-  onSupplierOptionSelected(selectedValue: string) {
-    const supplier = this.suppliers.find((s) => s.id === selectedValue);
-    if (supplier) this.entryForm.patchValue({ supplierId: supplier.id, supplierName: supplier.name }, { emitEvent: false });
+onSupplierOptionSelected(selectedValue: number) {
+  const supplier = this.suppliers.find(s => Number(s.id) === selectedValue);
+  if (supplier) {
+    this.entryForm.patchValue({ supplierId: supplier.id, supplierName: supplier.name }, { emitEvent: false });
   }
+}
 
   private calculateTotal() {
     const q = parseFloat(this.entryForm.get("quantity")?.value) || 0;
@@ -282,22 +286,22 @@ export class ProductEntryComponent implements OnInit {
       observations: formValue.observations || undefined,
     };
 
-    this.productEntryService.createEntry(payload).subscribe({
+ this.productEntryService.createEntry(payload).subscribe({
   next: (savedEntryRaw) => {
-    // forçar que os IDs sejam number
-    const savedEntry: ProductEntry = {
-      ...savedEntryRaw,
-      productId: Number(savedEntryRaw.productId),
-      supplierId: Number(savedEntryRaw.supplierId),
+    const savedEntry: ProductEntryListDto = {
+      id: savedEntryRaw.id!,  // garantir que não é undefined
+      productName: this.products.find(p => Number(p.id) === savedEntryRaw.productId)?.name ?? '',
+      supplierName: this.suppliers.find(s => Number(s.id) === savedEntryRaw.supplierId)?.name ?? '',
+      entryDate: new Date(savedEntryRaw.entryDate),
+      quantity: savedEntryRaw.quantity ?? 0,
+      unitValue: savedEntryRaw.unitValue ?? 0,
+      totalValue: savedEntryRaw.totalValue ?? 0,
+      invoiceNumber: savedEntryRaw.invoiceNumber ?? '',
+      batch: savedEntryRaw.batch ?? '',
+      category: savedEntryRaw.category ?? '',
     };
 
-    const entryWithNames = {
-      ...savedEntry,
-      productName: this.products.find(p => Number(p.id) === savedEntry.productId)?.name || savedEntry.productName,
-      supplierName: this.suppliers.find(s => Number(s.id) === savedEntry.supplierId)?.name || savedEntry.supplierName,
-    };
-
-    this.entries.data = [entryWithNames, ...this.entries.data];
+    this.entries.data = [savedEntry, ...this.entries.data];
     this.resetForm();
   },
   error: (err) =>
