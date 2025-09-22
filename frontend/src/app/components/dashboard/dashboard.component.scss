@@ -24,37 +24,37 @@
   gap: 2rem;
   // flex-wrap: wrap;
   margin-top: 2rem 0;
+  margin-bottom: 2rem;
 }
 
-.metric-list {
-  flex: 1 1 auto;
-  // margin: 0 0.5rem;
-  background: var(--md-sys-color-surface-container-high, #fff);
-  // border-radius: 8px;
-  // box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-  // text-align: center;
+// .metric-list {
+//   flex: 1 1 auto;
+//   // margin: 0 0.5rem;
+//   background: var(--md-sys-color-surface-container-high, #fff);
+//   // border-radius: 8px;
+//   // box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+//   // text-align: center;
 
-  min-width: 300px;
-  min-height: 100px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: stretch;
-  height: 100%;
-  width: 100%;
-  padding: 0;
-}
+//   min-width: 300px;
+//   min-height: 100px;
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   justify-content: stretch;
+//   height: 100%;
+//   width: 100%;
+//   padding: 0;
+// }
 
 .metric-card {
   flex: 1 1 auto;
   background: var(--md-sys-color-surface-container-high, #fff);
-
   min-width: 300px;
   min-height: 450px;
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  justify-content: center;
+  justify-content: flex-start;
   height: 100%;
   width: 100%;
   padding: 0;
@@ -72,17 +72,34 @@
   }
 }
 
+.metric-card mat-card-content {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center; // centraliza o gráfico verticalmente dentro do conteúdo
+  padding: 0 16px; // ajuste se necessário
+}
+
+.chart-wrapper {
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+}
+
 .metric-list {
   flex: 1 1 auto;
   background: var(--md-sys-color-surface-container-high, #fff);
 
   min-width: 300px;
-  max-height: 200px;
+  max-height: 300px;
   display: flex;
   flex-direction: column;
   align-items: stretch;
   justify-content: center;
-  height: 200px;
+  height: 300px;
   width: 100%;
   padding: 0;
 }
@@ -93,4 +110,89 @@
   justify-content: center;
   display: flex;
   text-align: center;
+  align-self: flex-start;
+}
+
+.metric-card .pie-canvas {
+  max-width: 220px;
+  max-height: 220px;
+  width: 100%;
+  height: 100%;
+  margin: 0 auto;
+  display: block;
+}
+
+// .metric-list ul {
+//   width: 100%;
+//   padding: 0;
+//   margin: 0;
+//   list-style: none;
+// }
+
+// .metric-list li {
+//   display: flex;
+//   flex-direction: row;
+//   justify-content: flex-start;
+//   align-items: center;
+//   gap: 2rem; /* Espaço entre os campos, ajuste se quiser */
+//   padding: 8px 0;
+//   border-bottom: 1px solid #eee; /* Opcional: linha separadora */
+// }
+
+// .metric-list .entry-field {
+//   white-space: nowrap; /* Evita quebra de linha em cada campo */
+// }
+
+.metric-list-header {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.metric-list-header li {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 2rem;
+  padding: 8px 0 4px 0;
+  border-bottom: 2px solid #bbb; /* Linha mais forte para o cabeçalho */
+  background: #f7f7f7;           /* Opcional: fundo diferente */
+}
+
+.metric-list ul {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.metric-list li {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 2rem;
+  padding: 8px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.metric-list .entry-field {
+  white-space: nowrap;
+}
+
+.metric-list-header li,
+.metric-list li {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.metric-list-header .entry-field,
+.metric-list .entry-field {
+  flex: 1 1 0;
+  min-width: 120px; /* ajuste conforme necessário */
+  text-align: left;
 }
