@@ -27,25 +27,6 @@
   margin-bottom: 2rem;
 }
 
-// .metric-list {
-//   flex: 1 1 auto;
-//   // margin: 0 0.5rem;
-//   background: var(--md-sys-color-surface-container-high, #fff);
-//   // border-radius: 8px;
-//   // box-shadow: 0 1px 4px rgba(0,0,0,0.04);
-//   // text-align: center;
-
-//   min-width: 300px;
-//   min-height: 100px;
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
-//   justify-content: stretch;
-//   height: 100%;
-//   width: 100%;
-//   padding: 0;
-// }
-
 .metric-card {
   flex: 1 1 auto;
   background: var(--md-sys-color-surface-container-high, #fff);
@@ -114,34 +95,13 @@
 }
 
 .metric-card .pie-canvas {
-  max-width: 220px;
-  max-height: 220px;
+  max-width: 325px;
+  max-height: 325px;
   width: 100%;
   height: 100%;
   margin: 0 auto;
   display: block;
 }
-
-// .metric-list ul {
-//   width: 100%;
-//   padding: 0;
-//   margin: 0;
-//   list-style: none;
-// }
-
-// .metric-list li {
-//   display: flex;
-//   flex-direction: row;
-//   justify-content: flex-start;
-//   align-items: center;
-//   gap: 2rem; /* Espaço entre os campos, ajuste se quiser */
-//   padding: 8px 0;
-//   border-bottom: 1px solid #eee; /* Opcional: linha separadora */
-// }
-
-// .metric-list .entry-field {
-//   white-space: nowrap; /* Evita quebra de linha em cada campo */
-// }
 
 .metric-list-header {
   width: 100%;

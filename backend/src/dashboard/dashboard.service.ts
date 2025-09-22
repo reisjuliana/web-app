@@ -60,7 +60,7 @@ export class DashboardService {
 
     // Mapeia para o formato desejado
     return entries.map(e => ({
-      // entryDate: e.entryDate,
+      entryDate: e.entryDate,
       product: e.product?.name,
       supplier: e.supplier?.name,
       quantity: e.quantity,
