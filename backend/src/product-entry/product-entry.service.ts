@@ -9,6 +9,24 @@ import { CreateProductEntryDto } from './dto/create-product-entry.dto';
 import { UpdateProductEntryDto } from './dto/update-product-entry.dto';
 import { SearchProductEntryDto } from './dto/search-product-entry.dto';
 
+// DTO interno de retorno para frontend
+interface ProductEntryResponseDto {
+  id: number;
+  productId: number;
+  productName: string;
+  supplierId: number;
+  supplierName: string;
+  entryDate: Date;
+  quantity: number;
+  unitValue: number;
+  totalValue: number;
+  invoiceNumber: string;
+  batch: string;
+  expirationDate: Date | null;
+  category: string;
+  observations: string;
+}
+
 @Injectable()
 export class ProductEntryService {
   constructor(
@@ -22,42 +40,84 @@ export class ProductEntryService {
     private supplierRepo: Repository<Supplier>,
   ) {}
 
-  // Retorna todas as entradas
-  // Retorna todas as entradas ou filtradas
-  async findAll(searchDto?: SearchProductEntryDto): Promise<ProductEntry[]> {
-    const { search } = searchDto || {};
-    
-    if (!search) {
-      return this.repo.find({ relations: ['product', 'supplier'] });
-    }
-
-    return this.repo
+  // Retorna todas as entradas ou filtradas (com nomes já incluídos)
+  async findAllFiltered(dto: SearchProductEntryDto): Promise<ProductEntryResponseDto[]> {
+    const query = this.repo
       .createQueryBuilder('entry')
       .leftJoinAndSelect('entry.product', 'product')
-      .leftJoinAndSelect('entry.supplier', 'supplier')
-      .where('LOWER(product.name) LIKE :search', { search: `%${search.toLowerCase()}%` })
-      .orWhere('LOWER(supplier.name) LIKE :search', { search: `%${search.toLowerCase()}%` })
-      .orWhere('LOWER(entry.invoiceNumber) LIKE :search', { search: `%${search.toLowerCase()}%` })
-      .getMany();
+      .leftJoinAndSelect('entry.supplier', 'supplier');
+
+    if (dto.productName) {
+      query.andWhere('LOWER(product.name) LIKE :productName', { productName: `%${dto.productName.toLowerCase()}%` });
+    }
+
+    if (dto.supplierName) {
+      query.andWhere('LOWER(supplier.name) LIKE :supplierName', { supplierName: `%${dto.supplierName.toLowerCase()}%` });
+    }
+
+    if (dto.invoiceNumber) {
+      query.andWhere('LOWER(entry.invoiceNumber) LIKE :invoiceNumber', { invoiceNumber: `%${dto.invoiceNumber.toLowerCase()}%` });
+    }
+
+    if (dto.category) {
+      query.andWhere('LOWER(entry.category) LIKE :category', { category: `%${dto.category.toLowerCase()}%` });
+    }
+
+    if (dto.batch) {
+      query.andWhere('LOWER(entry.batch) LIKE :batch', { batch: `%${dto.batch.toLowerCase()}%` });
+    }
+
+    const entries = await query.getMany();
+
+    // Transformar para DTO de resposta, incluindo nomes
+    return entries.map(entry => ({
+      id: entry.id,
+      productId: entry.product.id,
+      productName: entry.product.name,
+      supplierId: entry.supplier.id,
+      supplierName: entry.supplier.name,
+      entryDate: entry.entryDate,
+      quantity: entry.quantity,
+      unitValue: entry.unitValue,
+      totalValue: entry.totalValue,
+      invoiceNumber: entry.invoiceNumber,
+      batch: entry.batch,
+      expirationDate: entry.expirationDate,
+      category: entry.category,
+      observations: entry.observations,
+    }));
   }
 
   // Retorna uma entrada pelo id
-  findOne(id: number): Promise<ProductEntry> {
-    return this.repo.findOne({ where: { id }, relations: ['product', 'supplier'] });
+  async findOne(id: number): Promise<ProductEntryResponseDto> {
+    const entry = await this.repo.findOne({ where: { id }, relations: ['product', 'supplier'] });
+    if (!entry) return null;
+
+    return {
+      id: entry.id,
+      productId: entry.product.id,
+      productName: entry.product.name,
+      supplierId: entry.supplier.id,
+      supplierName: entry.supplier.name,
+      entryDate: entry.entryDate,
+      quantity: entry.quantity,
+      unitValue: entry.unitValue,
+      totalValue: entry.totalValue,
+      invoiceNumber: entry.invoiceNumber,
+      batch: entry.batch,
+      expirationDate: entry.expirationDate,
+      category: entry.category,
+      observations: entry.observations,
+    };
   }
 
   // Cria uma entrada, vinculando produto e fornecedor
-  async create(dto: CreateProductEntryDto): Promise<ProductEntry> {
-    // Buscar o produto e fornecedor pelo id enviado
+  async create(dto: CreateProductEntryDto): Promise<ProductEntryResponseDto> {
     const product = await this.productRepo.findOneBy({ id: dto.productId });
     const supplier = await this.supplierRepo.findOneBy({ id: dto.supplierId });
 
-    if (!product) {
-      throw new BadRequestException(`Produto com ID ${dto.productId} não encontrado`);
-    }
-    if (!supplier) {
-      throw new BadRequestException(`Fornecedor com ID ${dto.supplierId} não encontrado`);
-    }
+    if (!product) throw new BadRequestException(`Produto com ID ${dto.productId} não encontrado`);
+    if (!supplier) throw new BadRequestException(`Fornecedor com ID ${dto.supplierId} não encontrado`);
 
     const entry = this.repo.create({
       product,
@@ -73,11 +133,28 @@ export class ProductEntryService {
       observations: dto.observations,
     });
 
-    return this.repo.save(entry);
+    const saved = await this.repo.save(entry);
+
+    return {
+      id: saved.id,
+      productId: product.id,
+      productName: product.name,
+      supplierId: supplier.id,
+      supplierName: supplier.name,
+      entryDate: saved.entryDate,
+      quantity: saved.quantity,
+      unitValue: saved.unitValue,
+      totalValue: saved.totalValue,
+      invoiceNumber: saved.invoiceNumber,
+      batch: saved.batch,
+      expirationDate: saved.expirationDate,
+      category: saved.category,
+      observations: saved.observations,
+    };
   }
 
   // Atualiza uma entrada
-  async update(id: number, dto: UpdateProductEntryDto): Promise<ProductEntry> {
+  async update(id: number, dto: UpdateProductEntryDto): Promise<ProductEntryResponseDto> {
     await this.repo.update(id, dto);
     return this.findOne(id);
   }

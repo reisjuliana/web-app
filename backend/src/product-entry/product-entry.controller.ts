@@ -4,32 +4,33 @@ import { ProductEntryService } from './product-entry.service';
 import { CreateProductEntryDto } from './dto/create-product-entry.dto';
 import { UpdateProductEntryDto } from './dto/update-product-entry.dto';
 import { SearchProductEntryDto } from './dto/search-product-entry.dto';
+import { ProductEntryResponseDto } from './dto/product-entry-response.dto';
+import { ProductEntryListDto } from './dto/list-product-entry.dto';
 
 @Controller('product-entry')
 export class ProductEntryController {
   constructor(private readonly service: ProductEntryService) {}
 
   // Entradas
- @Get()
-  async findAll(@Query() searchDto: SearchProductEntryDto) {
-    const entries = await this.service.findAll(searchDto);
-    return { entries };
-  }
-
-  @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-  return this.service.findOne(id);
+@Get()
+async findAll(@Query() dto: SearchProductEntryDto): Promise<{ entries: ProductEntryResponseDto[] }> {
+  const entries = await this.service.findAllFiltered(dto);
+  return { entries };
 }
 
-  @Post()
-  async create(@Body() dto: CreateProductEntryDto) {
-    const entry = this.service.create(dto);
-    return entry;
+@Get(':id')
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<ProductEntryListDto> {
+    return this.service.findOne(id);
+  }
+
+ @Post()
+  create(@Body() dto: CreateProductEntryDto): Promise<ProductEntryListDto> {
+    return this.service.create(dto);
   }
 
   @Put(':id')
-  update(@Param('id') id: string, @Body() dto: UpdateProductEntryDto) {
-    return this.service.update(+id, dto);
+  update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateProductEntryDto): Promise<ProductEntryListDto> {
+    return this.service.update(id, dto);
   }
 
   @Delete(':id')
