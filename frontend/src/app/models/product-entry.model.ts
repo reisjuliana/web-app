@@ -1,8 +1,8 @@
 export interface ProductEntry {
-  id?: string
-  productId: string
+  id?: number
+  productId: number
   productName?: string
-  supplierId: string
+  supplierId: number
   supplierName?: string
   entryDate: Date
   quantity: number

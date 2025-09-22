@@ -27,7 +27,7 @@ export class ProductEntryService {
     return this.http.post<ProductEntry>(this.entryApiUrl, entry);
   }
 
-  deleteEntry(id: string): Observable<void> {
+  deleteEntry(id: number): Observable<void> {
     return this.http.delete<void>(`${this.entryApiUrl}/${id}`);
   }
 
@@ -37,20 +37,18 @@ export class ProductEntryService {
   }
 
   getProductById(id: number): Observable<Product | null> {
-    const numericId = Number(id);
-    if (isNaN(numericId)) return of(null);
+    if (isNaN(id)) return of(null);
 
-    return this.http.get<Product>(`${this.productApiUrl}/${numericId}`).pipe(
+    return this.http.get<Product>(`${this.productApiUrl}/${id}`).pipe(
       catchError(() => of(null))
     );
   }
 
   // ================= FORNECEDORES =================
-  getSupplierById(id: string | number): Observable<Supplier | null> {
-    const numericId = Number(id);
-    if (isNaN(numericId)) return of(null);
+  getSupplierById(id: number): Observable<Supplier | null> {
+    if (isNaN(id)) return of(null);
 
-    return this.http.get<Supplier>(`${this.supplierApiUrl}/${numericId}`).pipe(
+    return this.http.get<Supplier>(`${this.supplierApiUrl}/${id}`).pipe(
       catchError(() => of(null))
     );
   }

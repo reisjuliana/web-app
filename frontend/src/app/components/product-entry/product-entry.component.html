@@ -11,8 +11,7 @@
               type="number"
               formControlName="productId"
               [matAutocomplete]="productAuto"
-              placeholder="Digite ID ou nome"
-              (blur)="onProductIdBlur()"
+              placeholder="Digite ID"
             />
             <mat-autocomplete
               #productAuto="matAutocomplete"
@@ -27,7 +26,7 @@
               </mat-option>
             </mat-autocomplete>
             <mat-error *ngIf="entryForm.get('productId')?.hasError('required')">
-              ID do produto é obrigatório
+             ID do produto é obrigatório
             </mat-error>
           </mat-form-field>
 
@@ -51,7 +50,6 @@
               formControlName="supplierId"
               [matAutocomplete]="supplierAuto"
               placeholder="Digite ID ou nome"
-              (blur)="onSupplierIdBlur()"
             />
             <mat-autocomplete
               #supplierAuto="matAutocomplete"

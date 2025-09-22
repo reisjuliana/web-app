@@ -163,13 +163,12 @@ export class ProductEntryComponent implements OnInit {
     });
   }
 
-  onProductIdBlur() {
-  const value = this.entryForm.get("productId")?.value;
-  const productIdNum = Number(value);
+ onProductIdBlur() {
+  const productIdNum = this.entryForm.get("productId")?.value;
 
-  if (!value || isNaN(productIdNum) || productIdNum <= 0) {
+  if (productIdNum == null || isNaN(productIdNum) || productIdNum <= 0) {
     alert("ID do produto inválido");
-    this.entryForm.patchValue({ productId: "", productName: "" });
+    this.entryForm.patchValue({ productId: null, productName: "" });
     return;
   }
 
@@ -180,7 +179,7 @@ export class ProductEntryComponent implements OnInit {
       if (product) {
         this.entryForm.patchValue({ productName: product.name });
       } else {
-        this.entryForm.patchValue({ productName: "", productId: "" });
+        this.entryForm.patchValue({ productId: null, productName: "" });
         alert("Produto não encontrado. Cadastre antes de dar entrada.");
       }
     },
@@ -191,22 +190,21 @@ export class ProductEntryComponent implements OnInit {
   });
 }
 
-  onSupplierIdBlur() {
-  const supplierId = this.entryForm.get("supplierId")?.value;
-  const numericId = Number(supplierId);
+ onSupplierIdBlur() {
+  const supplierIdNum = this.entryForm.get("supplierId")?.value;
 
-  if (!supplierId || isNaN(numericId) || numericId <= 0) {
+  if (supplierIdNum == null || isNaN(supplierIdNum) || supplierIdNum <= 0) {
     alert("ID do fornecedor inválido");
-    this.entryForm.patchValue({ supplierId: "", supplierName: "" });
+    this.entryForm.patchValue({ supplierId: null, supplierName: "" });
     return;
   }
 
-  this.productEntryService.getSupplierById(numericId).subscribe({
+  this.productEntryService.getSupplierById(supplierIdNum).subscribe({
     next: (supplier) => {
       if (supplier) {
         this.entryForm.patchValue({ supplierName: supplier.name });
       } else {
-        this.entryForm.patchValue({ supplierId: "", supplierName: "" });
+        this.entryForm.patchValue({ supplierId: null, supplierName: "" });
         alert("Fornecedor não encontrado.");
       }
     },
@@ -264,7 +262,10 @@ export class ProductEntryComponent implements OnInit {
   }
 
   onSubmit() {
-    if (!this.entryForm.valid) return;
+    if (!this.entryForm.valid) {
+    this.entryForm.markAllAsTouched(); // marca todos como touched para mostrar os erros
+    return;
+    }
 
     const formValue = this.entryForm.getRawValue();
     const payload = {
@@ -282,17 +283,26 @@ export class ProductEntryComponent implements OnInit {
     };
 
     this.productEntryService.createEntry(payload).subscribe({
-      next: (savedEntry) => {
-        const entryWithNames = {
-          ...savedEntry,
-          productName: this.products.find(p => p.id === savedEntry.productId)?.name || savedEntry.productName,
-          supplierName: this.suppliers.find(s => s.id === savedEntry.supplierId)?.name || savedEntry.supplierName,
-        };
-        this.entries.data = [entryWithNames, ...this.entries.data];
-        this.resetForm();
-      },
-      error: (err) => alert("Erro ao salvar: " + (err.error?.message || "Verifique os dados")),
-    });
+  next: (savedEntryRaw) => {
+    // forçar que os IDs sejam number
+    const savedEntry: ProductEntry = {
+      ...savedEntryRaw,
+      productId: Number(savedEntryRaw.productId),
+      supplierId: Number(savedEntryRaw.supplierId),
+    };
+
+    const entryWithNames = {
+      ...savedEntry,
+      productName: this.products.find(p => Number(p.id) === savedEntry.productId)?.name || savedEntry.productName,
+      supplierName: this.suppliers.find(s => Number(s.id) === savedEntry.supplierId)?.name || savedEntry.supplierName,
+    };
+
+    this.entries.data = [entryWithNames, ...this.entries.data];
+    this.resetForm();
+  },
+  error: (err) =>
+    alert("Erro ao salvar: " + (err.error?.message || "Verifique os dados")),
+});
   }
 
   onCancel() {
@@ -300,9 +310,30 @@ export class ProductEntryComponent implements OnInit {
   }
 
   private resetForm() {
-    this.entryForm.reset();
-    this.entryForm.patchValue({ entryDate: new Date() });
-  }
+    
+  this.entryForm.reset({
+    productId: null,
+    productName: "",
+    supplierId: null,
+    supplierName: "",
+    entryDate: new Date(),
+    quantity: null,
+    unitValue: null,
+    totalValue: null,
+    invoiceNumber: "",
+    batch: "",
+    expirationDate: null,
+    category: "",
+    observations: "",
+  });
+
+  // Garante que o formulário pareça “intocado”
+  this.entryForm.markAsPristine();
+  this.entryForm.markAsUntouched();
+   Object.keys(this.entryForm.controls).forEach(key => {
+    this.entryForm.get(key)?.updateValueAndValidity({ onlySelf: true });
+   });
+}
 
   deleteEntry(entry: ProductEntry) {
     if (entry.id && confirm("Tem certeza que deseja deletar esta entrada?")) {
