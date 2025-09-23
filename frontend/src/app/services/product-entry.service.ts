@@ -24,9 +24,9 @@ export class ProductEntryService {
     return this.http.get<ProductEntryListDto[]>(`${environment.apiUrl}/product-entry`);
   }
 
-  createEntry(entry: ProductEntry): Observable<ProductEntry> {
-    return this.http.post<ProductEntry>(this.entryApiUrl, entry);
-  }
+  createEntry(formData: FormData) {
+  return this.http.post<ProductEntryListDto>('/product-entry', formData);
+}
 
   deleteEntry(id: number): Observable<void> {
     return this.http.delete<void>(`${this.entryApiUrl}/${id}`);

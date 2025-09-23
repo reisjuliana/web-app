@@ -325,29 +325,41 @@ export class ProductEntryComponent implements OnInit {
 
   onSubmit() {
     if (!this.entryForm.valid) {
-      this.entryForm.markAllAsTouched(); // marca todos como touched para mostrar os erros
+      this.entryForm.markAllAsTouched(); 
       return;
     }
 
     const formValue = this.entryForm.getRawValue();
-    
-    const payload = {
-      productId: Number(formValue.productId),
-      supplierId: Number(formValue.supplierId),
-      entryDate: formValue.entryDate,
-      quantity: formValue.quantity,
-      unitValue: formValue.unitValue,
-      totalValue: formValue.totalValue,
-      invoiceNumber: formValue.invoiceNumber,
-      batch: formValue.batch || undefined,
-      expirationDate: formValue.expirationDate || undefined,
-      category: formValue.category || undefined,
-      observations: formValue.observations || undefined,
-    };
+    const formData = new FormData();
 
-    this.productEntryService.createEntry(payload).subscribe({
-      next: (savedEntryRaw) => {
-        const savedEntry: ProductEntryListDto = {
+   
+      formData.append('productId', formValue.productId);
+      formData.append('supplierId', formValue.supplierId);
+      formData.append('entryDate', formValue.entryDate);
+      formData.append('quantity', formValue.quantity);
+      formData.append('unitValue', formValue.unitValue);
+      formData.append('totalValue', formValue.totalValue);
+      formData.append('invoiceNumber', formValue.invoiceNumber);
+      formData.append('batch', formValue.batch || '');
+      formData.append('expirationDate', formValue.expirationDate || '');
+      formData.append('category', formValue.category || '');
+      formData.append('observations', formValue.observations || '');
+    
+      // Só adiciona o arquivo se houver
+  if (this.uploadFile) {
+    // Converte base64 para Blob
+    const byteString = atob(this.uploadFile.base64);
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const intArray = new Uint8Array(arrayBuffer);
+    for (let i = 0; i < byteString.length; i++) {
+      intArray[i] = byteString.charCodeAt(i);
+    }
+    const file = new File([intArray], this.uploadFile.name, { type: 'application/pdf' });
+    formData.append('file', file);
+  }
+
+  this.productEntryService.createEntry(formData).subscribe({
+    next: (savedEntryRaw) => {const savedEntry: ProductEntryListDto = {
           id: savedEntryRaw.id!, // garantir que não é undefined
           productName: savedEntryRaw.productName || '',
           supplierName: savedEntryRaw.supplierName || '',
@@ -363,15 +375,14 @@ export class ProductEntryComponent implements OnInit {
         // Adiciona no início da lista
         this.entries.data = [savedEntry, ...this.entries.data];
 
-        // Reseta formulário
-        this.resetForm();
-      },
-      error: (err) =>
-        alert(
-          'Erro ao salvar: ' + (err.error?.message || 'Verifique os dados')
-        ),
-    });
+        //Reseta formulário
+      this.resetForm();
+    },
+    error: (err) =>
+      alert('Erro ao salvar: ' + (err.error?.message || 'Verifique os dados')),
+  });
   }
+  
   onCancel() {
     this.resetForm();
   }
