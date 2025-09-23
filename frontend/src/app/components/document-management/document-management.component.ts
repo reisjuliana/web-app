@@ -41,7 +41,6 @@ export class DocumentManagementComponent implements OnInit {
   productIdFilter = new FormControl('');
   uploadDateFilter = new FormControl('');
 
-  // Ordem das colunas ajustada: Nome do arquivo, Produto, Tipo de arquivo, Upload
   displayedColumns: string[] = [
     'filename',
     'product_id',
