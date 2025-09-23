@@ -9,6 +9,7 @@ import {
 import { UserEntity } from 'src/users/entities/user.entity';
 import { Product } from 'src/products/entities/product.entity';
 import * as crypto from 'crypto';
+import { ProductEntry } from 'src/product-entry/entities/product-entry.entity';
 
 @Entity('documents')
 export class DocumentEntity {
@@ -43,4 +44,7 @@ export class DocumentEntity {
   calculateHash() {
     this.hash_sha256 = crypto.createHash('sha256').update(this.file_content).digest('hex');
   }
+  @ManyToOne(() => ProductEntry, (entry) => entry.documents, { onDelete: 'CASCADE' })
+ @JoinColumn({ name: 'product_entry_id' })
+  productEntry: ProductEntry;
 }

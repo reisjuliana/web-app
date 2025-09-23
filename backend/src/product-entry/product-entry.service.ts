@@ -122,6 +122,7 @@ async createWithDocument(
   file: Express.Multer.File,
   user: UserEntity
 ): Promise<ProductEntryListDto> {
+  
   // Buscar produto e fornecedor
   const product = await this.productRepo.findOneBy({ id: dto.productId });
   const supplier = await this.supplierRepo.findOneBy({ id: dto.supplierId });
@@ -129,20 +130,19 @@ async createWithDocument(
   if (!product) throw new BadRequestException(`Produto com ID ${dto.productId} não encontrado`);
   if (!supplier) throw new BadRequestException(`Fornecedor com ID ${dto.supplierId} não encontrado`);
 
-  // Criar documento (se houver)
-  let document: DocumentEntity | null = null;
-  if (file) {
-    document = this.repo.manager.create(DocumentEntity, {
-      filename: file.originalname,
-      file_content: file.buffer,
-      file_type: 'pdf', // ou dto.fileType se quiser parametrizar
-      product: product,
-      user: user,
-    });
+  // 1. Salva o documento e obtém ID
+  const documentRepo = this.repo.manager.getRepository(DocumentEntity);
+  const document = documentRepo.create({
+    filename: file.originalname,
+    file_content: file.buffer,
+    file_type: 'pdf',
+    product: product,
+    user: user,
+ });
     await this.repo.manager.save(document);
-  }
+  
 
-  // Criar a entrada de produto
+  // Criar a entrada de produto referenciando o documento
   const entry = this.repo.create({
     product: product,
     supplier: supplier,
@@ -161,6 +161,10 @@ async createWithDocument(
 
   const saved = await this.repo.save(entry);
 
+  // Atualiza o documento com o ID da ProductEntry 
+  document.productEntry = saved;
+  await documentRepo.save(document);
+  
   // Retornar entrada completa com DTO
   return this.findOne(saved.id);
 }

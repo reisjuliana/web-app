@@ -39,11 +39,4 @@ export class CreateProductEntryDto {
   @IsOptional()
   observations?: string;
 
-  @IsNumber()
-  @Type(() => Number)
-  documentId: number;
-
-  @IsNumber()
-  @Type(() => Number)
-  userId: number;
 }

@@ -1,7 +1,8 @@
-import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne, OneToMany, JoinColumn } from 'typeorm';
 import { Product } from '../../products/entities/product.entity';
 import { Supplier } from '../../suppliers/entities/supplier.entity';
 import { UserEntity } from '../../users/entities/user.entity';
+import { DocumentEntity } from 'src/documents/entities/document.entity';
 
 @Entity('product_entries')
 export class ProductEntry {
@@ -49,4 +50,7 @@ export class ProductEntry {
 
   @Column({ type: 'bigint', name: 'document_id', nullable: true })
   documentId: number;
+
+  @OneToMany(() => DocumentEntity, (document) => document.productEntry, { cascade: true })
+ documents: DocumentEntity[];
 }
