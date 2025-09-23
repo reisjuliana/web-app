@@ -335,13 +335,19 @@ export class ProductEntryComponent implements OnInit {
    
       formData.append('productId', formValue.productId);
       formData.append('supplierId', formValue.supplierId);
-      formData.append('entryDate', formValue.entryDate);
+      formData.append('entryDate',
+      formValue.entryDate ? new Date(formValue.entryDate).toISOString() : ''
+);
       formData.append('quantity', formValue.quantity);
       formData.append('unitValue', formValue.unitValue);
       formData.append('totalValue', formValue.totalValue);
       formData.append('invoiceNumber', formValue.invoiceNumber);
       formData.append('batch', formValue.batch || '');
-      formData.append('expirationDate', formValue.expirationDate || '');
+      if (formValue.expirationDate) {
+      formData.append('expirationDate', new Date(formValue.expirationDate).toISOString());
+}     else {
+      formData.append('expirationDate', null as any); // envia null em vez de ''
+}
       formData.append('category', formValue.category || '');
       formData.append('observations', formValue.observations || '');
     
