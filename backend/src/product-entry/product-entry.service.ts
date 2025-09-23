@@ -132,8 +132,9 @@ export class ProductEntryService {
   if (!supplier) throw new BadRequestException(`Fornecedor com ID ${dto.supplierId} não encontrado`);
 
   let savedDocument: DocumentEntity | null = null;
+  const documentRepo = this.repo.manager.getRepository(DocumentEntity);
 
-  // Se houver arquivo, cria o documento
+  // Se houver PDF a ser anexado, cria o registro na documents
   if (file) {
     const documentRepo = this.repo.manager.getRepository(DocumentEntity);
     const document = documentRepo.create({
@@ -142,6 +143,7 @@ export class ProductEntryService {
       file_type: 'pdf', // pode parametrizar depois
       product: product,
       user: user,
+      upload_date: new Date(),
     });
     savedDocument = await documentRepo.save(document);
   }
@@ -159,7 +161,6 @@ export class ProductEntryService {
     expirationDate: dto.expirationDate ? new Date(dto.expirationDate) : null,
     category: dto.category,
     observations: dto.observations,
-    documentId: savedDocument?.id || null,
     user: user,
   });
 
@@ -168,7 +169,6 @@ export class ProductEntryService {
   // Se documento foi criado, atualiza a relação inversa
   if (savedDocument) {
     savedDocument.productEntry = savedEntry;
-    const documentRepo = this.repo.manager.getRepository(DocumentEntity);
     await documentRepo.save(savedDocument);
   }
 

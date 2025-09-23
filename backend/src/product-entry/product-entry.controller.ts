@@ -21,6 +21,8 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard'; 
 import { Request } from 'express';
+import { UserEntity } from '../users/entities/user.entity';
+
 
 @Controller('product-entry')
 @UseGuards(JwtAuthGuard)
@@ -39,12 +41,14 @@ export class ProductEntryController {
   }
 
 @Post()
+@UseInterceptors(FileInterceptor('file'))
 async create(
+  @UploadedFile() file: Express.Multer.File | null,
   @Body() dto: CreateProductEntryDto,
   @Req() req: any
 ): Promise<ProductEntryListDto> {
-  const user = req.user; // user logado do JWT
-  return this.service.createEntry(dto, null, user);
+  const user: UserEntity = req.user; // usuário logado pelo JwtAuthGuard
+  return this.service.createEntry(dto, file, user);
 }
 
   @Put(':id')
@@ -71,14 +75,5 @@ async create(
   return { suppliers };
 }
 
-@Post('with-document')
-@UseInterceptors(FileInterceptor('file'))
-async createWithDocument(
-  @UploadedFile() file: Express.Multer.File,
-  @Body() dto: CreateProductEntryDto,
-  @Req() req: any
-): Promise<ProductEntryListDto> {
-  const user = req.user; // user logado do JWT
-  return this.service.createEntry(dto, file, user);
-}
+
 }

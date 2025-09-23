@@ -45,6 +45,6 @@ export class DocumentEntity {
     this.hash_sha256 = crypto.createHash('sha256').update(this.file_content).digest('hex');
   }
   @ManyToOne(() => ProductEntry, (entry) => entry.documents, { onDelete: 'CASCADE' })
- @JoinColumn({ name: 'product_entry_id' })
+  @JoinColumn({ name: 'product_entry_id' })
   productEntry: ProductEntry;
 }
