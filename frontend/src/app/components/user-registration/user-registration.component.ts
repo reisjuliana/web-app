@@ -15,7 +15,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
-
 import { UserService } from '../../services/user.service';
 import type { User } from '../../models/user.model';
 
@@ -106,11 +105,9 @@ export class UserRegistrationComponent implements OnInit {
       cpf: '',
     });
 
-    // Marca o formulário como limpo e intocado
     this.userForm.markAsPristine();
     this.userForm.markAsUntouched();
 
-    // Limpa erros existentes para que mensagens desapareçam
     Object.keys(this.userForm.controls).forEach((key) => {
       this.userForm.get(key)?.setErrors(null);
     });

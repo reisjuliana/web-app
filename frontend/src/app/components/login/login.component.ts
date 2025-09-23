@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { EmailValidator, FormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatInputModule } from '@angular/material/input';
@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { LoginUserDTO } from '../../models/auth.model';
+
 @Component({
   selector: 'app-login',
   standalone: true,

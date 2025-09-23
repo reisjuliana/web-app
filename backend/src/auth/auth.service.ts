@@ -33,10 +33,8 @@ export class AuthService {
   }
 
   async login(loginUserDto: LoginUserDTO): Promise<LoginStatus> {
-    // encontra o usuário no banco de dados
     const user = await this.usersService.findByLogin(loginUserDto);
 
-    // gera e retorna o token JWT
     const token = this._createToken(user);
 
     return {
