@@ -205,6 +205,15 @@
           style="display: none"
           (change)="onFileSelected($event)"
   />
+      <!-- Exibe o nome do arquivo selecionado, se houver -->
+       <span *ngIf="uploadFile" style="margin-left: 12px; display: flex; align-items: center;">
+       <mat-icon color="primary" style="margin-right: 4px;">description</mat-icon>
+        {{ uploadFile.name }}
+        <button mat-icon-button color="warn" (click)="removeFile()" aria-label="Remover arquivo" style="margin-left: 4px;">
+        <mat-icon>close</mat-icon>
+         </button>
+        </span>
+
         <!-- Botão Salvar -->
             <button mat-raised-button color="primary" type="submit">
             <mat-icon>save</mat-icon>
