@@ -343,7 +343,6 @@ export class ProductEntryComponent implements OnInit {
       expirationDate: formValue.expirationDate || undefined,
       category: formValue.category || undefined,
       observations: formValue.observations || undefined,
-      documentId: Number(this.selectedDocumentId)
     };
 
     this.productEntryService.createEntry(payload).subscribe({
