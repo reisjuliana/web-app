@@ -332,14 +332,14 @@ export class ProductEntryComponent implements OnInit {
     const formData = new FormData();
 
    
-      formData.append('productId', formValue.productId);
-      formData.append('supplierId', formValue.supplierId);
+      formData.append('productId', String(formValue.productId));
+      formData.append('supplierId', String(formValue.supplierId));
       formData.append('entryDate',
       formValue.entryDate ? new Date(formValue.entryDate).toISOString() : ''
 );
-      formData.append('quantity', formValue.quantity);
-      formData.append('unitValue', formValue.unitValue);
-      formData.append('totalValue', formValue.totalValue);
+      formData.append('quantity', String(formValue.quantity));
+      formData.append('unitValue', String(formValue.unitValue));
+      formData.append('totalValue', String(formValue.totalValue));
       formData.append('invoiceNumber', formValue.invoiceNumber);
       formData.append('batch', formValue.batch || '');
       formData.append('category', formValue.category || '');

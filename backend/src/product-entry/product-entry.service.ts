@@ -157,6 +157,7 @@ export class ProductEntryService {
     batch: dto.batch,
     category: dto.category,
     observations: dto.observations,
+    documentId: savedDocument.id,
     user: user,
   });
 
