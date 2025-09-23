@@ -7,7 +7,7 @@ import { environment } from '../../environments/environment';
 export class DashboardService {
   private apiUrl = `${environment.apiUrl}/dashboard`;
   constructor(private http: HttpClient) {}
-  
+
   getMetrics(): Observable<any> {
     return this.http.get(`${this.apiUrl}/metrics`);
   }
@@ -19,5 +19,4 @@ export class DashboardService {
   getProductQuantities(): Observable<any> {
     return this.http.get<any[]>(`${this.apiUrl}/product-quantities`);
   }
-
 }

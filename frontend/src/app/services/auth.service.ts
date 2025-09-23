@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { LoginUserDTO, RegisterUserDTO } from '../models/auth.model';
-import { tap } from 'rxjs/operators'; 
+import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -13,24 +13,24 @@ export class AuthService {
 
   constructor(private http: HttpClient) {}
 
-  // Rota de registro (POST /auth/register)
   register(dto: RegisterUserDTO): Observable<any> {
     return this.http.post(`${this.apiUrl}/register`, dto);
   }
 
-  // Rota de login 
+  // Rota de login
   login(dto: LoginUserDTO): Observable<any> {
-  return this.http.post<{ access_token: string }>(`${this.apiUrl}/login`, dto)
-    .pipe(
-      tap(res => {
-        // salva o token 
-        localStorage.setItem('accessToken', res.access_token);
-      })
-    );
-}
-  
+    return this.http
+      .post<{ access_token: string }>(`${this.apiUrl}/login`, dto)
+      .pipe(
+        tap((res) => {
+          // salva o token
+          localStorage.setItem('accessToken', res.access_token);
+        })
+      );
+  }
+
   //Recuperar Login
   getToken(): string | null {
-  return localStorage.getItem('accessToken');
-}
+    return localStorage.getItem('accessToken');
+  }
 }
