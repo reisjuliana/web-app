@@ -27,49 +27,39 @@ export class UsersService {
     });
 
     if (!user) {
-      throw new HttpException(`User not found`, HttpStatus.BAD_REQUEST);
+      throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
     }
 
     return toUserDTO(user);
   }
 
   async createUser(userDTO: UserCreateDTO): Promise<UserDTO> {
-    const { name, email, password, cpf } = userDTO;
-
-    const userInDB = await this.usersRepository.findOne({ where: { email } });
+    const userInDB = await this.usersRepository.findOne({ where: { email: userDTO.email } });
     if (userInDB) {
       throw new HttpException('User already exists', HttpStatus.BAD_REQUEST);
     }
 
-    let user: UserEntity = new UserEntity();
-    user.name = name;
-    user.uid = uuid.v4();
-    user.email = email;
-    user.password = password;
+    const user = this.usersRepository.create({
+      ...this.mapUserDTO(userDTO),
+      uid: uuid.v4(),
+    });
 
-    // PADRONIZA CPF: armazena apenas números
-    user.cpf = cpf.replace(/\D/g, '');
-
-    user = await this.usersRepository.save(user);
-
-    return toUserDTO(user);
+    const saved = await this.usersRepository.save(user);
+    return toUserDTO(saved);
   }
 
   async updateUser(id: number, userDTO: UserCreateDTO): Promise<UserDTO> {
-    const { name, email, password, cpf } = userDTO;
+    const user = await this.usersRepository.preload({
+      id,
+      ...this.mapUserDTO(userDTO),
+    });
 
-    let user: UserEntity = new UserEntity();
-    user.id = id;
-    user.name = name;
-    user.email = email;
-    user.password = password;
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
 
-    // PADRONIZA CPF
-    user.cpf = cpf.replace(/\D/g, '');
-
-    user = await this.usersRepository.save(user);
-
-    return toUserDTO(user);
+    const saved = await this.usersRepository.save(user);
+    return toUserDTO(saved);
   }
 
   async getAllUsers(): Promise<UserListDTO> {
@@ -111,5 +101,14 @@ export class UsersService {
 
   async findByPayload({ uid }: any): Promise<UserDTO> {
     return toUserDTO(await this.findOne({ where: { uid } }));
+  }
+
+  private mapUserDTO(dto: UserCreateDTO): Partial<UserEntity> {
+    return {
+      name: dto.name,
+      email: dto.email,
+      password: dto.password,
+      cpf: dto.cpf.replace(/\D/g, ''),
+    };
   }
 }
