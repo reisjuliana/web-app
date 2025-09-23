@@ -67,15 +67,30 @@ export class UserRegistrationComponent implements OnInit {
     if (!cpf || cpf.length !== 11 || /^(\d)\1{10}$/.test(cpf)) {
       return { invalidCpf: true };
     }
+    let sum = 0;
+    for (let i = 0; i < 9; i++) {
+      sum += Number(cpf.charAt(i)) * (10 - i);
+    }
+    let firstCheck = (sum * 10) % 11;
+    if (firstCheck === 10 || firstCheck === 11) firstCheck = 0;
+    if (firstCheck !== Number(cpf.charAt(9))) {
+      return { invalidCpf: true };
+    }
+
+    sum = 0;
+    for (let i = 0; i < 10; i++) {
+      sum += Number(cpf.charAt(i)) * (11 - i);
+    }
+    let secondCheck = (sum * 10) % 11;
+    if (secondCheck === 10 || secondCheck === 11) secondCheck = 0;
+    if (secondCheck !== Number(cpf.charAt(10))) {
+      return { invalidCpf: true };
+    }
     return null;
   }
 
   formatCpf(event: any) {
-    let value = event.target.value.replace(/\D/g, '');
-    value = value
-      .replace(/(\d{3})(\d)/, '$1.$2')
-      .replace(/(\d{3})(\d)/, '$1.$2')
-      .replace(/(\d{3})(\d{1,2})$/, '$1-$2');
+    const value = this.formatCpfValue(event.target.value);
     event.target.value = value;
     this.userForm.patchValue({ cpf: value });
   }
