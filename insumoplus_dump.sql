@@ -91,7 +91,7 @@ CREATE TABLE IF NOT EXISTS product_entries (
   CONSTRAINT fk_entry_user FOREIGN KEY (user_id) REFERENCES users(id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO product_entries (product_id, supplier_id, entry_date, unitValue, quantity, invoice_number, batch, category, observations, user_id)
+INSERT INTO product_entries (product_id, supplier_id, entry_date, unitValue, quantity, totalValue, invoice_number, batch, category, observations, user_id)
 VALUES
 (1, 1, NOW(), 10.00, 1000, 10000, 'NF-10001', 'B001-PET', 'Plástico Reciclado', 'Entrada inicial PET', 1),
 (2, 2, NOW(), 8.00, 800, 1600, 'NF-10002', 'B002-PEAD', 'Plástico Reciclado', 'Entrada inicial PEAD', 2),
