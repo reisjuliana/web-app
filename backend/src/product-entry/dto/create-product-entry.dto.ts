@@ -29,11 +29,7 @@ export class CreateProductEntryDto {
   @IsOptional()
   batch?: string;
 
-  @IsOptional()
-  @IsDateString()
-  expirationDate?: string;
-
-  @IsOptional()
+   @IsOptional()
   category?: string;
 
   @IsOptional()

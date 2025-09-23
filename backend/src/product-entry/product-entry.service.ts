@@ -25,7 +25,6 @@ interface ProductEntryResponseDto {
   totalValue: number;
   invoiceNumber: string;
   batch: string;
-  expirationDate: Date | null;
   category: string;
   observations: string;
 }
@@ -87,7 +86,6 @@ export class ProductEntryService {
       totalValue: entry.totalValue,
       invoiceNumber: entry.invoiceNumber,
       batch: entry.batch,
-      expirationDate: entry.expirationDate,
       category: entry.category,
       observations: entry.observations,
     }));
@@ -112,7 +110,6 @@ export class ProductEntryService {
       totalValue: entry.totalValue,
       invoiceNumber: entry.invoiceNumber,
       batch: entry.batch,
-      expirationDate: entry.expirationDate,
       category: entry.category,
       observations: entry.observations,
     };
@@ -158,7 +155,6 @@ export class ProductEntryService {
     totalValue: dto.totalValue,
     invoiceNumber: dto.invoiceNumber,
     batch: dto.batch,
-    expirationDate: dto.expirationDate ? new Date(dto.expirationDate) : null,
     category: dto.category,
     observations: dto.observations,
     user: user,

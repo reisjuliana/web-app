@@ -35,9 +35,6 @@ export class ProductEntry {
   @Column({ nullable: true })
   batch?: string;
 
-  @Column({ type: 'date', nullable: true, name: 'expiration_date' })
-  expirationDate?: Date;
-
   @Column({ nullable: true })
   category?: string;
 

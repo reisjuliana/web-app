@@ -87,7 +87,6 @@ export class ProductEntryComponent implements OnInit {
       invoiceNumber: ['', Validators.required],
       observations: [''],
       batch: [''],
-      expirationDate: [''],
       category: [''],
     });
 
@@ -343,11 +342,6 @@ export class ProductEntryComponent implements OnInit {
       formData.append('totalValue', formValue.totalValue);
       formData.append('invoiceNumber', formValue.invoiceNumber);
       formData.append('batch', formValue.batch || '');
-      if (formValue.expirationDate) {
-      formData.append('expirationDate', new Date(formValue.expirationDate).toISOString());
-}     else {
-      formData.append('expirationDate', null as any); // envia null em vez de ''
-}
       formData.append('category', formValue.category || '');
       formData.append('observations', formValue.observations || '');
     
@@ -405,7 +399,6 @@ export class ProductEntryComponent implements OnInit {
       totalValue: null,
       invoiceNumber: '',
       batch: '',
-      expirationDate: null,
       category: '',
       observations: '',
     });

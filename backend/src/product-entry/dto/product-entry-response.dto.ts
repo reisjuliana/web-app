@@ -10,7 +10,6 @@ export class ProductEntryResponseDto {
   totalValue: number;
   invoiceNumber: string;
   batch: string;
-  expirationDate: Date | null;
   category: string;
   observations: string;
 }

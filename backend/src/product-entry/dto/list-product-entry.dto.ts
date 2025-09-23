@@ -10,7 +10,6 @@ export class ProductEntryListDto {
   totalValue: number;
   invoiceNumber: string;
   batch?: string;
-  expirationDate?: Date;
   category?: string;
   observations?: string;
 }
