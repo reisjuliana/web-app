@@ -14,8 +14,6 @@ export class DashboardService {
     private readonly productRepository: Repository<Product>,
     @InjectRepository(Supplier)
     private readonly supplierRepository: Repository<Supplier>,
-
-    
   ) {}
 
   async getMetrics() {
@@ -24,33 +22,32 @@ export class DashboardService {
 
     // Calcula dias para acabar para cada produto
     const productsWithDays = products
-      .map(p => ({
+      .map((p) => ({
         ...p,
-        daysToEnd: (p.average_consumption && p.average_consumption > 0)
-          ? Number(p.stock_quantity) / Number(p.average_consumption)
-          : Infinity // evita divisão por zero
+        daysToEnd:
+          p.average_consumption && p.average_consumption > 0
+            ? Number(p.stock_quantity) / Number(p.average_consumption)
+            : Infinity, // evita divisão por zero
       }))
-      .filter(p => p.daysToEnd !== Infinity); // remove produtos sem consumo médio
+      .filter((p) => p.daysToEnd !== Infinity);
 
     // Ordena pelo menor tempo para acabar e pega os 4 primeiros
-    const soonestToEnd = productsWithDays
-      .sort((a, b) => a.daysToEnd - b.daysToEnd)
-      .slice(0, 4);
+    const soonestToEnd = productsWithDays.sort((a, b) => a.daysToEnd - b.daysToEnd).slice(0, 4);
 
-    const labels = soonestToEnd.map(p => p.name);
-    const averageConsumption = soonestToEnd.map(p => Number(p.average_consumption) || 0);
-    const stockQuantity = soonestToEnd.map(p => Number(p.stock_quantity) || 0);
-    const daysToEnd = soonestToEnd.map(p => Number(p.daysToEnd.toFixed(2)));
+    const labels = soonestToEnd.map((p) => p.name);
+    const averageConsumption = soonestToEnd.map((p) => Number(p.average_consumption) || 0);
+    const stockQuantity = soonestToEnd.map((p) => Number(p.stock_quantity) || 0);
+    const daysToEnd = soonestToEnd.map((p) => Number(p.daysToEnd.toFixed(2)));
 
     return {
       labels,
       averageConsumption,
       stockQuantity,
-      daysToEnd
+      daysToEnd,
     };
   }
 
-   async getLastEntries() {
+  async getLastEntries() {
     // Busca as 5 últimas entradas, incluindo produto e fornecedor
     const entries = await this.productEntryRepository.find({
       order: { entryDate: 'DESC' },
@@ -58,7 +55,7 @@ export class DashboardService {
       relations: ['product', 'supplier'],
     });
 
-    return entries.map(e => ({
+    return entries.map((e) => ({
       entryDate: e.entryDate,
       product: e.product?.name,
       supplier: e.supplier?.name,
@@ -76,8 +73,8 @@ export class DashboardService {
     const top5 = sorted.slice(0, 5);
     const others = sorted.slice(5);
 
-    const labels = top5.map(p => p.name);
-    const quantities = top5.map(p => Number(p.stock_quantity) || 0);
+    const labels = top5.map((p) => p.name);
+    const quantities = top5.map((p) => Number(p.stock_quantity) || 0);
 
     if (others.length > 0) {
       labels.push('Outros');
@@ -86,9 +83,7 @@ export class DashboardService {
 
     return {
       labels,
-      quantities
+      quantities,
     };
   }
-
-
 }

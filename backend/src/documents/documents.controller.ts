@@ -13,10 +13,9 @@ export class DocumentsController {
     return this.documentsService.createDocument(dto);
   }
 
-  // Atualizado para aceitar filtros via query params
   @Get()
   async findAll(@Query() query: DocumentFilter): Promise<DocumentDTO[]> {
-    // encaminha os filtros para o service
+    // Encaminha os filtros para o service
     return this.documentsService.findWithFilters(query);
   }
 

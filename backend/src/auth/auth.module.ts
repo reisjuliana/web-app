@@ -6,7 +6,7 @@ import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtStrategy } from './jwt.strategy';
 
-export const DEFAULT_SECRETKEY = 'LatoESW';
+export const DEFAULT_SECRETKEY = 'sD8$kP0!zYq3#nX1^wT7uJ9mH5@cL4%gF';
 export const DEFAULT_EXPIRESIN = '12H';
 
 @Module({
