@@ -38,10 +38,14 @@ export class ProductEntryController {
     return this.service.findOne(id);
   }
 
- @Post()
-  create(@Body() dto: CreateProductEntryDto): Promise<ProductEntryListDto> {
-    return this.service.create(dto);
-  }
+@Post()
+async create(
+  @Body() dto: CreateProductEntryDto,
+  @Req() req: any
+): Promise<ProductEntryListDto> {
+  const user = req.user; // user logado do JWT
+  return this.service.createEntry(dto, null, user);
+}
 
   @Put(':id')
   update(@Param('id', ParseIntPipe) id: number, @Body() dto: UpdateProductEntryDto): Promise<ProductEntryListDto> {
@@ -74,7 +78,7 @@ async createWithDocument(
   @Body() dto: CreateProductEntryDto,
   @Req() req: any
 ): Promise<ProductEntryListDto> {
-  const userId = req.user.sub; // ou req.user.id, depende do teu JWT
-  return this.service.createWithDocument(dto, file, userId);
+  const user = req.user; // user logado do JWT
+  return this.service.createEntry(dto, file, user);
 }
 }

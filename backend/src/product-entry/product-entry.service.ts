@@ -117,12 +117,13 @@ export class ProductEntryService {
       observations: entry.observations,
     };
   }
-async createWithDocument(
+
+  // Criar a entrada de produto referenciando o documento
+ async createEntry(
   dto: CreateProductEntryDto,
-  file: Express.Multer.File,
+  file: Express.Multer.File | null,
   user: UserEntity
 ): Promise<ProductEntryListDto> {
-  
   // Buscar produto e fornecedor
   const product = await this.productRepo.findOneBy({ id: dto.productId });
   const supplier = await this.supplierRepo.findOneBy({ id: dto.supplierId });
@@ -130,22 +131,25 @@ async createWithDocument(
   if (!product) throw new BadRequestException(`Produto com ID ${dto.productId} não encontrado`);
   if (!supplier) throw new BadRequestException(`Fornecedor com ID ${dto.supplierId} não encontrado`);
 
-  // 1. Salva o documento e obtém ID
-  const documentRepo = this.repo.manager.getRepository(DocumentEntity);
-  const document = documentRepo.create({
-    filename: file.originalname,
-    file_content: file.buffer,
-    file_type: 'pdf',
-    product: product,
-    user: user,
- });
-    await this.repo.manager.save(document);
-  
+  let savedDocument: DocumentEntity | null = null;
 
-  // Criar a entrada de produto referenciando o documento
+  // Se houver arquivo, cria o documento
+  if (file) {
+    const documentRepo = this.repo.manager.getRepository(DocumentEntity);
+    const document = documentRepo.create({
+      filename: file.originalname,
+      file_content: file.buffer,
+      file_type: 'pdf', // pode parametrizar depois
+      product: product,
+      user: user,
+    });
+    savedDocument = await documentRepo.save(document);
+  }
+
+  // Criar a entrada de produto, referenciando documento se existir
   const entry = this.repo.create({
-    product: product,
-    supplier: supplier,
+    product,
+    supplier,
     entryDate: new Date(dto.entryDate),
     quantity: dto.quantity,
     unitValue: dto.unitValue,
@@ -155,69 +159,23 @@ async createWithDocument(
     expirationDate: dto.expirationDate ? new Date(dto.expirationDate) : null,
     category: dto.category,
     observations: dto.observations,
-    documentId: document?.id || null,
+    documentId: savedDocument?.id || null,
     user: user,
   });
 
-  const saved = await this.repo.save(entry);
+  const savedEntry = await this.repo.save(entry);
 
-  // Atualiza o documento com o ID da ProductEntry 
-  document.productEntry = saved;
-  await documentRepo.save(document);
-  
-  // Retornar entrada completa com DTO
-  return this.findOne(saved.id);
+  // Se documento foi criado, atualiza a relação inversa
+  if (savedDocument) {
+    savedDocument.productEntry = savedEntry;
+    const documentRepo = this.repo.manager.getRepository(DocumentEntity);
+    await documentRepo.save(savedDocument);
+  }
+
+  // Retorna a entrada completa
+  return this.findOne(savedEntry.id);
 }
 
-  // Cria uma entrada, vinculando produto e fornecedor
-  async create(dto: CreateProductEntryDto): Promise<ProductEntryListDto> {
-    const product = await this.productRepo.findOneBy({ id: dto.productId });
-    const supplier = await this.supplierRepo.findOneBy({ id: dto.supplierId });
-
-    if (!product) throw new BadRequestException(`Produto com ID ${dto.productId} não encontrado`);
-    if (!supplier) throw new BadRequestException(`Fornecedor com ID ${dto.supplierId} não encontrado`);
-
-    const entry = this.repo.create({
-      product,
-      supplier,
-      entryDate: new Date(dto.entryDate),
-      quantity: dto.quantity,
-      unitValue: dto.unitValue,
-      totalValue: dto.totalValue,
-      invoiceNumber: dto.invoiceNumber,
-      batch: dto.batch,
-      expirationDate: dto.expirationDate ? new Date(dto.expirationDate) : null,
-      category: dto.category,
-      observations: dto.observations,
-    });
-
-    const saved = await this.repo.save(entry);
-
-    // Faz um reload da entrada com relations para garantir que supplier e product estejam completos
-  const fullEntry = await this.repo.findOne({
-    where: { id: saved.id },
-    relations: ['product', 'supplier'],
-  });
-
-  if (!fullEntry) throw new BadRequestException('Erro ao buscar a entrada salva');
-  
-    return {
-      id: saved.id,
-      productId: product.id,
-      productName: product.name,
-      supplierId: supplier.id,
-      supplierName: supplier.name,
-      entryDate: saved.entryDate,
-      quantity: saved.quantity,
-      unitValue: saved.unitValue,
-      totalValue: saved.totalValue,
-      invoiceNumber: saved.invoiceNumber,
-      batch: saved.batch,
-      expirationDate: saved.expirationDate,
-      category: saved.category,
-      observations: saved.observations,
-    };
-  }
 
   // Atualiza uma entrada
   async update(id: number, dto: UpdateProductEntryDto): Promise<ProductEntryListDto> {
