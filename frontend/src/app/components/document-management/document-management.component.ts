@@ -83,7 +83,7 @@ export class DocumentManagementComponent implements OnInit {
     }
 
     this.documentService.getDocuments(filters).subscribe((data) => {
-      this.documents = data;
+      this.documents = data.sort((a, b) => b.id - a.id);
     });
   }
 
@@ -103,16 +103,13 @@ export class DocumentManagementComponent implements OnInit {
               : 'application/octet-stream',
         });
 
-        // Cria a URL temporária para download
         const url = window.URL.createObjectURL(blob);
 
-        // Cria um link "a" e dispara o download
         const a = document.createElement('a');
         a.href = url;
         a.download = doc.filename || 'documento.pdf';
         a.click();
 
-        // Libera memória
         window.URL.revokeObjectURL(url);
 
         console.log('Download iniciado para:', doc.filename);
