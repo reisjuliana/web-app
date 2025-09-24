@@ -27,14 +27,10 @@ export class DocumentsController {
 
   @Get(':id/download')
   async download(@Param('id') id: number, @Res() res: Response) {
-    console.log('Download chamado para ID:', id);
     const doc = await this.documentsService.getDocumentById(+id);
     if (!doc) {
       return res.status(404).send('Documento não encontrado');
     }
-
-    // Debug: verificar primeiros bytes do PDF
-    console.log('Primeiros bytes do PDF:', doc.file_content.slice(0, 10));
 
     res.set({
       'Content-Type': 'application/pdf',

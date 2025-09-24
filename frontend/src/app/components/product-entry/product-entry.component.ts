@@ -70,6 +70,7 @@ export class ProductEntryComponent implements OnInit {
     'actions',
   ];
   dataSource = new MatTableDataSource<ProductEntryListDto>();
+  fileError: boolean = false;
 
   constructor(
     private fb: FormBuilder,
@@ -243,24 +244,26 @@ export class ProductEntryComponent implements OnInit {
     });
   }
 
- onProductOptionSelected(selectedValue: string) {
-  if (!selectedValue) return;
+  onProductOptionSelected(selectedValue: string) {
+    if (!selectedValue) return;
 
-  // Converte string para number antes da comparação
-  const productId = Number(selectedValue);
-  if (isNaN(productId)) return;
+    // Converte string para number antes da comparação
+    const productId = Number(selectedValue);
+    if (isNaN(productId)) return;
 
-  const product = this.products.find((p) => p.id);
-  if (product) {
-    this.entryForm.patchValue(
-      { productId: product.id, productName: product.name },
-      { emitEvent: false }
-    );
+    const product = this.products.find((p) => p.id);
+    if (product) {
+      this.entryForm.patchValue(
+        { productId: product.id, productName: product.name },
+        { emitEvent: false }
+      );
+    }
   }
-}
 
   onSupplierOptionSelected(selectedValue: number) {
-    const supplier = this.suppliers.find((s) => Number(s.id) === Number(selectedValue));
+    const supplier = this.suppliers.find(
+      (s) => Number(s.id) === Number(selectedValue)
+    );
     if (supplier) {
       this.entryForm.patchValue(
         { supplierId: supplier.id, supplierName: supplier.name },
@@ -283,7 +286,7 @@ export class ProductEntryComponent implements OnInit {
     const filterValue =
       typeof raw === 'string'
         ? raw.toLowerCase()
-    : (raw?.name || raw?.id?.toString() || '').toLowerCase();
+        : (raw?.name || raw?.id?.toString() || '').toLowerCase();
     return this.products.filter(
       (p) =>
         (p.name || '').toLowerCase().includes(filterValue) ||
@@ -324,42 +327,52 @@ export class ProductEntryComponent implements OnInit {
 
   onSubmit() {
     if (!this.entryForm.valid) {
-      this.entryForm.markAllAsTouched(); 
+      this.entryForm.markAllAsTouched();
       return;
+    }
+
+    if (!this.uploadFile) {
+      this.fileError = true;
+      return;
+    } else {
+      this.fileError = false;
     }
 
     const formValue = this.entryForm.getRawValue();
     const formData = new FormData();
 
-   
-      formData.append('productId', String(formValue.productId));
-      formData.append('supplierId', String(formValue.supplierId));
-      formData.append('entryDate',
+    formData.append('productId', String(formValue.productId));
+    formData.append('supplierId', String(formValue.supplierId));
+    formData.append(
+      'entryDate',
       formValue.entryDate ? new Date(formValue.entryDate).toISOString() : ''
-);
-      formData.append('quantity', String(formValue.quantity));
-      formData.append('unitValue', String(formValue.unitValue));
-      formData.append('totalValue', String(formValue.totalValue));
-      formData.append('invoiceNumber', formValue.invoiceNumber);
-      formData.append('batch', formValue.batch || '');
-      formData.append('category', formValue.category || '');
-      formData.append('observations', formValue.observations || '');
-    
-      // Só adiciona o arquivo se houver
-  if (this.uploadFile) {
-    // Converte base64 para Blob
-    const byteString = atob(this.uploadFile.base64);
-    const arrayBuffer = new ArrayBuffer(byteString.length);
-    const intArray = new Uint8Array(arrayBuffer);
-    for (let i = 0; i < byteString.length; i++) {
-      intArray[i] = byteString.charCodeAt(i);
-    }
-    const file = new File([intArray], this.uploadFile.name, { type: 'application/pdf' });
-    formData.append('file', file);
-  }
+    );
+    formData.append('quantity', String(formValue.quantity));
+    formData.append('unitValue', String(formValue.unitValue));
+    formData.append('totalValue', String(formValue.totalValue));
+    formData.append('invoiceNumber', formValue.invoiceNumber);
+    formData.append('batch', formValue.batch || '');
+    formData.append('category', formValue.category || '');
+    formData.append('observations', formValue.observations || '');
 
-  this.productEntryService.createEntry(formData).subscribe({
-    next: (savedEntryRaw) => {const savedEntry: ProductEntryListDto = {
+    // Só adiciona o arquivo se houver
+    if (this.uploadFile) {
+      // Converte base64 para Blob
+      const byteString = atob(this.uploadFile.base64);
+      const arrayBuffer = new ArrayBuffer(byteString.length);
+      const intArray = new Uint8Array(arrayBuffer);
+      for (let i = 0; i < byteString.length; i++) {
+        intArray[i] = byteString.charCodeAt(i);
+      }
+      const file = new File([intArray], this.uploadFile.name, {
+        type: 'application/pdf',
+      });
+      formData.append('file', file);
+    }
+
+    this.productEntryService.createEntry(formData).subscribe({
+      next: (savedEntryRaw) => {
+        const savedEntry: ProductEntryListDto = {
           id: savedEntryRaw.id!, // garantir que não é undefined
           productName: savedEntryRaw.productName || '',
           supplierName: savedEntryRaw.supplierName || '',
@@ -376,13 +389,15 @@ export class ProductEntryComponent implements OnInit {
         this.entries.data = [savedEntry, ...this.entries.data];
 
         //Reseta formulário
-      this.resetForm();
-    },
-    error: (err) =>
-      alert('Erro ao salvar: ' + (err.error?.message || 'Verifique os dados')),
-  });
+        this.resetForm();
+      },
+      error: (err) =>
+        alert(
+          'Erro ao salvar: ' + (err.error?.message || 'Verifique os dados')
+        ),
+    });
   }
-  
+
   onCancel() {
     this.resetForm();
   }
@@ -430,24 +445,24 @@ export class ProductEntryComponent implements OnInit {
     this.entries.filter = value.trim().toLowerCase();
   }
 
-public onFileSelected(event: Event): void {
-  const input = event.target as HTMLInputElement;
-  if (!input.files?.length) return;
+  public onFileSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (!input.files?.length) return;
 
-  const file = input.files[0];
-  if (file.type !== 'application/pdf') {
-    alert('Apenas arquivos PDF são permitidos!');
-    return;
+    const file = input.files[0];
+    if (file.type !== 'application/pdf') {
+      alert('Apenas arquivos PDF são permitidos!');
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = (reader.result as string).split(',')[1];
+      this.uploadFile = { name: file.name, base64 };
+    };
+    reader.readAsDataURL(file);
   }
-
-  const reader = new FileReader();
-  reader.onload = () => {
-    const base64 = (reader.result as string).split(',')[1];
-    this.uploadFile = { name: file.name, base64 };
-  };
-  reader.readAsDataURL(file);
-}
-removeFile() {
-  this.uploadFile = null;
-}
+  removeFile() {
+    this.uploadFile = null;
+  }
 }

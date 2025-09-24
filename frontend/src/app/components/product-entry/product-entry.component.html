@@ -193,6 +193,13 @@
 
         <!-- Botão Upload PDF -->
         <div
+          *ngIf="fileError"
+          class="file-error"
+          style="color: red; margin-top: 4px"
+        >
+          É obrigatório fazer upload do arquivo PDF!
+        </div>
+        <div
           class="form-actions"
           fxLayout="row"
           fxLayoutAlign="space-between center"
@@ -206,6 +213,7 @@
             <mat-icon>upload_file</mat-icon>
             Upload PDF
           </button>
+
           <input
             #fileInput
             type="file"

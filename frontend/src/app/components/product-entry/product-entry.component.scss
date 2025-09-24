@@ -14,6 +14,15 @@ mat-card-title {
   font-weight: 500;
 }
 
+.file-error {
+  font-size: small;
+  color: red;
+  margin-top: 4px;
+
+  display: flex; /* ativa flexbox */
+  justify-content: flex-end; /* alinha o conteúdo à direita */
+}
+
 .form-row {
   display: flex;
   gap: 16px;
