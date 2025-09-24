@@ -5,10 +5,10 @@
         <!-- Linha 1: Produto -->
         <div class="form-row">
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>ID do Produto</mat-label>
+            <mat-label>Pesquisar Produto</mat-label>
             <input
               matInput
-              type="number"
+              type="text"
               formControlName="productId"
               [matAutocomplete]="productAuto"
               placeholder="Digite ID"
@@ -26,7 +26,7 @@
               </mat-option>
             </mat-autocomplete>
             <mat-error *ngIf="entryForm.get('productId')?.hasError('required')">
-             ID do produto é obrigatório
+             Produto é obrigatório
             </mat-error>
           </mat-form-field>
 
