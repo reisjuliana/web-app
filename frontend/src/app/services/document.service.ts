@@ -27,4 +27,10 @@ export class DocumentService {
 
     return this.http.get<any[]>(this.apiUrl, { params });
   }
+
+  downloadDocument(id: number) {
+    return this.http.get(`/api/documents/${id}/download`, {
+      responseType: 'blob',
+    });
+  }
 }

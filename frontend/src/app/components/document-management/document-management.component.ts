@@ -46,6 +46,7 @@ export class DocumentManagementComponent implements OnInit {
     'product_id',
     'file_type',
     'upload_date',
+    'download',
   ];
 
   constructor(private documentService: DocumentService) {}
@@ -92,5 +93,24 @@ export class DocumentManagementComponent implements OnInit {
   formatDate(dateStr: string): string {
     const date = new Date(dateStr);
     return date.toLocaleDateString();
+  }
+
+  downloadDocument(doc: any): void {
+    this.documentService.downloadDocument(doc.id).subscribe((fileBlob) => {
+      const blob = new Blob([fileBlob], {
+        type:
+          doc.file_type === 'pdf'
+            ? 'application/pdf'
+            : 'application/octet-stream',
+      });
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = doc.filename;
+      a.click();
+
+      window.URL.revokeObjectURL(url);
+    });
   }
 }

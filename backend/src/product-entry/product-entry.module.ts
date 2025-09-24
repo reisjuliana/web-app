@@ -7,9 +7,7 @@ import { Product } from '../products/entities/product.entity';
 import { Supplier } from '../suppliers/entities/supplier.entity';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([ProductEntry, Product, Supplier]),
-  ],
+  imports: [TypeOrmModule.forFeature([ProductEntry, Product, Supplier])],
   controllers: [ProductEntryController],
   providers: [ProductEntryService],
 })
