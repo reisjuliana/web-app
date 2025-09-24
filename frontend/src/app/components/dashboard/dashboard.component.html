@@ -27,7 +27,6 @@
           >Últimos Recebimentos</mat-card-title
         >
         <mat-card-content>
-          <!-- Cabeçalho da "tabela" -->
           <ul class="metric-list-header">
             <li>
               <span class="entry-field"><strong>Fornecedor</strong></span>
@@ -36,7 +35,6 @@
               <span class="entry-field"><strong>Data</strong></span>
             </li>
           </ul>
-          <!-- Lista de valores -->
           <ul>
             <li *ngFor="let entry of lastEntries">
               <span class="entry-field">{{ entry.supplier }}</span>
