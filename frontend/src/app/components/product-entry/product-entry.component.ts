@@ -287,7 +287,7 @@ export class ProductEntryComponent implements OnInit {
     return this.products.filter(
       (p) =>
         (p.name || '').toLowerCase().includes(filterValue) ||
-        (p.id || '').toLowerCase().includes(filterValue)
+        p.id.toString().includes(filterValue)
     );
   }
 
