@@ -4,7 +4,7 @@ import {
   provideZoneChangeDetection,
 } from '@angular/core';
 import { provideRouter } from '@angular/router';
-import { provideHttpClient } from '@angular/common/http';
+import { HttpClient, provideHttpClient } from '@angular/common/http';
 import { routes } from './app.routes';
 
 import { ReactiveFormsModule } from '@angular/forms';
@@ -41,7 +41,8 @@ export const appConfig: ApplicationConfig = {
       MatNativeDateModule,
       MatIconModule,
       MatTableModule,
-      MatButtonModule
+      MatButtonModule,
+      HttpClient
     ),
   ],
 };

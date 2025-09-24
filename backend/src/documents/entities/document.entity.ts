@@ -39,7 +39,6 @@ export class DocumentEntity {
   @JoinColumn({ name: 'user_id' })
   user: UserEntity;
 
-  // Calcula automaticamente o hash antes de inserir
   @BeforeInsert()
   calculateHash() {
     this.hash_sha256 = crypto.createHash('sha256').update(this.file_content).digest('hex');

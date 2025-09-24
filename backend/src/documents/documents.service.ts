@@ -58,4 +58,9 @@ export class DocumentsService {
     if (!doc) throw new HttpException('Document not found', HttpStatus.NOT_FOUND);
     return toDocumentDTO(doc);
   }
+
+  async getDocumentById(id: number): Promise<DocumentEntity> {
+    const document = await this.documentsRepository.findOne({ where: { id: id } });
+    return document;
+  }
 }

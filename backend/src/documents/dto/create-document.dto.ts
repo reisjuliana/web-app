@@ -14,7 +14,7 @@ export class CreateDocumentDTO {
   product_id?: number;
 
   @IsOptional()
-  product_entry_id?: number; 
+  product_entry_id?: number;
 
   @IsNotEmpty()
   user_id: number;

@@ -13,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTableModule } from '@angular/material/table';
 import { DocumentService } from '../../services/document.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-document-management',
@@ -43,13 +44,16 @@ export class DocumentManagementComponent implements OnInit {
 
   displayedColumns: string[] = [
     'filename',
-    'product_id',
+    'id',
     'file_type',
     'upload_date',
     'download',
   ];
 
-  constructor(private documentService: DocumentService) {}
+  constructor(
+    private documentService: DocumentService,
+    private http: HttpClient
+  ) {}
 
   ngOnInit(): void {
     this.loadDocuments();
@@ -71,19 +75,12 @@ export class DocumentManagementComponent implements OnInit {
     const filters: any = {};
 
     if (this.filetypeFilter.value) {
-      filters.file_type = this.filetypeFilter.value.trim().toLowerCase();
+      filters.filetype = this.filetypeFilter.value.trim().toLowerCase();
     }
 
     if (this.productIdFilter.value) {
       filters.product_id = this.productIdFilter.value;
     }
-
-    // uploadDate ainda não implementado no backend
-    // if (this.uploadDateFilter.value) {
-    //   filters.upload_date = this.uploadDateFilter.value
-    //     .toISOString()
-    //     .split('T')[0];
-    // }
 
     this.documentService.getDocuments(filters).subscribe((data) => {
       this.documents = data;
@@ -95,22 +92,32 @@ export class DocumentManagementComponent implements OnInit {
     return date.toLocaleDateString();
   }
 
-  downloadDocument(doc: any): void {
-    this.documentService.downloadDocument(doc.id).subscribe((fileBlob) => {
-      const blob = new Blob([fileBlob], {
-        type:
-          doc.file_type === 'pdf'
-            ? 'application/pdf'
-            : 'application/octet-stream',
-      });
-      const url = window.URL.createObjectURL(blob);
+  downloadPdf(doc: { id: number; filename: string; file_type: string }) {
+    this.documentService.downloadDocument(doc.id).subscribe({
+      next: (fileBlob) => {
+        // Cria o Blob com o tipo correto
+        const blob = new Blob([fileBlob], {
+          type:
+            doc.file_type === 'pdf'
+              ? 'application/pdf'
+              : 'application/octet-stream',
+        });
 
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = doc.filename;
-      a.click();
+        // Cria a URL temporária para download
+        const url = window.URL.createObjectURL(blob);
 
-      window.URL.revokeObjectURL(url);
+        // Cria um link "a" e dispara o download
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = doc.filename || 'documento.pdf';
+        a.click();
+
+        // Libera memória
+        window.URL.revokeObjectURL(url);
+
+        console.log('Download iniciado para:', doc.filename);
+      },
+      error: (err) => console.error('Erro no download:', err),
     });
   }
 }
