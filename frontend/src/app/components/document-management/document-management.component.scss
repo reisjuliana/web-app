@@ -9,7 +9,15 @@
     min-width: 150px;
   }
 }
-
+.documents {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+mat-card-title {
+  color: #026e00;
+  font-weight: 500;
+}
 table {
   width: 100%;
 

@@ -1,5 +1,8 @@
 <div class="container">
   <mat-card class="form-card">
+    <mat-card-header>
+      <mat-card-title>Entrada de Produtos</mat-card-title>
+    </mat-card-header>
     <mat-card-content>
       <form [formGroup]="entryForm" (ngSubmit)="onSubmit()">
         <!-- Linha 1: Produto -->
@@ -26,7 +29,7 @@
               </mat-option>
             </mat-autocomplete>
             <mat-error *ngIf="entryForm.get('productId')?.hasError('required')">
-             Produto é obrigatório
+              Produto é obrigatório
             </mat-error>
           </mat-form-field>
 
@@ -189,40 +192,60 @@
         </div>
 
         <!-- Botão Upload PDF -->
-        <div class="form-actions" 
-        fxLayout="row" 
-        fxLayoutAlign="space-between center">
-         <button mat-raised-button color="primary" type="button"
-         (click)="fileInput.click()">
-
-           <mat-icon>upload_file</mat-icon>
+        <div
+          class="form-actions"
+          fxLayout="row"
+          fxLayoutAlign="space-between center"
+        >
+          <button
+            mat-raised-button
+            color="primary"
+            type="button"
+            (click)="fileInput.click()"
+          >
+            <mat-icon>upload_file</mat-icon>
             Upload PDF
+          </button>
+          <input
+            #fileInput
+            type="file"
+            accept="application/pdf"
+            style="display: none"
+            (change)="onFileSelected($event)"
+          />
+          <!-- Exibe o nome do arquivo selecionado, se houver -->
+          <span
+            *ngIf="uploadFile"
+            style="margin-left: 12px; display: flex; align-items: center"
+          >
+            <mat-icon color="primary" style="margin-right: 4px"
+              >description</mat-icon
+            >
+            {{ uploadFile.name }}
+            <button
+              mat-icon-button
+              color="warn"
+              (click)="removeFile()"
+              aria-label="Remover arquivo"
+              style="margin-left: 4px"
+            >
+              <mat-icon>close</mat-icon>
             </button>
-            <input
-          #fileInput
-          type="file"
-          accept="application/pdf"
-          style="display: none"
-          (change)="onFileSelected($event)"
-  />
-      <!-- Exibe o nome do arquivo selecionado, se houver -->
-       <span *ngIf="uploadFile" style="margin-left: 12px; display: flex; align-items: center;">
-       <mat-icon color="primary" style="margin-right: 4px;">description</mat-icon>
-        {{ uploadFile.name }}
-        <button mat-icon-button color="warn" (click)="removeFile()" aria-label="Remover arquivo" style="margin-left: 4px;">
-        <mat-icon>close</mat-icon>
-         </button>
-        </span>
+          </span>
 
-        <!-- Botão Salvar -->
-            <button mat-raised-button color="primary" type="submit">
+          <!-- Botão Salvar -->
+          <button mat-raised-button color="primary" type="submit">
             <mat-icon>save</mat-icon>
             <span>Salvar</span>
           </button>
 
-
-         <!-- Botão Cancelar -->
-         <button mat-flat-button color = "warn" type="button" (click)="onCancel()">
+          <!-- Botão Cancelar -->
+          <button
+            mat-flat-button
+            color="warn"
+            type="button"
+            (click)="onCancel()"
+          >
             <mat-icon>cancel</mat-icon>
             Cancelar
           </button>
@@ -230,8 +253,6 @@
       </form>
     </mat-card-content>
   </mat-card>
-
-  
 
   <!-- Tabela de entradas cadastradas -->
   <mat-card class="table-card">

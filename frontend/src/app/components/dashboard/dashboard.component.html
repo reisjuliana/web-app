@@ -1,7 +1,7 @@
 <div class="dashboard-container">
   <mat-card class="dashboard-card">
     <mat-card-header>
-      <mat-card-title class="dashboard-title">Dashboard de Produção</mat-card-title>
+      <mat-card-title>Dashboard de Produção</mat-card-title>
     </mat-card-header>
     <mat-card-content>
       <div class="dashboard-metrics">
@@ -14,35 +14,39 @@
           </mat-card-content>
         </mat-card>
         <mat-card class="metric-card">
-          <mat-card-title class="metric-title">Materiais em Estoque</mat-card-title>
+          <mat-card-title class="metric-title"
+            >Materiais em Estoque</mat-card-title
+          >
           <mat-card-content>
             <canvas #pieCanvas class="pie-canvas"></canvas>
           </mat-card-content>
         </mat-card>
       </div>
       <mat-card class="metric-list">
-          <mat-card-title class="metric-title">Últimos Recebimentos</mat-card-title>
-          <mat-card-content>
-            <!-- Cabeçalho da "tabela" -->
-            <ul class="metric-list-header">
-              <li>
-                <span class="entry-field"><strong>Fornecedor</strong></span>
-                <span class="entry-field"><strong>Produto</strong></span>
-                <span class="entry-field"><strong>Quantidade</strong></span>
-                <span class="entry-field"><strong>Data</strong></span>
-              </li>
-            </ul>
-            <!-- Lista de valores -->
-            <ul>
-              <li *ngFor="let entry of lastEntries">
-                <span class="entry-field">{{ entry.supplier }}</span>
-                <span class="entry-field">{{ entry.product }}</span>
-                <span class="entry-field">{{ entry.quantity }}</span>
-                <span class="entry-field">{{ entry.entryDate }}</span>
-              </li>
-            </ul>
-          </mat-card-content>
-        </mat-card>
+        <mat-card-title class="metric-title"
+          >Últimos Recebimentos</mat-card-title
+        >
+        <mat-card-content>
+          <!-- Cabeçalho da "tabela" -->
+          <ul class="metric-list-header">
+            <li>
+              <span class="entry-field"><strong>Fornecedor</strong></span>
+              <span class="entry-field"><strong>Produto</strong></span>
+              <span class="entry-field"><strong>Quantidade</strong></span>
+              <span class="entry-field"><strong>Data</strong></span>
+            </li>
+          </ul>
+          <!-- Lista de valores -->
+          <ul>
+            <li *ngFor="let entry of lastEntries">
+              <span class="entry-field">{{ entry.supplier }}</span>
+              <span class="entry-field">{{ entry.product }}</span>
+              <span class="entry-field">{{ entry.quantity }}</span>
+              <span class="entry-field">{{ entry.entryDate }}</span>
+            </li>
+          </ul>
+        </mat-card-content>
+      </mat-card>
     </mat-card-content>
   </mat-card>
 </div>

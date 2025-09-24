@@ -1,17 +1,26 @@
 .dashboard-container {
-  min-height: 100vh;  
+  min-height: 100vh;
 }
 
-.dashboard-title{
+.dashboard-title {
   width: 100% !important;
   text-align: center !important;
   justify-content: center !important;
   align-items: center !important;
 }
+mat-card-header {
+  margin-bottom: 16px;
+  padding-top: 0 !important;
+}
+
+mat-card-title {
+  color: #026e00;
+  font-weight: 500;
+}
 
 .dashboard-card {
   border-radius: 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   padding: 1.5rem;
   margin: 24px;
   min-width: 1000px;
@@ -19,7 +28,7 @@
 
 .dashboard-metrics {
   display: flex;
-  justify-content: center; 
+  justify-content: center;
   align-items: center;
   gap: 2rem;
   margin-top: 2rem 0;
@@ -56,8 +65,8 @@
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
-  justify-content: center; 
-  padding: 0 16px; 
+  justify-content: center;
+  padding: 0 16px;
 }
 
 .chart-wrapper {
@@ -116,8 +125,8 @@
   align-items: center;
   gap: 2rem;
   padding: 8px 0 4px 0;
-  border-bottom: 2px solid #bbb; 
-  background: #f7f7f7;          
+  border-bottom: 2px solid #bbb;
+  background: #f7f7f7;
 }
 
 .metric-list ul {
