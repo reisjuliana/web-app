@@ -21,8 +21,8 @@ Antes de iniciar, garanta que você possui os seguintes requisitos instalados e 
 ### 1. Clonar o repositório
 
 ```bash
-git clone <url-do-repositorio>
-cd <nome-da-pasta-do-projeto>
+git clone https://github.com/reisjuliana/web-app.git
+cd web-app
 ```
 
 ### 2. Configurar o banco de dados
