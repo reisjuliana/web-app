@@ -40,7 +40,7 @@ export class DocumentManagementComponent implements OnInit {
 
   filenameFilter = new FormControl('');
   documentIdFilter = new FormControl('');
-  uploadDateFilter = new FormControl('');
+  uploadDateFilter = new FormControl<Date | null>(null);
 
   displayedColumns: string[] = [
     'filename',
@@ -82,6 +82,14 @@ export class DocumentManagementComponent implements OnInit {
       filters.id = Number(this.documentIdFilter.value);
     }
 
+    if (this.uploadDateFilter.value) {
+      const date: Date = this.uploadDateFilter.value;
+      const yyyy = date.getFullYear();
+      const mm = String(date.getMonth() + 1).padStart(2, '0');
+      const dd = String(date.getDate()).padStart(2, '0');
+      filters.upload_date = `${yyyy}-${mm}-${dd}`;
+    }
+
     this.documentService.getDocuments(filters).subscribe((data) => {
       this.documents = data.sort((a, b) => b.id - a.id);
     });
@@ -95,7 +103,6 @@ export class DocumentManagementComponent implements OnInit {
   downloadPdf(doc: { id: number; filename: string; file_type: string }) {
     this.documentService.downloadDocument(doc.id).subscribe({
       next: (fileBlob) => {
-        // Cria o Blob com o tipo correto
         const blob = new Blob([fileBlob], {
           type:
             doc.file_type === 'pdf'
@@ -111,8 +118,6 @@ export class DocumentManagementComponent implements OnInit {
         a.click();
 
         window.URL.revokeObjectURL(url);
-
-        console.log('Download iniciado para:', doc.filename);
       },
       error: (err) => console.error('Erro no download:', err),
     });

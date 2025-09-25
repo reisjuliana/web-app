@@ -33,7 +33,6 @@
           matInput
           [matDatepicker]="picker"
           [formControl]="uploadDateFilter"
-          (dateChange)="loadDocuments()"
         />
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-datepicker #picker></mat-datepicker>
