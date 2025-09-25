@@ -51,6 +51,11 @@ export class DocumentsService {
         filename: `%${filters.filename.toLowerCase()}%`,
       });
     }
+
+    if (filters.upload_date) {
+      query.andWhere('DATE(doc.upload_date) = :upload_date', { upload_date: filters.upload_date });
+    }
+
     const docs = await query.getMany();
     return docs.map(toDocumentDTO);
   }
