@@ -19,5 +19,4 @@ export class DashboardController {
   async getProductQuantities() {
     return await this.dashboardService.getProductQuantities();
   }
-
 }

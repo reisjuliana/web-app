@@ -38,8 +38,8 @@ import { HttpClient } from '@angular/common/http';
 export class DocumentManagementComponent implements OnInit {
   documents: any[] = [];
 
-  filetypeFilter = new FormControl('');
-  productIdFilter = new FormControl('');
+  filenameFilter = new FormControl('');
+  documentIdFilter = new FormControl('');
   uploadDateFilter = new FormControl('');
 
   displayedColumns: string[] = [
@@ -58,11 +58,11 @@ export class DocumentManagementComponent implements OnInit {
   ngOnInit(): void {
     this.loadDocuments();
 
-    this.filetypeFilter.valueChanges
+    this.filenameFilter.valueChanges
       .pipe(debounceTime(300), distinctUntilChanged())
       .subscribe(() => this.loadDocuments());
 
-    this.productIdFilter.valueChanges
+    this.documentIdFilter.valueChanges
       .pipe(debounceTime(300), distinctUntilChanged())
       .subscribe(() => this.loadDocuments());
 
@@ -74,12 +74,12 @@ export class DocumentManagementComponent implements OnInit {
   loadDocuments(): void {
     const filters: any = {};
 
-    if (this.filetypeFilter.value) {
-      filters.filetype = this.filetypeFilter.value.trim().toLowerCase();
+    if (this.filenameFilter.value) {
+      filters.filename = this.filenameFilter.value.trim().toLowerCase();
     }
 
-    if (this.productIdFilter.value) {
-      filters.product_id = this.productIdFilter.value;
+    if (this.documentIdFilter.value) {
+      filters.id = Number(this.documentIdFilter.value);
     }
 
     this.documentService.getDocuments(filters).subscribe((data) => {

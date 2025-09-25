@@ -1,5 +1,8 @@
 export interface DocumentFilter {
-  file_type?: 'pdf' | 'xml';
-  user_id?: number;
+  id?: number;
+  file_type?: 'pdf';
+  filename?: string;
   product_id?: number;
+  upload_date?: string; // Formato 'YYYY-MM-DD'
+  user_id?: number;
 }
