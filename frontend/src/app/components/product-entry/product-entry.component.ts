@@ -71,6 +71,8 @@ export class ProductEntryComponent implements OnInit {
   ];
   dataSource = new MatTableDataSource<ProductEntryListDto>();
   fileError: boolean = false;
+  file_size_error: boolean = false;
+  readonly MAX_FILE_SIZE = 30 * 1024; // é 30kb
 
   constructor(
     private fb: FormBuilder,
@@ -453,6 +455,13 @@ export class ProductEntryComponent implements OnInit {
     if (file.type !== 'application/pdf') {
       alert('Apenas arquivos PDF são permitidos!');
       return;
+    }
+
+    if (file.size > this.MAX_FILE_SIZE) {
+      this.file_size_error = true;
+      return;
+    } else {
+      this.file_size_error = false;
     }
 
     const reader = new FileReader();

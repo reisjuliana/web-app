@@ -200,6 +200,14 @@
           É obrigatório fazer upload do arquivo PDF!
         </div>
         <div
+          *ngIf="file_size_error"
+          class="file-error"
+          style="color: red; margin-top: 4px"
+        >
+          Arquivo muito grande! Máximo permitido: 30 KB!
+        </div>
+
+        <div
           class="form-actions"
           fxLayout="row"
           fxLayoutAlign="space-between center"
