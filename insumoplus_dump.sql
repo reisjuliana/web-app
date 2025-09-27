@@ -93,16 +93,16 @@ CREATE TABLE IF NOT EXISTS product_entries (
 
 INSERT INTO product_entries (product_id, supplier_id, entry_date, unitValue, quantity, totalValue, invoice_number, batch, category, observations, user_id)
 VALUES
-(1, 1, NOW(), 10.00, 1000, 10000, 'NF-10001', 'B001-PET', 'Plástico Reciclado', 'Entrada inicial PET', 1),
-(2, 2, NOW(), 8.00, 800, 1600, 'NF-10002', 'B002-PEAD', 'Plástico Reciclado', 'Entrada inicial PEAD', 2),
-(3, 3, NOW(), 7.00, 900, 6300, 'NF-10003', 'B003-PP', 'Plástico Reciclado', 'Entrada inicial PP', 3),
-(4, 4, NOW(), 9.00, 500, 4500, 'NF-10004', 'B004-PVC', 'Plástico Reciclado', 'Entrada inicial PVC', 4),
-(5, 5, NOW(), 6.00, 400, 2400, 'NF-10005', 'B005-PS', 'Plástico Reciclado', 'Entrada inicial PS', 5),
-(6, 1, NOW(), 12.00, 300, 3600, 'NF-10006', 'B006-ABS', 'Plástico Reciclado', 'Entrada inicial ABS', 1),
-(7, 2, NOW(), 15.00, 200, 3000, 'NF-10007', 'B007-PLA', 'Plástico Reciclado', 'Entrada inicial PLA', 2),
-(8, 3, NOW(), 14.00, 150, 2100, 'NF-10008', 'B008-PETG', 'Plástico Reciclado', 'Entrada inicial PET-G', 3),
-(9, 4, NOW(), 7.00, 700, 1400, 'NF-10009', 'B009-PEBD', 'Plástico Reciclado', 'Entrada inicial PEBD', 4),
-(10, 5, NOW(), 8.00, 600, 4800, 'NF-10010', 'B010-PPH', 'Plástico Reciclado', 'Entrada inicial PP Homopolímero', 5);
+(1, 1, CURDATE(), 10.00, 1000, 10000, 'NF-10001', 'B001-PET', 'Plástico Reciclado', 'Entrada inicial PET', 1),
+(2, 2, CURDATE(), 8.00, 800, 1600, 'NF-10002', 'B002-PEAD', 'Plástico Reciclado', 'Entrada inicial PEAD', 2),
+(3, 3, CURDATE(), 7.00, 900, 6300, 'NF-10003', 'B003-PP', 'Plástico Reciclado', 'Entrada inicial PP', 3),
+(4, 4, CURDATE(), 9.00, 500, 4500, 'NF-10004', 'B004-PVC', 'Plástico Reciclado', 'Entrada inicial PVC', 4),
+(5, 5, CURDATE(), 6.00, 400, 2400, 'NF-10005', 'B005-PS', 'Plástico Reciclado', 'Entrada inicial PS', 5),
+(6, 1, CURDATE(), 12.00, 300, 3600, 'NF-10006', 'B006-ABS', 'Plástico Reciclado', 'Entrada inicial ABS', 1),
+(7, 2, CURDATE(), 15.00, 200, 3000, 'NF-10007', 'B007-PLA', 'Plástico Reciclado', 'Entrada inicial PLA', 2),
+(8, 3, CURDATE(), 14.00, 150, 2100, 'NF-10008', 'B008-PETG', 'Plástico Reciclado', 'Entrada inicial PET-G', 3),
+(9, 4, CURDATE(), 7.00, 700, 1400, 'NF-10009', 'B009-PEBD', 'Plástico Reciclado', 'Entrada inicial PEBD', 4),
+(10, 5, CURDATE(), 8.00, 600, 4800, 'NF-10010', 'B010-PPH', 'Plástico Reciclado', 'Entrada inicial PP Homopolímero', 5);
 
 -- -------------------------------------------------------------
 -- Tabela Documents
