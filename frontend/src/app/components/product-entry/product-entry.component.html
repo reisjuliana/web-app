@@ -7,83 +7,58 @@
       <form [formGroup]="entryForm" (ngSubmit)="onSubmit()">
         <!-- Linha 1: Produto -->
         <div class="form-row">
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Pesquisar Produto</mat-label>
-            <input
-              matInput
-              type="number"
-              formControlName="productId"
-              [matAutocomplete]="productAuto"
-              placeholder="Digite ID"
-            />
-            <mat-autocomplete
-              #productAuto="matAutocomplete"
-              [displayWith]="displayProduct"
-              (optionSelected)="onProductOptionSelected($event.option.value)"
-            >
-              <mat-option
-                *ngFor="let product of filteredProducts | async"
-                [value]="product.id"
-              >
-                {{ product.id }} - {{ product.name }}
-              </mat-option>
-            </mat-autocomplete>
-            <mat-error *ngIf="entryForm.get('productId')?.hasError('required')">
-              Produto é obrigatório
-            </mat-error>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Nome do Produto</mat-label>
-            <input
-              matInput
-              formControlName="productName"
-              placeholder="Nome (pode digitar manualmente)"
-              readonly
-            />
-          </mat-form-field>
+         <mat-form-field appearance="outline" class="full-width">
+  <mat-label>Produto</mat-label>
+  <input
+    matInput
+    type="text"
+    formControlName="productName"
+    [matAutocomplete]="productAuto"
+    placeholder="Digite o nome do produto"
+  />
+  <mat-autocomplete
+    #productAuto="matAutocomplete"
+    (optionSelected)="onProductNameSelected($event.option.value)"
+  >
+    <mat-option
+      *ngFor="let product of filteredProducts | async"
+      [value]="product.name"
+    >
+      {{ product.name }}
+    </mat-option>
+  </mat-autocomplete>
+  <mat-error *ngIf="entryForm.get('productName')?.hasError('required')">
+    Produto é obrigatório
+  </mat-error>
+</mat-form-field>
         </div>
 
         <!-- Linha 2: Fornecedor -->
         <div class="form-row">
           <mat-form-field appearance="outline" class="full-width">
-            <mat-label>ID do Fornecedor</mat-label>
-            <input
-              matInput
-              type="number"
-              formControlName="supplierId"
-              [matAutocomplete]="supplierAuto"
-              placeholder="Digite ID ou nome"
-              (blur)="onSupplierIdBlur()"
-            />
-            <mat-autocomplete
-              #supplierAuto="matAutocomplete"
-              [displayWith]="displaySupplier"
-              (optionSelected)="onSupplierOptionSelected($event.option.value)"
-            >
-              <mat-option
-                *ngFor="let supplier of filteredSuppliers | async"
-                [value]="supplier.id"
-              >
-                {{ supplier.id }} - {{ supplier.name }}
-              </mat-option>
-            </mat-autocomplete>
-            <mat-error
-              *ngIf="entryForm.get('supplierId')?.hasError('required')"
-            >
-              ID do fornecedor é obrigatório
-            </mat-error>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Nome do Fornecedor</mat-label>
-            <input
-              matInput
-              formControlName="supplierName"
-              placeholder="Nome do fornecedor"
-              readonly
-            />
-          </mat-form-field>
+  <mat-label>Fornecedor</mat-label>
+  <input
+    matInput
+    type="text"
+    formControlName="supplierName"
+    [matAutocomplete]="supplierAuto"
+    placeholder="Digite o nome do fornecedor"
+  />
+  <mat-autocomplete
+    #supplierAuto="matAutocomplete"
+    (optionSelected)="onSupplierNameSelected($event.option.value)"
+  >
+    <mat-option
+      *ngFor="let supplier of filteredSuppliers | async"
+      [value]="supplier.name"
+    >
+      {{ supplier.name }}
+    </mat-option>
+  </mat-autocomplete>
+  <mat-error *ngIf="entryForm.get('supplierName')?.hasError('required')">
+    Fornecedor é obrigatório
+  </mat-error>
+</mat-form-field>
         </div>
 
         <!-- Linha 3: Datas e Quantidade -->

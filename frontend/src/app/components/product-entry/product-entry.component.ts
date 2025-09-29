@@ -93,14 +93,12 @@ export class ProductEntryComponent implements OnInit {
       category: [''],
     });
 
-    this.filteredProducts = this.entryForm.get('productId')!.valueChanges.pipe(
-      startWith(''),
-      map((value) => this._filterProducts(value))
-    );
+ this.filteredProducts = this.entryForm.get('productName')!.valueChanges.pipe(
+  startWith(''),
+  map((value) => this._filterProducts(value))
+);
 
-    this.filteredSuppliers = this.entryForm
-      .get('supplierId')!
-      .valueChanges.pipe(
+    this.filteredSuppliers = this.entryForm.get('supplierName')!.valueChanges.pipe(
         startWith(''),
         map((value) => this._filterSuppliers(value))
       );
@@ -273,7 +271,20 @@ export class ProductEntryComponent implements OnInit {
       );
     }
   }
+  
+onProductNameSelected(selectedName: string) {
+  const product = this.products.find(p => p.name === selectedName);
+  if (product) {
+    this.entryForm.patchValue({ productName: product.name, productId: product.id });
+  }
+}
 
+onSupplierNameSelected(selectedName: string) {
+  const supplier = this.suppliers.find(s => s.name === selectedName);
+  if (supplier) {
+    this.entryForm.patchValue({ supplierName: supplier.name, supplierId: supplier.id });
+  }
+}
   private calculateTotal() {
     const q = parseFloat(this.entryForm.get('quantity')?.value) || 0;
     const v = parseFloat(this.entryForm.get('unitValue')?.value) || 0;
@@ -283,31 +294,15 @@ export class ProductEntryComponent implements OnInit {
     );
   }
 
-  private _filterProducts(value: string | Product | null): Product[] {
-    const raw = value ?? '';
-    const filterValue =
-      typeof raw === 'string'
-        ? raw.toLowerCase()
-        : (raw?.name || raw?.id?.toString() || '').toLowerCase();
-    return this.products.filter(
-      (p) =>
-        (p.name || '').toLowerCase().includes(filterValue) ||
-        p.id.toString().includes(filterValue)
-    );
-  }
+  private _filterProducts(value: string): Product[] {
+  const filterValue = value ? value.toLowerCase() : '';
+  return this.products.filter(p => p.name.toLowerCase().includes(filterValue));
+}
 
-  private _filterSuppliers(value: string | Supplier | null): Supplier[] {
-    const raw = value ?? '';
-    const filterValue =
-      typeof raw === 'string'
-        ? raw.toLowerCase()
-        : (raw?.name || raw?.id?.toString() || '').toLowerCase();
-    return this.suppliers.filter(
-      (s) =>
-        (s.name || '').toLowerCase().includes(filterValue) ||
-        (s.id || '').toLowerCase().includes(filterValue)
-    );
-  }
+  private _filterSuppliers(value: string): Supplier[] {
+  const filterValue = value.toLowerCase();
+  return this.suppliers.filter(s => s.name.toLowerCase().includes(filterValue));
+}
 
   displayProduct(value: Product | string | null): string {
     if (!value) return '';
