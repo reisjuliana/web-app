@@ -134,11 +134,28 @@ export class ProductEntryComponent implements OnInit {
       },
     });
 
-    // continua carregando produtos
+    // produtos
     this.productEntryService.getProducts().subscribe({
       next: (products) => (this.products = products || []),
       error: (e) => (this.products = []),
     });
+
+    //fornecedores 
+    this.productEntryService.getSuppliers().subscribe({
+    next: (suppliers: Supplier[]) => {
+    this.suppliers = suppliers || [];
+
+    // Atualiza filteredSuppliers
+    this.filteredSuppliers = this.entryForm.get('supplierName')!.valueChanges.pipe(
+      startWith(''),
+      map((value: string) => this._filterSuppliers(value))
+    );
+  },
+  error: (err: unknown) => {
+    console.error('Erro ao carregar fornecedores', err);
+    this.suppliers = [];
+  },
+});
   }
   private loadEntries() {
     this.productEntryService.getEntries().subscribe({
@@ -300,7 +317,7 @@ onSupplierNameSelected(selectedName: string) {
 }
 
   private _filterSuppliers(value: string): Supplier[] {
-  const filterValue = value.toLowerCase();
+  const filterValue = value ? value.toLowerCase() : '';
   return this.suppliers.filter(s => s.name.toLowerCase().includes(filterValue));
 }
 

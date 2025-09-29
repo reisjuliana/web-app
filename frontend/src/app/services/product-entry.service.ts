@@ -48,6 +48,10 @@ export class ProductEntryService {
   }
 
   // ================= FORNECEDORES =================
+  getSuppliers(): Observable<Supplier[]> {
+    return this.http.get<Supplier[]>(this.supplierApiUrl);
+  }
+
   getSupplierById(id: number): Observable<Supplier | null> {
     if (isNaN(id)) return of(null);
 
