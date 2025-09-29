@@ -9,7 +9,6 @@ import { ProductEntry } from '../product-entry/entities/product-entry.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Product, Supplier, ProductEntry])],
   controllers: [DashboardController],
-  providers: [DashboardService]
+  providers: [DashboardService],
 })
 export class DashboardModule {}
-

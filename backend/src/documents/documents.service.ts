@@ -39,11 +39,21 @@ export class DocumentsService {
     }
 
     if (filters.user_id) {
-      query.andWhere('user.id = :user_id', { user_id: filters.user_id });
+      query.andWhere('user.id = :user_id', { user_id: Number(filters.user_id) });
     }
 
-    if (filters.product_id) {
-      query.andWhere('product.id = :product_id', { product_id: filters.product_id });
+    if (filters.id) {
+      query.andWhere('doc.id = :id', { id: Number(filters.id) });
+    }
+
+    if (filters.filename) {
+      query.andWhere('LOWER(doc.filename) LIKE :filename', {
+        filename: `%${filters.filename.toLowerCase()}%`,
+      });
+    }
+
+    if (filters.upload_date) {
+      query.andWhere('DATE(doc.upload_date) = :upload_date', { upload_date: filters.upload_date });
     }
 
     const docs = await query.getMany();

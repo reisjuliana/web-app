@@ -13,12 +13,12 @@ export class DocumentService {
   getDocuments(filters: any = {}): Observable<any[]> {
     let params = new HttpParams();
 
-    if (filters.file_type) {
-      params = params.set('file_type', filters.file_type);
+    if (filters.filename) {
+      params = params.set('filename', filters.filename);
     }
 
-    if (filters.product_id) {
-      params = params.set('product_id', filters.product_id);
+    if (filters.id) {
+      params = params.set('id', filters.id);
     }
 
     if (filters.upload_date) {

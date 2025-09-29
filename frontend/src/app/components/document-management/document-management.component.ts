@@ -38,9 +38,9 @@ import { HttpClient } from '@angular/common/http';
 export class DocumentManagementComponent implements OnInit {
   documents: any[] = [];
 
-  filetypeFilter = new FormControl('');
-  productIdFilter = new FormControl('');
-  uploadDateFilter = new FormControl('');
+  filenameFilter = new FormControl('');
+  documentIdFilter = new FormControl('');
+  uploadDateFilter = new FormControl<Date | null>(null);
 
   displayedColumns: string[] = [
     'filename',
@@ -58,11 +58,11 @@ export class DocumentManagementComponent implements OnInit {
   ngOnInit(): void {
     this.loadDocuments();
 
-    this.filetypeFilter.valueChanges
+    this.filenameFilter.valueChanges
       .pipe(debounceTime(300), distinctUntilChanged())
       .subscribe(() => this.loadDocuments());
 
-    this.productIdFilter.valueChanges
+    this.documentIdFilter.valueChanges
       .pipe(debounceTime(300), distinctUntilChanged())
       .subscribe(() => this.loadDocuments());
 
@@ -74,12 +74,20 @@ export class DocumentManagementComponent implements OnInit {
   loadDocuments(): void {
     const filters: any = {};
 
-    if (this.filetypeFilter.value) {
-      filters.filetype = this.filetypeFilter.value.trim().toLowerCase();
+    if (this.filenameFilter.value) {
+      filters.filename = this.filenameFilter.value.trim().toLowerCase();
     }
 
-    if (this.productIdFilter.value) {
-      filters.product_id = this.productIdFilter.value;
+    if (this.documentIdFilter.value) {
+      filters.id = Number(this.documentIdFilter.value);
+    }
+
+    if (this.uploadDateFilter.value) {
+      const date: Date = this.uploadDateFilter.value;
+      const yyyy = date.getFullYear();
+      const mm = String(date.getMonth() + 1).padStart(2, '0');
+      const dd = String(date.getDate()).padStart(2, '0');
+      filters.upload_date = `${yyyy}-${mm}-${dd}`;
     }
 
     this.documentService.getDocuments(filters).subscribe((data) => {
@@ -95,7 +103,6 @@ export class DocumentManagementComponent implements OnInit {
   downloadPdf(doc: { id: number; filename: string; file_type: string }) {
     this.documentService.downloadDocument(doc.id).subscribe({
       next: (fileBlob) => {
-        // Cria o Blob com o tipo correto
         const blob = new Blob([fileBlob], {
           type:
             doc.file_type === 'pdf'
@@ -111,8 +118,6 @@ export class DocumentManagementComponent implements OnInit {
         a.click();
 
         window.URL.revokeObjectURL(url);
-
-        console.log('Download iniciado para:', doc.filename);
       },
       error: (err) => console.error('Erro no download:', err),
     });

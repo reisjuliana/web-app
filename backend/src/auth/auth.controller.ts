@@ -9,7 +9,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from './jwt-auth.guard';
 import { UserCreateDTO } from 'src/users/dto/user-create.dto';
 import { JwtPayload } from './dto/jwt-payload.interface';
 import { LoginUserDTO } from './dto/login-user.dto';
@@ -35,7 +35,7 @@ export class AuthController {
   }
 
   @Get('whoami')
-  @UseGuards(AuthGuard())
+  @UseGuards(JwtAuthGuard)
   public async testAuth(@Req() req: any): Promise<JwtPayload> {
     return req.user;
   }

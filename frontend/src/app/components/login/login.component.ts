@@ -34,6 +34,7 @@ export class LoginComponent {
   loginValid: boolean = true;
   loginSuccess: boolean = false;
   router = inject(Router);
+
   constructor(private authService: AuthService) {}
 
   login() {
@@ -43,15 +44,12 @@ export class LoginComponent {
     };
 
     this.authService.login(loginDTO).subscribe({
-      next: (res: { accessToken: string }) => {
-        console.log('Login sucesso:', res);
+      next: () => {
         this.loginValid = true;
         this.loginSuccess = true;
-        localStorage.setItem('accessToken', res.accessToken);
         this.router.navigate(['/dashboard']);
       },
-      error: (err: any) => {
-        console.error('Erro no login:', err);
+      error: () => {
         this.loginValid = false;
         this.loginSuccess = false;
       },
